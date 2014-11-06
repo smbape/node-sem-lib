@@ -1,0 +1,16 @@
+{
+  "name": "sem-lib",
+  "version": "1.0.0",
+  "description": "Semaphore library for node",
+  "main": "./lib/sem-lib.js",
+  "dependencies": {},
+  "devDependencies": {
+    "async": "*",
+    "collections": "*",
+    "nodeunit": "*"
+  },
+  "scripts": {
+    "test": "node ./test/sem-lib.test.js"
+  },
+  "readmeFilename": "readme.md"
+}
