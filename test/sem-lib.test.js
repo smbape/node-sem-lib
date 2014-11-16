@@ -513,4 +513,20 @@ if (!/\bnodeunit$/.test(process.argv[1])) {
     reporter.run({
         test: module.exports
     });
+} else if (false) {
+    // For debugging purpose
+    var assert = require('assert');
+    var testSuite = module.exports;
+    tests = [];
+    for (prop in testSuite) {
+        (function(fn) {
+            tests.push(function(next) {
+                assert.done = next;
+                fn(assert);
+            });
+        })(testSuite[prop]);
+    }
+    async.series(tests, function() {
+        console.log('done');
+    });
 }
