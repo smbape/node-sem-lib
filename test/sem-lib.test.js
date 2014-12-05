@@ -1,4 +1,3 @@
-var utils = require("../lib/utils.js");
 var semLib = require("../");
 var async = require('async');
 
@@ -39,12 +38,11 @@ function testConstructor(assert) {
 
 function _testConstructor(assert, capacity, full) {
     var semID = semLib.semCreate(capacity, full);
-    // utils.consoleWrite("_testConstructor", semID.getId());
     assert.ok(semID.hasOwnProperty('semGive'));
     assert.ok(semID.hasOwnProperty('semTake'));
     assert.ok(semID.hasOwnProperty('semFlush'));
 
-    capacity = (capacity >= 1) ? parseInt(capacity) : 1;
+    capacity = (capacity >= 1) ? parseInt(capacity, 10) : 1;
     var counter = (full) ? capacity : 0;
 
     assert.strictEqual(semID.getCapacity(), capacity);
@@ -71,11 +69,14 @@ function testGive(assert) {
 function _testGive(assert, capacity) {
     capacity = (capacity >= 1) ? parseInt(capacity) : 1;
     var semID = semLib.semCreate(capacity);
-    // utils.consoleWrite("_testGive", semID.getId());
+
+    // Check that tokens increase until capacity is reach
     for (var i = 0; i < capacity; i++) {
         semID.semGive();
         assert.strictEqual(semID.getNumTokens(), i + 1);
     }
+
+    // When capacity is reach, tokens no more increased
     semID.semGive();
     assert.strictEqual(semID.getNumTokens(), capacity);
     semID.semGive();
@@ -83,17 +84,14 @@ function _testGive(assert, capacity) {
 }
 
 function testTake(assert) {
-    // utils.consoleWrite("testTake");
     var timeOuted = false,
         fired = false;
 
     function shoot() {
-        // utils.consoleWrite("fired");
         fired = true;
     }
 
     function run() {
-        // utils.consoleWrite("timeOuted");
         timeOuted = true;
     }
 
@@ -102,26 +100,23 @@ function testTake(assert) {
         timeOuted = false;
     }
 
-    // utils.consoleWrite("testTake", semID.getId());
-
+    // Take without arguments is now allowed
     function testTakeNoArguments(next) {
-        // utils.consoleWrite("semTake with no arguments");
-        assert.throws(function() {
-            semID.semTake();
-        });
+        var semID = semLib.semCreate();
+        semID.semTake();
+        semID.semGive();
         next();
     }
 
+    // Take with falsy arguments is now allowed
     function testTakeNoFunction(next) {
-        // utils.consoleWrite("semTake with not a function");
-        assert.throws(function() {
-            semID.semTake('bla');
-        });
-        assert.throws(function() {
-            semID.semTake({
+        var semID = semLib.semCreate();
+        semID.semTake('bla');
+        semID.semTake({
                 onTake: 'bla'
-            });
         });
+        semID.semGive();
+        semID.semGive();
         next();
     }
 
@@ -130,7 +125,7 @@ function testTake(assert) {
         assert.strictEqual(timeOuted, false);
     }
 
-    function assertChanged(semID, ms, hasFired, callback) {
+    function assertExpectedAfterMs(semID, ms, expected, callback) {
         var timeFunc;
         if (ms === 0) {
             timeFunc = setImmediate;
@@ -139,10 +134,10 @@ function testTake(assert) {
         }
 
         timeFunc(function() {
-            if (hasFired) {
+            if (expected) {
                 assert.strictEqual(fired, true);
                 assert.strictEqual(timeOuted, false);
-            } else if (hasFired === null) {
+            } else if (expected === null) {
                 assert.strictEqual(fired, false);
                 assert.strictEqual(timeOuted, false);
             } else {
@@ -158,6 +153,7 @@ function testTake(assert) {
 
     }
 
+    // test callback style
     function testTakeCallback(next) {
         reload();
         var semID = semLib.semCreate();
@@ -166,13 +162,14 @@ function testTake(assert) {
         setTimeout(function() {
             assertStillWaiting();
             semID.semGive();
-            assertChanged(semID, ms, true, function() {
+            assertExpectedAfterMs(semID, ms, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 next();
             });
         }, ms);
     }
 
+    // test hash style
     function testTakeSettings1(next) {
         reload();
         var semID = semLib.semCreate();
@@ -183,7 +180,7 @@ function testTake(assert) {
         setTimeout(function() {
             assertStillWaiting();
             semID.semGive();
-            assertChanged(semID, 0, true, function() {
+            assertExpectedAfterMs(semID, 0, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 next();
             });
@@ -201,7 +198,7 @@ function testTake(assert) {
         setTimeout(function() {
             assertStillWaiting();
             semID.semGive();
-            assertChanged(semID, 0, true, function() {
+            assertExpectedAfterMs(semID, 0, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 next();
             });
@@ -220,7 +217,7 @@ function testTake(assert) {
         setTimeout(function() {
             assertStillWaiting();
             semID.semGive(2);
-            assertChanged(semID, 0, true, function() {
+            assertExpectedAfterMs(semID, 0, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 next();
             });
@@ -237,7 +234,7 @@ function testTake(assert) {
             onTake: shoot,
             timeOut: ms / 2
         });
-        assertChanged(semID, ms, null, function() {
+        assertExpectedAfterMs(semID, ms, null, function() {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             next();
         });
@@ -255,7 +252,7 @@ function testTake(assert) {
         setTimeout(function() {
             assertStillWaiting();
             semID.semGive();
-            assertChanged(semID, 0, true, function() {
+            assertExpectedAfterMs(semID, 0, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 next();
             });
@@ -273,14 +270,14 @@ function testTake(assert) {
             timeOut: ms / 2,
             onTimeOut: run
         });
-        assertChanged(semID, ms, false, function() {
+        assertExpectedAfterMs(semID, ms, false, function() {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             next();
         });
     }
 
     // If timeout occurs before enough semGive and timeout func is given, 
-    // take must failed and timeout func must be done
+    // take must failed and timeout func must be called
     function testTakeSettings7(next) {
         reload();
         var semID = semLib.semCreate(3);
@@ -292,7 +289,7 @@ function testTake(assert) {
             onTimeOut: run
         });
         semID.semGive(2);
-        assertChanged(semID, ms, false, function() {
+        assertExpectedAfterMs(semID, ms, false, function() {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             next();
         });
@@ -312,7 +309,7 @@ function testTake(assert) {
             onTimeOut: run
         });
         semID.semGive(2);
-        assertChanged(semID, 0, true, function() {
+        assertExpectedAfterMs(semID, 0, true, function() {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             next();
         });
@@ -368,28 +365,24 @@ function testTake(assert) {
         semID.semTake({
             priority: 1,
             onTake: function() {
-                // utils.consoleWrite("one");
                 one = true;
             }
         });
         semID.semTake({
             priority: 2,
             onTake: function() {
-                // utils.consoleWrite("two");
                 two = true;
             }
         });
         semID.semTake({
             priority: 3,
             onTake: function() {
-                // utils.consoleWrite("three");
                 three = true;
             }
         });
         semID.semTake({
             priority: 1,
             onTake: function() {
-                // utils.consoleWrite("four");
                 four = true;
             }
         });
@@ -401,6 +394,8 @@ function testTake(assert) {
             assert.strictEqual(four, false);
             assert.strictEqual(five, false);
             semID.semGive();
+
+            // Higher priority mus take first, even if asked last
             setImmediate(function() {
                 assert.strictEqual(one, true);
                 assert.strictEqual(two, false);
@@ -410,7 +405,6 @@ function testTake(assert) {
                 semID.semTake({
                     priority: 1,
                     onTake: function() {
-                        // utils.consoleWrite("five");
                         five = true;
                     }
                 });
@@ -464,12 +458,10 @@ function testFlush(assert) {
     var semID = semLib.semCreate();
 
     function shoot() {
-        // utils.consoleWrite("fired");
         fired++;
     }
 
     function run() {
-        // utils.consoleWrite("timeOuted");
         timeOuted++;
     }
 
