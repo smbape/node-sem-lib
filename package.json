@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "Semaphore library for node",
   "main": "./lib/sem-lib.js",
-  "dependencies": {},
+  "dependencies": {
+    "js-sorted-set": "^0.1.0"
+  },
   "devDependencies": {
     "async": "*",
-    "collections": "*",
     "nodeunit": "*"
   },
   "scripts": {

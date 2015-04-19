@@ -1,18 +1,9 @@
 var semLib = require("../");
 var async = require('async');
 
-function isEmpty(map) {
-    for (var key in map) {
-        if (map.hasOwnProperty(key)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 var ms = Math.pow(2, 4);
 
-module.exports = {
+var testSuite = module.exports = {
     testConstructor: testConstructor,
     testGive: testGive,
     testFlush: testFlush,
@@ -38,9 +29,9 @@ function testConstructor(assert) {
 
 function _testConstructor(assert, capacity, full) {
     var semID = semLib.semCreate(capacity, full);
-    assert.ok(semID.hasOwnProperty('semGive'));
-    assert.ok(semID.hasOwnProperty('semTake'));
-    assert.ok(semID.hasOwnProperty('semFlush'));
+    assert.ok('function' === typeof semID.semGive);
+    assert.ok('function' === typeof semID.semTake);
+    assert.ok('function' === typeof semID.semFlush);
 
     capacity = (capacity >= 1) ? parseInt(capacity, 10) : 1;
     var counter = (full) ? capacity : 0;
@@ -503,12 +494,11 @@ function testFlush(assert) {
 if (!/\bnodeunit$/.test(process.argv[1])) {
     var reporter = require('nodeunit').reporters.default;
     reporter.run({
-        test: module.exports
+        test: testSuite
     });
 } else if (false) {
     // For debugging purpose
     var assert = require('assert');
-    var testSuite = module.exports;
     tests = [];
     for (prop in testSuite) {
         (function(fn) {
