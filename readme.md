@@ -37,14 +37,14 @@ semLib.semFlush(semID[, num = 1)
 var semLib = require("sem-lib");
 var semRessource = semLib.semCreate(1, true);
 
-semLib.semTake(semRessource, semRessource.capacity, function(){
+semRessource.semTake(function(){
 	...  // first exclusive access
-	semLib.semGive(semRessource, semRessource.capacity);
+	semLib.semGive();
 });
 
-semLib.semTake(semRessource, semRessource.capacity, function(){
+semLib.semTake(function(){
 	...  // second exclusive access
-	semLib.semGive(semRessource, semRessource.capacity);
+	semLib.semGive();
 });
 ```
 
@@ -53,34 +53,34 @@ semLib.semTake(semRessource, semRessource.capacity, function(){
 var semLib = require("sem-lib");
 var semID = semLib.semCreate(3);
 
-function AsyncTask1() {
+function AsyncTask1(semID) {
 	console.log("AsyncTask1");
+	semID.semGive();
 }
 
-function AsyncTask2() {
+function AsyncTask2(semID) {
 	console.log("AsyncTask2");
+	semID.semGive();
 }
 
-function AsyncTask3() {
+function AsyncTask3(semID) {
 	console.log("AsyncTask3");
+	semID.semGive();
 }
 
 setTimeout(function() {
-	AsyncTask1();
-	semLib.semGive(semID);
+	AsyncTask1(semID);
 }, 200);
 
 setTimeout(function() {
-	AsyncTask2();
-	semLib.semGive(semID);
+	AsyncTask2(semID);
 }, 100);
 
 setTimeout(function() {
-	AsyncTask3();
-	semLib.semGive(semID);
+	AsyncTask3(semID);
 }, 300);
 
-semLib.semTake(semID, 3, function(){
+semID.semTake(3, function(){
 	console.log("After all tasks");  //Executed after AsyncTask1, AsyncTask2 and AsyncTask3
 });
 ```
@@ -90,11 +90,11 @@ semLib.semTake(semID, 3, function(){
 var semLib = require("sem-lib");
 var semID = semLib.semCreate(1, true);
 var httpServer = require('http').createServer(function(req, res){
-	// Every request will be answered 5 seconds after the last answer
-	semLib.semTake(semID, function(){
+	// 5 Seconds minimum between reply of each request
+	semID.semTake(function(){
+		res.end("Hello");
 		setTimeout(function(){
-			res.end("Hello");
-			semLib.semGive(semID);
+			semID.semGive();
 		}, 5000);
 	});
 });
