@@ -7,7 +7,8 @@ var testSuite = module.exports = {
     testConstructor: testConstructor,
     testGive: testGive,
     testFlush: testFlush,
-    testTake: testTake
+    testTake: testTake,
+    testDestroy: testDestroy
 };
 
 function testConstructor(assert) {
@@ -104,7 +105,7 @@ function testTake(assert) {
         var semID = semLib.semCreate();
         semID.semTake('bla');
         semID.semTake({
-                onTake: 'bla'
+            onTake: 'bla'
         });
         semID.semGive();
         semID.semGive();
@@ -489,6 +490,65 @@ function testFlush(assert) {
             });
         }, ms);
     }, ms);
+}
+
+function testDestroy(assert) {
+    var ms = 10;
+
+    function testSafeDestroy(next) {
+        var semID = semLib.semCreate(),
+            taken = false;
+
+        semID.semTake({
+            timeOut: ms,
+            onTake: function() {
+                taken = true;
+            }
+        });
+
+        assert.strictEqual(semID.destroy(), true);
+        setTimeout(function() {
+            assert.strictEqual(semID.semGive(), true);
+            assert.strictEqual(semID.semTake(), false);
+            setTimeout(function() {
+                assert.strictEqual(taken, true);
+                assert.strictEqual(semID.hasInWaitingTask(), false);
+                assert.strictEqual(semID.isAlive(), false);
+                next();
+            }, ms);
+        }, ms / 2);
+    }
+
+    function testUnsafeDestroy(next) {
+        var semID = semLib.semCreate(),
+            taken = false;
+
+        semID.semTake({
+            timeOut: ms,
+            onTake: function() {
+                taken = true;
+            }
+        });
+
+        assert.strictEqual(semID.destroy(false), true);
+        setTimeout(function() {
+            assert.strictEqual(semID.semGive(), false);
+            assert.strictEqual(semID.semTake(), false);
+            assert.strictEqual(semID.semFlush(), false);
+            setTimeout(function() {
+                assert.strictEqual(taken, false);
+                assert.strictEqual(semID.destroyed, true);
+                assert.strictEqual(semID.hasInWaitingTask(), false);
+                assert.strictEqual(semID.isAlive(), false);
+                next();
+            }, ms);
+        }, ms / 2);
+    }
+
+    async.series([
+        testSafeDestroy,
+        testUnsafeDestroy
+    ], assert.done);
 }
 
 if (!/\bnodeunit$/.test(process.argv[1])) {
