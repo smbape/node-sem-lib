@@ -545,6 +545,8 @@ function testDestroy(assert) {
         }, ms / 2);
     }
 
+    // TODO: Add destroy test with no tasks waiting
+
     async.series([
         testSafeDestroy,
         testUnsafeDestroy
