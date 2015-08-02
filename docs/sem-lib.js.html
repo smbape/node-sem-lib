@@ -1,4 +1,32 @@
-var util = require("util"),
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sem-lib.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sem-lib.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var util = require("util"),
     events = require("events");
 
 var SortedSet = require("js-sorted-set");
@@ -17,29 +45,29 @@ SortedSet.RedBlackTreeStrategy.prototype.get = function(value) {
         cmp = comparator(value, node.value);
         if (cmp === 0) {
             break;
-        } else if (cmp < 0) {
+        } else if (cmp &lt; 0) {
             node = node.left;
         } else {
             node = node.right;
         }
     }
-    return node !== null && node.value;
+    return node !== null &amp;&amp; node.value;
 };
 
 var utils = {
     // From jQuery 1.11
     isNumeric: function(obj) {
-        return !Array.isArray(obj) && (obj - parseFloat(obj) + 1) >= 0;
+        return !Array.isArray(obj) &amp;&amp; (obj - parseFloat(obj) + 1) >= 0;
     },
     isObject: function(obj) {
-        return typeof obj === 'object' && obj !== null;
+        return typeof obj === 'object' &amp;&amp; obj !== null;
     }
 };
 
 var id = 0;
 
 /**
- * Value of parsed interger or default value if not a number or < 0
+ * Value of parsed interger or default value if not a number or &lt; 0
  * @param  {Any} num value to parse
  * @param  {Interger} _default default value
  * @return {Interger} parsing result
@@ -50,7 +78,7 @@ function positiveIntegerValueOf(num, _default) {
     } else {
         return _default;
     }
-    if (num < 0) {
+    if (num &lt; 0) {
         return _default;
     }
 
@@ -69,7 +97,7 @@ function Semaphore(capacity, isFull, priority) {
 
     if (utils.isNumeric(capacity)) {
         capacity = parseInt(capacity, 10);
-        if (capacity <= 0) {
+        if (capacity &lt;= 0) {
             capacity = Number.POSITIVE_INFINITY;
         }
     } else if (capacity !== Number.POSITIVE_INFINITY) {
@@ -80,7 +108,7 @@ function Semaphore(capacity, isFull, priority) {
 
     var queue = new SortedSet({
         comparator: function(a, b) {
-            return a.priority > b.priority ? 1 : a.priority < b.priority ? -1 : 0;
+            return a.priority > b.priority ? 1 : a.priority &lt; b.priority ? -1 : 0;
         }
     });
 
@@ -128,7 +156,7 @@ Semaphore.prototype.semGive = function semGive(num) {
     }
 
     num = positiveIntegerValueOf(num, 1);
-    if (num < 1) {
+    if (num &lt; 1) {
         num = 1;
     }
     this._numTokens += num;
@@ -160,19 +188,18 @@ Semaphore.prototype.semFlush = function semFlush() {
 
 /**
  * Wait for Semaphore availability before calling onTake callback
- * @example
- * semTake(Function[, takeInstance]);
- * semTake(Settings[, takeInstance]);
+ * semTake Function[, takeInstance]
+ * semTake Setting[, takeInstance]
  *
  * @param {Object} settings settings with the following properties:
- * <ul>
- * <li>{Function} <b><em>onTake</em></b></li>: called on successful take
- * <li>{Integer} <b><em>num</em></b></li>(optional, default = 1): Number of tokens to take before calling onTake callback
- * <li>{Integer} <b><em>priority</em></b></li>(optional): task priority, smaller is higher priority
- * <li>{Number} <b><em>timeOut</em></b></li>(optional): milliseconds to wait before timeOut. If !(settings['timeOut'] > 0), waiting will last forever
- * <li>{Function} <b><em>onTimeOut</em></b></li>(optional): called if timeOut occurs
- * </ul>
- * @return {Object|false} item item.addCounter(n = 1) => wait for n more tokens
+ * &lt;ul>
+ * &lt;li>{Function} &lt;b>&lt;em>onTake&lt;/em>&lt;/b>&lt;/li>: called on successful take
+ * &lt;li>{Integer} &lt;b>&lt;em>num&lt;/em>&lt;/b>&lt;/li>(optional, default = 1): Number of tokens to take before calling onTake callback
+ * &lt;li>{Integer} &lt;b>&lt;em>priority&lt;/em>&lt;/b>&lt;/li>(optional): task priority, smaller is higher priority
+ * &lt;li>{Number} &lt;b>&lt;em>timeOut&lt;/em>&lt;/b>&lt;/li>(optional): milliseconds to wait before timeOut. If !(settings['timeOut'] > 0), waiting will last forever
+ * &lt;li>{Function} &lt;b>&lt;em>onTimeOut&lt;/em>&lt;/b>&lt;/li>(optional): called if timeOut occurs
+ * &lt;/ul>
+ * @return {Object|false} item item.addCounter(n = 1) => wait for n more token
  */
 Semaphore.prototype.semTake = function semTake(settings, result) {
     var self = this,
@@ -217,7 +244,7 @@ Semaphore.prototype.semTake = function semTake(settings, result) {
     }
     group.stack.add(item);
     item.group = group;
-    if (utils.isNumeric(timeOut) && timeOut > 0) {
+    if (utils.isNumeric(timeOut) &amp;&amp; timeOut > 0) {
         _removeItem = self._removeItem;
         item.timer = setTimeout(function() {
             _removeItem(item);
@@ -305,7 +332,7 @@ Semaphore.prototype._destroy = function() {
     this._destroyWaiting = false;
 
     // for loop to avoid infinite loop with while
-    for (var i = 0, _len = this._queue.length; i < _len; i++) {
+    for (var i = 0, _len = this._queue.length; i &lt; _len; i++) {
         var group = this._queue.beginIterator().value();
         var item = group.stack.beginIterator().value();
 
@@ -352,7 +379,7 @@ Semaphore.prototype.isAlive = function isAlive() {
 };
 
 Semaphore.prototype.hasInWaitingTask = function hasInWaitingTask() {
-    return this.hasOwnProperty('queue') && this._hasInWaitingTask();
+    return this.hasOwnProperty('queue') &amp;&amp; this._hasInWaitingTask();
 };
 
 Semaphore.prototype._hasInWaitingTask = function _hasInWaitingTask() {
@@ -392,7 +419,7 @@ function _addGroup(item) {
 
     var stack = new SortedSet({
         comparator: function(a, b) {
-            return a.id > b.id ? 1 : a.id < b.id ? -1 : 0;
+            return a.id > b.id ? 1 : a.id &lt; b.id ? -1 : 0;
         }
     });
 
@@ -471,4 +498,26 @@ function semCreateWithoutWrapping() {
 exports.semCreate = semCreateWithoutWrapping;
 
 // Allow customization/Patch fix from outside
-exports.Semaphore = Semaphore;
+exports.Semaphore = Semaphore;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Semaphore.html">Semaphore</a></li></ul><h3>Global</h3><ul><li><a href="global.html#positiveIntegerValueOf">positiveIntegerValueOf</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Sun Aug 02 2015 14:23:12 GMT+0200 (Paris, Madrid (heure d’été))
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
