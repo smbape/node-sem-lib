@@ -60,13 +60,21 @@ Wait for Semaphore availability before calling onTake callback
 
 **Parameters**
 
-**settings**: `Object`, settings with the following properties:<ul><li>{Function} <b><em>onTake</em></b></li>: called on successful take<li>{Integer} <b><em>num</em></b></li>(optional, default = 1): Number of tokens to take before calling onTake callback<li>{Integer} <b><em>priority</em></b></li>(optional): task priority, smaller is higher priority<li>{Number} <b><em>timeOut</em></b></li>(optional): milliseconds to wait before timeOut. If !(settings['timeOut'] > 0), waiting will last forever<li>{Function} <b><em>onTimeOut</em></b></li>(optional): called if timeOut occurs</ul>
+**settings**: `Object`, settings with the following properties:
+<ul>
+<li>{Function} <b><em>onTake</em></b></li>: called on successful take
+<li>{Integer} <b><em>num</em></b></li>(optional, default = 1): Number of tokens to take before calling onTake callback
+<li>{Integer} <b><em>priority</em></b></li>(optional): task priority, smaller is higher priority
+<li>{Number} <b><em>timeOut</em></b></li>(optional): milliseconds to wait before timeOut. If !(settings['timeOut'] > 0), waiting will last forever
+<li>{Function} <b><em>onTimeOut</em></b></li>(optional): called if timeOut occurs
+</ul>
 
 **Returns**: `Object | false`, item item.addCounter(n = 1) => wait for n more tokens
 
 **Example**:
 ```js
-semTake(Function[, takeInstance]);semTake(Settings[, takeInstance]);
+semTake(Function[, takeInstance]);
+semTake(Settings[, takeInstance]);
 ```
 
 ### Semaphore.destroy(safe) 
