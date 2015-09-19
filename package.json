@@ -11,7 +11,7 @@
     "nodeunit": "^0.9.1"
   },
   "scripts": {
-    "test": "node ./test/sem-lib.test.js"
+    "test": "node ./test/test.js"
   },
   "readmeFilename": "readme.md"
 }
