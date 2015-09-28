@@ -12,6 +12,5 @@
   },
   "scripts": {
     "test": "node ./test/test.js"
-  },
-  "readmeFilename": "readme.md"
+  }
 }
