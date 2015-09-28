@@ -1,6 +1,6 @@
 sem-lib
 =======
-
+A semaphore library for nodejs
   - Limit simultaneous access to resources
   - Synchronize multiple tasks
 
