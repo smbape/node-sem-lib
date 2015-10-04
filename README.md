@@ -166,15 +166,11 @@ Destroy all inwaiting tasks
 **safe**: `Boolean`, if true, wait for all inwaiting tasks to be performed, else, destroy with no warn
 
 
-
-
-* * *
-
 License
 -------
 The MIT License (MIT)
 
-Copyright (c) 2014-2015 Stéphane MBAPE
+Copyright (c) 2014-2015 Stéphane MBAPE (http://smbape.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,16 +1,33 @@
 {
   "name": "sem-lib",
   "version": "1.0.0",
-  "description": "Semaphore library for node",
-  "main": "./lib/sem-lib.js",
+  "description": "A semaphore library for nodejs",
+  "main": "lib/sem-lib.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smbape/node-sem-lib"
+  },
+  "keywords": [
+    "semaphore"
+  ],
+  "author": "Stéphane MBAPE",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smbape/node-sem-lib/issues"
+  },
+  "homepage": "https://github.com/smbape/node-sem-lib",
   "dependencies": {
     "js-sorted-set": "^0.1.0"
   },
   "devDependencies": {
     "async": "^1.3.0",
     "nodeunit": "^0.9.1"
-  },
-  "scripts": {
-    "test": "node ./test/test.js"
   }
 }
