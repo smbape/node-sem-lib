@@ -1,9 +1,10 @@
-var semLib = require("../");
-var async = require('async');
+const semLib = require("../");
+const async = require("async");
+const hasProp = Object.hasOwnProperty;
 
-var ms = Math.pow(2, 4);
+const ms = Math.pow(2, 4);
 
-var testSuite = module.exports = {
+const testSuite = module.exports = {
     testConstructor: testConstructor,
     testGive: testGive,
     testFlush: testFlush,
@@ -12,30 +13,30 @@ var testSuite = module.exports = {
 };
 
 function testConstructor(assert) {
-    assert.ok(semLib.hasOwnProperty('semCreate'));
+    assert.ok(hasProp.call(semLib, "semCreate"));
 
     _testConstructor(assert);
     _testConstructor(assert, null);
-    _testConstructor(assert, '');
-    _testConstructor(assert, 'bla');
+    _testConstructor(assert, "");
+    _testConstructor(assert, "bla");
     _testConstructor(assert, 1.3);
-    _testConstructor(assert, '1.3');
+    _testConstructor(assert, "1.3");
     _testConstructor(assert, 2, false);
-    _testConstructor(assert, '2', false);
+    _testConstructor(assert, "2", false);
     _testConstructor(assert, 3, true);
-    _testConstructor(assert, 3, 'false');
+    _testConstructor(assert, 3, "false");
 
     assert.done();
 }
 
 function _testConstructor(assert, capacity, full) {
-    var semID = semLib.semCreate(capacity, full);
-    assert.ok('function' === typeof semID.semGive);
-    assert.ok('function' === typeof semID.semTake);
-    assert.ok('function' === typeof semID.semFlush);
+    const semID = semLib.semCreate(capacity, full);
+    assert.ok("function" === typeof semID.semGive);
+    assert.ok("function" === typeof semID.semTake);
+    assert.ok("function" === typeof semID.semFlush);
 
-    capacity = (capacity >= 1) ? parseInt(capacity, 10) : 1;
-    var counter = (full) ? capacity : 0;
+    capacity = capacity >= 1 ? parseInt(capacity, 10) : 1;
+    const counter = full ? capacity : 0;
 
     assert.strictEqual(semID.getCapacity(), capacity);
     assert.strictEqual(semID.getNumTokens(), counter);
@@ -44,11 +45,11 @@ function _testConstructor(assert, capacity, full) {
 
 function testGive(assert) {
     _testGive(assert, null);
-    _testGive(assert, '');
-    _testGive(assert, 'bla');
-    _testGive(assert, '-1');
+    _testGive(assert, "");
+    _testGive(assert, "bla");
+    _testGive(assert, "-1");
     _testGive(assert, 1.3);
-    _testGive(assert, '1.3');
+    _testGive(assert, "1.3");
     _testGive(assert, -1);
     _testGive(assert, 0);
     _testGive(assert);
@@ -59,11 +60,11 @@ function testGive(assert) {
 }
 
 function _testGive(assert, capacity) {
-    capacity = (capacity >= 1) ? parseInt(capacity) : 1;
-    var semID = semLib.semCreate(capacity);
+    capacity = capacity >= 1 ? parseInt(capacity, 10) : 1;
+    const semID = semLib.semCreate(capacity);
 
     // Check that tokens increase until capacity is reach
-    for (var i = 0; i < capacity; i++) {
+    for (let i = 0; i < capacity; i++) {
         semID.semGive();
         assert.strictEqual(semID.getNumTokens(), i + 1);
     }
@@ -76,7 +77,7 @@ function _testGive(assert, capacity) {
 }
 
 function testTake(assert) {
-    var timeOuted = false,
+    let timeOuted = false,
         fired = false;
 
     function shoot() {
@@ -94,7 +95,7 @@ function testTake(assert) {
 
     // Take without arguments is now allowed
     function testTakeNoArguments(next) {
-        var semID = semLib.semCreate();
+        const semID = semLib.semCreate();
         semID.semTake();
         semID.semGive();
         next();
@@ -102,10 +103,10 @@ function testTake(assert) {
 
     // Take with falsy arguments is now allowed
     function testTakeNoFunction(next) {
-        var semID = semLib.semCreate();
-        semID.semTake('bla');
+        const semID = semLib.semCreate();
+        semID.semTake("bla");
         semID.semTake({
-            onTake: 'bla'
+            onTake: "bla"
         });
         semID.semGive();
         semID.semGive();
@@ -118,7 +119,7 @@ function testTake(assert) {
     }
 
     function assertExpectedAfterMs(semID, ms, expected, callback) {
-        var timeFunc;
+        let timeFunc;
         if (ms === 0) {
             timeFunc = setImmediate;
         } else {
@@ -138,7 +139,7 @@ function testTake(assert) {
             }
             assert.strictEqual(semID.getNumTokens(), 0);
             assert.strictEqual(semID.hasInWaitingTask(), false);
-            if (typeof callback == 'function') {
+            if (typeof callback === "function") {
                 callback();
             }
         }, ms);
@@ -148,7 +149,7 @@ function testTake(assert) {
     // test callback style
     function testTakeCallback(next) {
         reload();
-        var semID = semLib.semCreate();
+        const semID = semLib.semCreate();
         semID.semTake(shoot);
 
         setTimeout(function() {
@@ -164,7 +165,7 @@ function testTake(assert) {
     // test hash style
     function testTakeSettings1(next) {
         reload();
-        var semID = semLib.semCreate();
+        const semID = semLib.semCreate();
         semID.semTake({
             onTake: shoot
         });
@@ -182,7 +183,7 @@ function testTake(assert) {
     //If counter is empty, semTake must wait until there is a semGive
     function testTakeSettings2(next) {
         reload();
-        var semID = semLib.semCreate();
+        const semID = semLib.semCreate();
         semID.semTake({
             num: 1,
             onTake: shoot
@@ -200,7 +201,7 @@ function testTake(assert) {
     //If semGive occurs before timeout, semTake must succed
     function testTakeSettings3(next) {
         reload();
-        var semID = semLib.semCreate(3);
+        const semID = semLib.semCreate(3);
         semID.semTake({
             num: 2,
             onTake: shoot,
@@ -219,7 +220,7 @@ function testTake(assert) {
     //If no semGive occurs before timeout and no timeout func is given, take must failed
     function testTakeSettings4(next) {
         reload();
-        var semID = semLib.semCreate(3);
+        const semID = semLib.semCreate(3);
         semID.semTake({
             num: 3,
             priority: 5,
@@ -235,7 +236,7 @@ function testTake(assert) {
     //If semGive occurs before timeout, semTake must succed, even if timeout func is set
     function testTakeSettings5(next) {
         reload();
-        var semID = semLib.semCreate(3);
+        const semID = semLib.semCreate(3);
         semID.semTake({
             onTake: shoot,
             onTimeOut: run,
@@ -255,7 +256,7 @@ function testTake(assert) {
     // take must failed and timeout func must be called
     function testTakeSettings6(next) {
         reload();
-        var semID = semLib.semCreate(3);
+        const semID = semLib.semCreate(3);
         semID.semTake({
             num: 3,
             onTake: shoot,
@@ -272,7 +273,7 @@ function testTake(assert) {
     // take must failed and timeout func must be called
     function testTakeSettings7(next) {
         reload();
-        var semID = semLib.semCreate(3);
+        const semID = semLib.semCreate(3);
         semID.semTake({
             num: 3,
             priority: 5,
@@ -291,7 +292,7 @@ function testTake(assert) {
     // take must succed
     function testTakeSettings8(next) {
         reload();
-        var semID = semLib.semCreate(3);
+        const semID = semLib.semCreate(3);
         semID.semGive(1);
         semID.semTake({
             num: 3,
@@ -309,8 +310,8 @@ function testTake(assert) {
 
     // Testing FIFO
     function testFIFO(next) {
-        var semID = semLib.semCreate();
-        var one = false,
+        const semID = semLib.semCreate();
+        let one = false,
             two = false,
             three = false;
         semID.semTake({
@@ -348,8 +349,8 @@ function testTake(assert) {
 
     // Testing priority
     function testPriority(next) {
-        var semID = semLib.semCreate();
-        var one = false,
+        const semID = semLib.semCreate();
+        let one = false,
             two = false,
             three = false,
             four = false,
@@ -426,7 +427,7 @@ function testTake(assert) {
         }, ms);
     }
 
-    var testSuite = [
+    const testSuite = [
         testTakeNoArguments,
         testTakeNoFunction,
         testTakeCallback,
@@ -445,9 +446,9 @@ function testTake(assert) {
 }
 
 function testFlush(assert) {
-    var fired = 0,
-        timeOuted = 0;
-    var semID = semLib.semCreate();
+    let fired = 0;
+    let timeOuted = 0;
+    const semID = semLib.semCreate();
 
     function shoot() {
         fired++;
@@ -485,6 +486,7 @@ function testFlush(assert) {
             semID.semFlush();
             setImmediate(function() {
                 assert.strictEqual(fired, 4);
+                assert.strictEqual(timeOuted, 0);
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 assert.done();
             });
@@ -493,11 +495,11 @@ function testFlush(assert) {
 }
 
 function testDestroy(assert) {
-    var ms = 10;
+    const ms = 10;
 
     function testSafeDestroy(next) {
-        var semID = semLib.semCreate(),
-            taken = false;
+        const semID = semLib.semCreate();
+        let taken = false;
 
         semID.semTake({
             timeOut: ms,
@@ -520,8 +522,8 @@ function testDestroy(assert) {
     }
 
     function testUnsafeDestroy(next) {
-        var semID = semLib.semCreate(),
-            taken = false;
+        const semID = semLib.semCreate();
+        let taken = false;
 
         semID.semTake({
             timeOut: ms,
@@ -554,23 +556,8 @@ function testDestroy(assert) {
 }
 
 if (!/\bnodeunit$/.test(process.argv[1])) {
-    var reporter = require('nodeunit').reporters.default;
+    const reporter = require("nodeunit").reporters.default;
     reporter.run({
         test: testSuite
-    });
-} else if (false) {
-    // For debugging purpose
-    var assert = require('assert');
-    tests = [];
-    for (prop in testSuite) {
-        (function(fn) {
-            tests.push(function(next) {
-                assert.done = next;
-                fn(assert);
-            });
-        })(testSuite[prop]);
-    }
-    async.series(tests, function() {
-        console.log('done');
     });
 }
