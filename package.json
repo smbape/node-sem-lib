@@ -9,6 +9,8 @@
   },
   "scripts": {
     "lint": "eslint \"lib/*.js\" \"scripts/*.js\" \"test/*.js\" cli.js",
+    "prepublish": "node cli.js distribute",
+    "version": "node cli.js version",
     "test": "node ./test/test.js"
   },
   "repository": {
