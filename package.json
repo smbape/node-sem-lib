@@ -2,7 +2,7 @@
   "name": "sem-lib",
   "version": "2.0.0",
   "description": "A semaphore library for nodejs",
-  "main": "dist/sem-lib.js",
+  "main": "index.js",
   "directories": {
     "doc": "docs",
     "test": "test"
@@ -11,7 +11,7 @@
     "lint": "eslint \"lib/*.js\" \"scripts/*.js\" \"test/*.js\" cli.js",
     "prepublish": "node cli.js distribute",
     "version": "node cli.js version",
-    "test": "node ./test/test.js"
+    "test": "_mocha --full-trace --require test/common.js test/"
   },
   "repository": {
     "type": "git",
@@ -55,6 +55,7 @@
     "babel-plugin-transform-es2015-template-literals": "^6.22.0",
     "babel-plugin-transform-es2015-unicode-regex": "^6.24.1",
     "babel-plugin-transform-regenerator": "^6.24.1",
+    "chai": "^4.1.0",
     "coffee-loader": "^0.7.3",
     "coffee-script": "^1.12.7",
     "eslint": "^4.3.0",
@@ -76,7 +77,7 @@
     "karma-webpack": "^2.0.4",
     "loader-utils": "^1.1.0",
     "lodash": "^4.17.4",
-    "nodeunit": "^0.9.1",
+    "mocha": "^3.5.0",
     "uglify-js": "^3.0.26",
     "webpack": "^3.4.1"
   }
