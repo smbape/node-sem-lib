@@ -141,7 +141,7 @@ SortedSet.prototype.get = function (value) {
 RedBlackTreeStrategy.prototype.get = function (value) {
     var comparator = this.comparator;
     var node = this.root;
-    var cmp = undefined;
+    var cmp = void 0;
 
     while (node !== null) {
         cmp = comparator(value, node.value);
@@ -543,8 +543,12 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
     var items = new Array(len);
     var doneCalled = false;
     var canceled = false;
+    var taken = 0;
+    var errors = new Array(len);
+    var hasError = false;
 
     var onTake = function onTake(collection, index) {
+        taken++;
         items[index] = null;
         var key = isArray ? index : keys[index];
 
@@ -554,27 +558,47 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
                 throw new Error("callback already called");
             }
             called = true;
+            items[index] = null;
 
             semID.semGive();
+            taken--;
 
-            if (doneCalled || canceled) {
+            if (doneCalled) {
                 return;
             }
 
-            if (err || ++count === len) {
+            if (canceled && !err) {
+                err = new Error("canceled");
+                err.code = "CANCELED";
+            }
+
+            if (err) {
+                if (!hasError) {
+                    hasError = true;
+                    if (!canceled) {
+                        cancel();
+                    }
+                }
+                errors[index] = err;
+            }
+
+            if (++count === len || hasError && taken === 0) {
                 doneCalled = true;
-                done(err);
+                if (canceled) {
+                    errors.code = "CANCELED";
+                }
+                done(hasError ? errors : null);
             }
         };
 
-        var cancel = typeof iteratee === "function" ? iteratee(collection[key], key, next) : collection[key](next);
+        var icancel = typeof iteratee === "function" ? iteratee(collection[key], key, next) : collection[key](next);
 
-        if (typeof cancel === "function") {
+        if (typeof icancel === "function") {
             items[index] = {
-                cancel: cancel
+                cancel: icancel
             };
-        } else if (cancel !== null && typeof cancel === "object" && typeof cancel.cancel === "function") {
-            items[index] = cancel;
+        } else if (icancel !== null && typeof icancel === "object" && typeof icancel.cancel === "function") {
+            items[index] = icancel;
         }
     };
 
@@ -592,7 +616,11 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
         } while (index !== len - 1);
     };
 
-    var cancel = function cancel() {
+    function cancel() {
+        if (canceled) {
+            return;
+        }
+
         canceled = true;
         for (var i = 0, _len2 = items.length; i < _len2; i++) {
             if (items[i] !== null && typeof items[i] === "object" && typeof items[i].cancel === "function") {
@@ -600,10 +628,9 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
                 items[i] = null;
             }
         }
-    };
+    }
 
     var setPriority = function setPriority(priority) {
-        canceled = true;
         for (var i = 0, _len3 = items.length; i < _len3; i++) {
             if (items[i] !== null && typeof items[i] === "object" && typeof items[i].setPriority === "function") {
                 items[i].setPriority(priority);
