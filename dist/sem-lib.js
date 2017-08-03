@@ -141,7 +141,7 @@ SortedSet.prototype.get = function (value) {
 RedBlackTreeStrategy.prototype.get = function (value) {
     var comparator = this.comparator;
     var node = this.root;
-    var cmp = void 0;
+    var cmp = undefined;
 
     while (node !== null) {
         cmp = comparator(value, node.value);
@@ -214,7 +214,8 @@ function Semaphore(capacity, isFull, priority) {
     this._capacity = capacity;
     this._queue = queue;
     this._numTokens = isFull ? capacity : 0;
-    this.priority = isNumeric(priority) ? parseInt(priority, 10) : 15; // eslint-disable-line no-magic-numbers
+    // eslint-disable-next-line no-magic-numbers
+    this.priority = isNumeric(priority) ? parseInt(priority, 10) : 15;
 }
 
 /**
@@ -303,11 +304,7 @@ Semaphore.prototype.semFlush = function semFlush() {
 Semaphore.prototype.semTake = function semTake(settings, result) {
     var _this2 = this;
 
-    var task = void 0,
-        timeOut = void 0,
-        onTimeOut = void 0,
-        num = void 0,
-        priority = void 0;
+    var task, timeOut, onTimeOut, num, priority;
 
     if (this.destroyed) {
         return false;
@@ -576,6 +573,8 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
             items[index] = {
                 cancel: cancel
             };
+        } else if (cancel !== null && typeof cancel === "object" && typeof cancel.cancel === "function") {
+            items[index] = cancel;
         }
     };
 
@@ -680,8 +679,8 @@ Semaphore.prototype._removeItem = function _removeItem(item) {
     }
 
     // Remove properties to allow garbage collector
+    // eslint-disable-next-line guard-for-in
     for (var property in item) {
-        // eslint-disable-line guard-for-in
         delete item[property];
     }
 };
