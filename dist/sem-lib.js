@@ -82,26 +82,6 @@ var RedBlackTreeStrategy = __webpack_require__(3);
 
 var hasProp = Object.hasOwnProperty;
 
-var setImmediateTick = function () {
-    if (typeof global === "object" && typeof global.setImmediate === "function") {
-        return global.setImmediate;
-    }
-
-    return function (fn) {
-        return setTimeout(fn, 1);
-    };
-}();
-
-var clearImmediateTick = function () {
-    if (typeof global === "object" && typeof global.clearImmediate === "function") {
-        return global.clearImmediate;
-    }
-
-    return function (id) {
-        clearTimeout(id);
-    };
-}();
-
 var inherits = function inherits(child, parent) {
     for (var key in parent) {
         if (hasProp.call(parent, key)) {
@@ -217,6 +197,26 @@ function Semaphore(capacity, isFull, priority) {
     // eslint-disable-next-line no-magic-numbers
     this.priority = isNumeric(priority) ? parseInt(priority, 10) : 15;
 }
+
+Semaphore.prototype.setImmediateTick = function () {
+    if (typeof global === "object" && typeof global.setImmediate === "function") {
+        return global.setImmediate;
+    }
+
+    return function (fn) {
+        return setTimeout(fn, 1);
+    };
+}();
+
+Semaphore.prototype.clearImmediateTick = function () {
+    if (typeof global === "object" && typeof global.clearImmediate === "function") {
+        return global.clearImmediate;
+    }
+
+    return function (id) {
+        clearTimeout(id);
+    };
+}();
 
 /**
  * Return number of available tokens
@@ -428,10 +428,6 @@ Semaphore.prototype._semTake = function _semTake() {
     }
     item.num = 0;
 
-    if (item.timer) {
-        clearTimeout(item.timer);
-    }
-
     var task = item.task;
     var taken = item.taken;
     this._removeItem(item);
@@ -439,11 +435,13 @@ Semaphore.prototype._semTake = function _semTake() {
     // Non blocking call of callback
     // A way to loop through in waiting tasks without blocking
     // semaphore the process until done
-    var timerID = setImmediateTick(task);
-    item.semaphore = this;
+    var timerID = this.setImmediateTick(function () {
+        item.cancel = Function.prototype;
+        task();
+    });
     item.cancel = function () {
         if (timerID) {
-            clearImmediateTick(timerID);
+            _this3.clearImmediateTick(timerID);
             timerID = null;
             _this3.semGive(taken, true);
         }
@@ -472,10 +470,10 @@ Semaphore.prototype.destroy = function (safe, onDestroy) {
         return true;
     }
 
-    return this._destroy();
+    return this._destroy(safe);
 };
 
-Semaphore.prototype._destroy = function () {
+Semaphore.prototype._destroy = function (safe) {
     this._destroyWaiting = false;
 
     // for loop to avoid infinite loop with while
@@ -483,8 +481,8 @@ Semaphore.prototype._destroy = function () {
         var group = this._queue.beginIterator().value();
         var item = group.stack.beginIterator().value();
 
-        if (item.timer) {
-            clearTimeout(item.timer);
+        if (safe !== false) {
+            item.cancel();
         }
         this._removeItem(item);
     }
@@ -697,6 +695,10 @@ Semaphore.prototype._keepAlive = function _keepAlive() {
  *
  */
 Semaphore.prototype._removeItem = function _removeItem(item) {
+    if (item.timer) {
+        clearTimeout(item.timer);
+    }
+
     item.group.stack.remove(item);
     if (item.group.stack.length === 0) {
         // No more inWaiting for this priority group
@@ -708,7 +710,9 @@ Semaphore.prototype._removeItem = function _removeItem(item) {
     // Remove properties to allow garbage collector
     // eslint-disable-next-line guard-for-in
     for (var property in item) {
-        delete item[property];
+        if (property !== "id") {
+            delete item[property];
+        }
     }
 };
 
