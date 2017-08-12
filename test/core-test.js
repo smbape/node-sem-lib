@@ -95,6 +95,7 @@ describe("basic", () => {
         setTimeout(function() {
             assert.strictEqual(fired, 0);
 
+            assert.strictEqual(semID.hasInWaitingTask(), true);
             semID.semFlush();
             semID.semTake({
                 timeOut: ms * 2,
@@ -133,9 +134,10 @@ describe("take", () => {
         timeOuted = false;
     }
 
-    function assertStillWaiting() {
+    function assertStillWaiting(semID) {
         assert.strictEqual(fired, false);
         assert.strictEqual(timeOuted, false);
+        assert.strictEqual(semID.hasInWaitingTask(), true);
     }
 
     function assertExpectedAfterMs(semID, ms, expected, callback) {
@@ -188,7 +190,7 @@ describe("take", () => {
         semID.semTake(fire);
 
         setTimeout(function() {
-            assertStillWaiting();
+            assertStillWaiting(semID);
             semID.semGive();
             assertExpectedAfterMs(semID, ms, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
@@ -203,9 +205,10 @@ describe("take", () => {
         semID.semTake({
             onTake: fire
         });
+        assert.strictEqual(semID.hasInWaitingTask(), true);
 
         setTimeout(function() {
-            assertStillWaiting();
+            assertStillWaiting(semID);
             semID.semGive();
             assertExpectedAfterMs(semID, 0, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
@@ -222,7 +225,7 @@ describe("take", () => {
             onTake: fire
         });
         setTimeout(function() {
-            assertStillWaiting();
+            assertStillWaiting(semID);
             semID.semGive();
             assertExpectedAfterMs(semID, 0, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
@@ -240,7 +243,7 @@ describe("take", () => {
             timeOut: ms * 2
         });
         setTimeout(function() {
-            assertStillWaiting();
+            assertStillWaiting(semID);
             semID.semGive(2);
             assertExpectedAfterMs(semID, 0, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
@@ -273,7 +276,7 @@ describe("take", () => {
             timeOut: ms * 2
         });
         setTimeout(function() {
-            assertStillWaiting();
+            assertStillWaiting(semID);
             semID.semGive();
             assertExpectedAfterMs(semID, 0, true, function() {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
