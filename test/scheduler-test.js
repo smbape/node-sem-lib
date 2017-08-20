@@ -174,6 +174,7 @@ describe("schedule", function() {
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
         let waiting = 0;
+        let canceled = false;
 
         const item = semID.schedule([
             schedule(++count, 2 * ms),
@@ -182,7 +183,11 @@ describe("schedule", function() {
             schedule(++count, ms),
             schedule(++count, ms),
             schedule(++count, ms)
-        ]);
+        ], err => {
+            canceled = true;
+            expect(err).not.to.be.an("undefined");
+            assert.strictEqual(err.code, "CANCELED");
+        });
 
         const timerInit = new Date().getTime();
         assert.strictEqual(waiting, 0);
@@ -194,6 +199,7 @@ describe("schedule", function() {
         setTimeout(() => {
             const expected = {};
             assert.strictEqual(waiting, 0);
+            assert.strictEqual(canceled, true);
             assertSchedule(actual, expected);
             done();
         }, 3.2 * ms);
@@ -215,6 +221,7 @@ describe("schedule", function() {
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
         let waiting = 0;
+        let canceled = false;
 
         const item = semID.schedule([
             schedule(++count, 2 * ms),
@@ -223,7 +230,11 @@ describe("schedule", function() {
             schedule(++count, ms),
             schedule(++count, ms),
             schedule(++count, ms)
-        ]);
+        ], err => {
+            canceled = true;
+            expect(err).not.to.be.an("undefined");
+            assert.strictEqual(err.code, "CANCELED");
+        });
 
         const timerInit = new Date().getTime();
         assert.strictEqual(semID.getNumTokens(), 0);
@@ -236,6 +247,7 @@ describe("schedule", function() {
 
         setTimeout(() => {
             const expected = {};
+            assert.strictEqual(canceled, true);
             assertSchedule(actual, expected);
             done();
         }, 3.2 * ms);
@@ -292,12 +304,13 @@ describe("schedule", function() {
         }, ms / 2);
 
         setTimeout(() => {
-            const expected = {};
-            expected.t1 = [2, 3];
-            expected.t2 = [1, 8];
-            expected.t3 = [7, 9, 10];
-            expected.t4 = [11, 12, 4];
-            expected.t5 = [5, 6];
+            const expected = {
+                t1: [2, 3],
+                t2: [1, 8],
+                t3: [7, 9, 10],
+                t4: [11, 12, 4],
+                t5: [5, 6]
+            };
 
             assertSchedule(actual, expected);
             done();
