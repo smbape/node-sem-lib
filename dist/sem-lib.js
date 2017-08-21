@@ -339,7 +339,11 @@ Semaphore.prototype.semTake = function semTake(settings, result) {
         cancel: function cancel() {
             var taken = item.taken;
             _this2._removeItem(item);
-            _this2.semGive(taken, true);
+
+            // give on next tick to wait for all synchronous canceled to be done
+            _this2.setImmediateTick(function () {
+                _this2.semGive(taken, true);
+            });
         },
         setPriority: function setPriority(priority) {
             priority = toPositiveInt(priority, _this2.priority);
@@ -364,7 +368,12 @@ Semaphore.prototype.semTake = function semTake(settings, result) {
         item.timer = setTimeout(function () {
             var taken = item.taken;
             _this2._removeItem(item);
-            _this2.semGive(taken, true);
+
+            // give on next tick to wait for all synchronous canceled to be done
+            _this2.setImmediateTick(function () {
+                _this2.semGive(taken, true);
+            });
+
             if (typeof onTimeOut === "function") {
                 onTimeOut();
             }
@@ -443,7 +452,11 @@ Semaphore.prototype._semTake = function _semTake() {
         if (timerID) {
             _this3.clearImmediateTick(timerID);
             timerID = null;
-            _this3.semGive(taken, true);
+
+            // give on next tick to wait for all synchronous canceled to be done
+            _this3.setImmediateTick(function () {
+                _this3.semGive(taken, true);
+            });
         }
     };
 
@@ -589,6 +602,11 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
             }
         };
 
+        if (canceled) {
+            next();
+            return;
+        }
+
         var icancel = typeof iteratee === "function" ? iteratee(collection[key], key, next) : collection[key](next);
 
         if (typeof icancel === "function") {
@@ -601,10 +619,42 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
     };
 
     var iterate = function iterate(index) {
-        return semID.semTake({
+        var item = semID.semTake({
             priority: priority,
             onTake: onTake.bind(null, collection, index)
         });
+
+        var proxy = {
+            cancel: function cancel() {
+                item.cancel();
+                onTake(collection, index);
+            }
+        };
+
+        var _loop = function _loop(key) {
+            if (key === "cancel") {
+                return "continue";
+            }
+
+            Object.defineProperty(proxy, key, {
+                configurable: true,
+                enumerable: true,
+                get: function get() {
+                    return item[key];
+                },
+                set: function set(value) {
+                    return item[key] = value;
+                }
+            });
+        };
+
+        for (var key in item) {
+            var _ret = _loop(key);
+
+            if (_ret === "continue") continue;
+        }
+
+        return proxy;
     };
 
     var loop = function loop() {
