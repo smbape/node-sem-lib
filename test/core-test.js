@@ -346,6 +346,7 @@ describe("take", () => {
             }
         });
         semID.semTake({
+            num: 2,
             timeOut: ms / 2,
             onTake: function() {
                 two = true;
@@ -356,7 +357,7 @@ describe("take", () => {
                 three = true;
             }
         });
-        semID.semGive();
+        semID.semGive(2, true); // way of doing semGive() + semGive() with capacity of 1
         setTimeout(function() {
             assert.strictEqual(one, true);
             assert.strictEqual(two, false);

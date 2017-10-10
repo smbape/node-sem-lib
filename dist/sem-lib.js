@@ -340,10 +340,12 @@ Semaphore.prototype.semTake = function semTake(settings, result) {
             var taken = item.taken;
             _this2._removeItem(item);
 
-            // give on next tick to wait for all synchronous canceled to be done
-            _this2.setImmediateTick(function () {
-                _this2.semGive(taken, true);
-            });
+            if (taken !== 0) {
+                // give on next tick to wait for all synchronous canceled to be done
+                _this2.setImmediateTick(function () {
+                    _this2.semGive(taken, true);
+                });
+            }
         },
         setPriority: function setPriority(priority) {
             priority = toPositiveInt(priority, _this2.priority);
@@ -369,10 +371,12 @@ Semaphore.prototype.semTake = function semTake(settings, result) {
             var taken = item.taken;
             _this2._removeItem(item);
 
-            // give on next tick to wait for all synchronous canceled to be done
-            _this2.setImmediateTick(function () {
-                _this2.semGive(taken, true);
-            });
+            if (taken !== 0) {
+                // give on next tick to wait for all synchronous canceled to be done
+                _this2.setImmediateTick(function () {
+                    _this2.semGive(taken, true);
+                });
+            }
 
             if (typeof onTimeOut === "function") {
                 onTimeOut();
