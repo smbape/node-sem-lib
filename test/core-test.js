@@ -414,7 +414,7 @@ describe("take", () => {
             assert.strictEqual(five, false);
             semID.semGive();
 
-            // Higher priority mus take first, even if asked last
+            // Higher priority must take first, even if asked last
             setImmediate(function() {
                 assert.strictEqual(one, true);
                 assert.strictEqual(two, false);
