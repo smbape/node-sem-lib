@@ -442,8 +442,8 @@ Semaphore.prototype._semTake = function _semTake() {
             weakerIterator = this._queue.endIterator().previous();
             while (weakerIterator && item.num > this._numTokens) {
                 wearkeGroup = weakerIterator.value();
-                if (wearkeGroup === group) {
-                    // can only be unfair on tasks with lower priority
+                if (wearkeGroup === group || wearkeGroup.priority <= this.priority) {
+                    // can only be unfair on tasks with lower priority that semaphore default priority
                     break;
                 }
 

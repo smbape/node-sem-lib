@@ -13,7 +13,7 @@ const ptimeout = delay => {
     });
 };
 
-describe("changes", () => {
+describe("unfair", () => {
     it("should take token from lower priority", async () => {
         const capacity = 8;
         const priority = 15;
