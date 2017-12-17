@@ -77,7 +77,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var AbstractSortedSet = __webpack_require__(2);
+/* WEBPACK VAR INJECTION */(function(global) {var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var AbstractSortedSet = __webpack_require__(2);
 var RedBlackTreeStrategy = __webpack_require__(3);
 
 var hasProp = Object.hasOwnProperty;
@@ -304,7 +306,13 @@ Semaphore.prototype.semFlush = function semFlush() {
 Semaphore.prototype.semTake = function semTake(options, result) {
     var _this2 = this;
 
-    var task, timeOut, onTimeOut, num, priority, unfair;
+    var task = void 0,
+        timeOut = void 0,
+        onTimeOut = void 0,
+        num = void 0,
+        priority = void 0,
+        unfair = void 0,
+        validate = void 0;
 
     if (this.destroyed) {
         return false;
@@ -317,6 +325,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         timeOut = options.timeOut;
         onTimeOut = options.onTimeOut;
         unfair = options.unfair;
+        validate = options.validate;
     } else if (typeof options === "function") {
         task = options;
         options = {};
@@ -336,6 +345,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         num: num,
         onTimeOut: onTimeOut,
         unfair: unfair,
+        validate: validate,
         semaphore: this,
         taken: 0,
         cancel: function cancel() {
@@ -349,9 +359,9 @@ Semaphore.prototype.semTake = function semTake(options, result) {
                 });
             }
         },
-        setPriority: function setPriority(priority) {
-            priority = toPositiveInt(priority, _this2.priority);
-            if (priority === item.priority) {
+        setPriority: function setPriority(nextPriority) {
+            nextPriority = toPositiveInt(nextPriority, _this2.priority);
+            if (nextPriority === item.priority) {
                 return;
             }
 
@@ -361,7 +371,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
                 item.semaphore._queue.remove(item.group);
             }
 
-            item.priority = priority;
+            item.priority = nextPriority;
             _this2._addItemPriority(item);
         }
     };
@@ -387,14 +397,14 @@ Semaphore.prototype.semTake = function semTake(options, result) {
     }
 
     var res = {
-        addCounter: function addCounter(num) {
-            item.num += toPositiveInt(num, 1);
+        addCounter: function addCounter(nextNum) {
+            item.num += toPositiveInt(nextNum, 1);
         },
         cancel: function cancel() {
             item.cancel();
         },
-        setPriority: function setPriority(priority) {
-            item.setPriority(priority);
+        setPriority: function setPriority(nextPriority) {
+            item.setPriority(nextPriority);
         }
     };
 
@@ -406,6 +416,40 @@ Semaphore.prototype.semTake = function semTake(options, result) {
 
     this._semTake();
     return res;
+};
+
+Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
+    var groupIterator = void 0,
+        group = void 0,
+        itemIterator = void 0,
+        item = void 0;
+
+    groupIterator = this._queue.beginIterator();
+    group = groupIterator.value();
+
+    itemIterator = group.stack.beginIterator();
+    item = itemIterator.value();
+
+    // can this item be used?
+    // avoid giving item as context when calling validate
+    while (item && typeof item.validate === "function" && !(0, item.validate)(this)) {
+        item = null;
+
+        itemIterator = itemIterator.next();
+        if (itemIterator === null) {
+            groupIterator = groupIterator.next();
+            if (groupIterator === null) {
+                break;
+            }
+
+            group = groupIterator.value();
+            itemIterator = group.stack.beginIterator();
+        }
+
+        item = itemIterator.value();
+    }
+
+    return [group, item];
 };
 
 /**
@@ -426,10 +470,19 @@ Semaphore.prototype._semTake = function _semTake() {
         this._keepAlive();
     }
 
-    var group = this._queue.beginIterator().value();
-    var item = group.stack.beginIterator().value();
+    var _nextGroupItem2 = this._nextGroupItem(),
+        _nextGroupItem3 = _slicedToArray(_nextGroupItem2, 2),
+        group = _nextGroupItem3[0],
+        item = _nextGroupItem3[1];
 
-    var weakerIterator, wearkeGroup, weakerItemIterator, weakerItem;
+    if (item == null) {
+        return;
+    }
+
+    var weakerIterator = void 0,
+        wearkeGroup = void 0,
+        weakerItemIterator = void 0,
+        weakerItem = void 0;
 
     // if item is still waiting for tokens
     if (item.num > this._numTokens) {
@@ -603,10 +656,10 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
     var errors = new Array(len);
     var hasError = false;
 
-    var onTake = function onTake(collection, index) {
+    var onTake = function onTake(coll, i) {
         taken++;
-        items[index] = null;
-        var key = isArray ? index : keys[index];
+        items[i] = null;
+        var key = isArray ? i : keys[i];
 
         var called = false;
         var next = function next(err) {
@@ -614,7 +667,7 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
                 throw new Error("callback already called");
             }
             called = true;
-            items[index] = null;
+            items[i] = null;
 
             semID.semGive();
             taken--;
@@ -635,7 +688,7 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
                         cancel();
                     }
                 }
-                errors[index] = err;
+                errors[i] = err;
             }
 
             if (++count === len || hasError && taken === 0) {
@@ -652,27 +705,27 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
             return;
         }
 
-        var icancel = typeof iteratee === "function" ? iteratee(collection[key], key, next) : collection[key](next);
+        var icancel = typeof iteratee === "function" ? iteratee(coll[key], key, next) : coll[key](next);
 
         if (typeof icancel === "function") {
-            items[index] = {
+            items[i] = {
                 cancel: icancel
             };
         } else if (icancel !== null && typeof icancel === "object" && typeof icancel.cancel === "function") {
-            items[index] = icancel;
+            items[i] = icancel;
         }
     };
 
-    var iterate = function iterate(index) {
+    var iterate = function iterate(i) {
         var item = semID.semTake({
             priority: priority,
-            onTake: onTake.bind(null, collection, index)
+            onTake: onTake.bind(null, collection, i)
         });
 
         var proxy = {
             cancel: function cancel() {
                 item.cancel();
-                onTake(collection, index);
+                onTake(collection, i);
             }
         };
 
@@ -716,7 +769,7 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
         }
 
         canceled = true;
-        for (var i = 0, _len2 = items.length; i < _len2; i++) {
+        for (var i = 0, size = items.length; i < size; i++) {
             if (items[i] !== null && typeof items[i] === "object" && typeof items[i].cancel === "function") {
                 items[i].cancel();
                 items[i] = null;
@@ -724,10 +777,10 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
         }
     }
 
-    var setPriority = function setPriority(priority) {
-        for (var i = 0, _len3 = items.length; i < _len3; i++) {
+    var setPriority = function setPriority(nextPriority) {
+        for (var i = 0, size = items.length; i < size; i++) {
             if (items[i] !== null && typeof items[i] === "object" && typeof items[i].setPriority === "function") {
-                items[i].setPriority(priority);
+                items[i].setPriority(nextPriority);
             }
         }
     };
@@ -781,7 +834,9 @@ Semaphore.prototype._countInWaitingTokens = function _countInWaitingTokens() {
 
     var iterator = this._queue.beginIterator();
 
-    var group, itemerator, item;
+    var group = void 0,
+        itemerator = void 0,
+        item = void 0;
     while (iterator) {
         group = iterator.value();
 
@@ -844,7 +899,6 @@ Semaphore.prototype._removeItem = function _removeItem(item) {
 };
 
 Semaphore.prototype._addGroup = function _addGroup(item) {
-
     var stack = new SortedSet({
         comparator: idComparator
     });
