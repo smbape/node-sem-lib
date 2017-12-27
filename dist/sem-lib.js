@@ -309,10 +309,11 @@ Semaphore.prototype.semTake = function semTake(options, result) {
     var task = void 0,
         timeOut = void 0,
         onTimeOut = void 0,
+        onCancel = void 0,
         num = void 0,
         priority = void 0,
         unfair = void 0,
-        validate = void 0;
+        shouldTakeToken = void 0;
 
     if (this.destroyed) {
         return false;
@@ -324,8 +325,9 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         num = options.num;
         timeOut = options.timeOut;
         onTimeOut = options.onTimeOut;
+        onCancel = options.onCancel;
         unfair = options.unfair;
-        validate = options.validate;
+        shouldTakeToken = options.shouldTakeToken;
     } else if (typeof options === "function") {
         task = options;
         options = {};
@@ -344,8 +346,9 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         priority: priority,
         num: num,
         onTimeOut: onTimeOut,
+        onCancel: onCancel,
         unfair: unfair,
-        validate: validate,
+        shouldTakeToken: shouldTakeToken,
         semaphore: this,
         taken: 0,
         cancel: function cancel() {
@@ -357,6 +360,10 @@ Semaphore.prototype.semTake = function semTake(options, result) {
                 _this2.setImmediateTick(function () {
                     _this2.semGive(taken, true);
                 });
+            }
+
+            if (typeof onCancel === "function") {
+                onCancel();
             }
         },
         setPriority: function setPriority(nextPriority) {
@@ -418,6 +425,11 @@ Semaphore.prototype.semTake = function semTake(options, result) {
     return res;
 };
 
+Semaphore.prototype._shouldTakeToken = function _shouldTakeToken(item, num) {
+    // avoid giving item as context when calling shouldTakeToken
+    return typeof item.shouldTakeToken !== "function" || (0, item.shouldTakeToken)(num, item.num, item.taken, this);
+};
+
 Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
     var groupIterator = void 0,
         group = void 0,
@@ -430,9 +442,7 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
     itemIterator = group.stack.beginIterator();
     item = itemIterator.value();
 
-    // can this item be used?
-    // avoid giving item as context when calling validate
-    while (item && typeof item.validate === "function" && !(0, item.validate)(this)) {
+    while (item && item.num !== 0 && !this._shouldTakeToken(item, Math.min(item.num, this._numTokens))) {
         item = null;
 
         itemIterator = itemIterator.next();
@@ -493,7 +503,8 @@ Semaphore.prototype._semTake = function _semTake() {
         // take token from tasks with weaker priority
         if (item.unfair && this._queue.length !== 1) {
             weakerIterator = this._queue.endIterator().previous();
-            while (weakerIterator && item.num > this._numTokens) {
+
+            while (weakerIterator && item.num !== 0) {
                 wearkeGroup = weakerIterator.value();
                 if (wearkeGroup === group || wearkeGroup.priority <= this.priority) {
                     // can only be unfair on tasks with lower priority that semaphore default priority
@@ -501,10 +512,10 @@ Semaphore.prototype._semTake = function _semTake() {
                 }
 
                 weakerItemIterator = wearkeGroup.stack.endIterator().previous();
-                while (weakerItemIterator && item.num > this._numTokens) {
-                    weakerItem = weakerItemIterator.value();
+                weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
 
-                    if (weakerItem.taken > 0) {
+                while (weakerItem && item.num !== 0) {
+                    if (weakerItem.taken > 0 && this._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
                         if (item.num > weakerItem.taken) {
                             weakerItem.num += weakerItem.taken;
                             item.num -= weakerItem.taken;
@@ -517,6 +528,7 @@ Semaphore.prototype._semTake = function _semTake() {
                     }
 
                     weakerItemIterator = weakerItemIterator.hasPrevious() && weakerItemIterator.previous();
+                    weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
                 }
 
                 weakerIterator = weakerIterator.hasPrevious() && weakerIterator.previous();
@@ -543,18 +555,26 @@ Semaphore.prototype._semTake = function _semTake() {
     // A way to loop through in waiting tasks without blocking
     // semaphore the process until done
     var timerID = this.setImmediateTick(function () {
-        item.cancel = Function.prototype;
+        item.cancel = undefined;
+        timerID = null;
         task();
     });
     item.cancel = function () {
         if (timerID) {
             _this3.clearImmediateTick(timerID);
+            item.cancel = undefined;
             timerID = null;
 
             // give on next tick to wait for all synchronous canceled to be done
             _this3.setImmediateTick(function () {
                 _this3.semGive(taken, true);
             });
+
+            var onCancel = item.onCancel;
+
+            if (typeof onCancel === "function") {
+                onCancel();
+            }
         }
     };
 
@@ -707,13 +727,19 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
 
         var icancel = typeof iteratee === "function" ? iteratee(coll[key], key, next) : coll[key](next);
 
-        if (typeof icancel === "function") {
-            items[i] = {
-                cancel: icancel
-            };
-        } else if (icancel !== null && typeof icancel === "object" && typeof icancel.cancel === "function") {
-            items[i] = icancel;
-        }
+        items[i] = {
+            cancel: function cancel() {
+                if (typeof icancel === "function") {
+                    icancel();
+                } else if (icancel !== null && typeof icancel === "object") {
+                    if (typeof icancel.cancel === "function") {
+                        icancel.cancel();
+                    } else if (typeof icancel.abort === "function") {
+                        icancel.abort();
+                    }
+                }
+            }
+        };
     };
 
     var iterate = function iterate(i) {
@@ -809,8 +835,11 @@ Semaphore.prototype._checkKeepAlive = function _checkKeepAlive(_destroyWaiting) 
         return true;
     }
 
-    clearTimeout(this.keepAlive);
-    delete this.keepAlive;
+    if (this.keepAlive) {
+        clearTimeout(this.keepAlive);
+        delete this.keepAlive;
+    }
+
     if (_destroyWaiting) {
         this._destroy();
     }

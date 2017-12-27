@@ -13,14 +13,14 @@ const ptimeout = delay => {
     });
 };
 
-describe("validate", () => {
-    it("should take token when validate", async () => {
+describe("shouldTakeToken", () => {
+    it("should take token when shouldTakeToken", async () => {
         const semID = semLib.semCreate(1, true);
 
         const fired = [];
 
         semID.semTake({
-            validate: () => {
+            shouldTakeToken: () => {
                 return fired.length === 2;
             },
 
@@ -32,7 +32,7 @@ describe("validate", () => {
 
         await ptimeout(5 * ms);
 
-        // should not validate take
+        // should not shouldTakeToken take
         expect(fired).to.deep.equal([]);
 
         semID.semTake({
