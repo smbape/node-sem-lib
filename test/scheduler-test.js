@@ -10,7 +10,8 @@ describe("schedule", function() {
     const hasProp = Object.prototype.hasOwnProperty;
 
     function actualPush(actual, count, timerDiff) {
-        const key = "t" + Math.round( timerDiff / ms );
+        // timerDiff may not be exact
+        const key = "t" + (timerDiff / ms >> 0);
         if (!hasProp.call(actual, key)) {
             actual[key] = [];
         }
@@ -25,7 +26,7 @@ describe("schedule", function() {
         }
     }
 
-    it("should schedule array", (done) => {
+    it("should schedule array", done => {
         const actual = {};
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
@@ -47,20 +48,20 @@ describe("schedule", function() {
             done();
         });
 
-        const timerInit = new Date().getTime();
+        const timerInit = Date.now();
         assert.strictEqual(semID.getNumTokens(), 0);
 
         function schedule(count, timeout) {
             return (next) => {
                 setTimeout(() => {
-                    actualPush(actual, count, new Date().getTime() - timerInit);
+                    actualPush(actual, count, Date.now() - timerInit);
                     next();
                 }, timeout);
             };
         }
     });
 
-    it("should schedule array with iteratee", (done) => {
+    it("should schedule array with iteratee", done => {
         const actual = {};
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
@@ -84,7 +85,7 @@ describe("schedule", function() {
             done();
         });
 
-        const timerInit = new Date().getTime();
+        const timerInit = Date.now();
         assert.strictEqual(semID.getNumTokens(), 0);
 
         function schedule(count, timeout) {
@@ -97,7 +98,7 @@ describe("schedule", function() {
         }
     });
 
-    it("should schedule object", (done) => {
+    it("should schedule object", done => {
         const actual = {};
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
@@ -132,7 +133,7 @@ describe("schedule", function() {
         }
     });
 
-    it("should schedule object with iteratee", (done) => {
+    it("should schedule object with iteratee", done => {
         const actual = {};
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
@@ -169,7 +170,7 @@ describe("schedule", function() {
         }
     });
 
-    it("should cancel schedule before start", (done) => {
+    it("should cancel schedule before start", done => {
         const actual = {};
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
@@ -216,7 +217,7 @@ describe("schedule", function() {
         }
     });
 
-    it("should cancel schedule after callback and before done", (done) => {
+    it("should cancel schedule after callback and before done", done => {
         const actual = {};
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
@@ -262,7 +263,7 @@ describe("schedule", function() {
                 }, timeout);
 
                 return () => {
-                    // should be synchronous
+                    // cancel should be synchronous
                     clearTimeout(timerID);
                     next();
                 };
@@ -270,7 +271,7 @@ describe("schedule", function() {
         }
     });
 
-    it("should change priority on the fly", (done) => {
+    it("should change priority on the fly", done => {
         const actual = {};
         const semID = semLib.semCreate(3, true); // 3 tokens full capacity
         let count = 0;
@@ -294,7 +295,7 @@ describe("schedule", function() {
             schedule(++count, ms)
         ], 15);
 
-        const timerInit = new Date().getTime();
+        const timerInit = Date.now();
         assert.strictEqual(semID.getNumTokens(), 0);
 
         setTimeout(() => {
@@ -314,19 +315,19 @@ describe("schedule", function() {
 
             assertSchedule(actual, expected);
             done();
-        }, 5.2 * ms);
+        }, 6 * ms);
 
         function schedule(count, timeout) {
-            return (next) => {
+            return next => {
                 waiting++;
                 const timerID = setTimeout(() => {
                     waiting--;
-                    actualPush(actual, count, new Date().getTime() - timerInit);
+                    actualPush(actual, count, Date.now() - timerInit);
                     next();
                 }, timeout);
 
                 return () => {
-                    // should be synchronous
+                    // cancel should be synchronous
                     clearTimeout(timerID);
                     next();
                 };
