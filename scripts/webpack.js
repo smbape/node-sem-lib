@@ -164,9 +164,6 @@ const yargsParse = () => {
     });
 };
 
-const hasProp = Object.prototype.hasOwnProperty;
-const defaults = require("lodash/defaults");
-
 module.exports = processOptions;
 
 function getPromisableOptions(callback, options) {
@@ -194,7 +191,7 @@ function processOptions(options, done) {
         getPromisableOptions(options, opts => {
             options = require("webpack/bin/convert-argv")(yargs, argv, opts.convertOptions);
             Object.assign(options, opts);
-            delete options.convertOptions
+            delete options.convertOptions;
 
             function ifArg(name, fn, init) {
                 if (Array.isArray(argv[name])) {

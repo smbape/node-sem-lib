@@ -1,7 +1,6 @@
-/* global describe:false, it:false, assert:false */
+/* global describe:false, it:false, expect:false */
 
 const semLib = require("../");
-const hasProp = Object.hasOwnProperty;
 const ms = 1;
 const ptimeout = delay => {
     return new Promise((resolve, reject) => {

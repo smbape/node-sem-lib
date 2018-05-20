@@ -1,7 +1,7 @@
 /* global describe:false, it:false, assert:false */
 
 const semLib = require("../");
-const hasProp = Object.hasOwnProperty;
+const hasProp = Object.prototype.hasOwnProperty;
 const ms = Math.pow(2, 4);
 
 describe("basic", () => {

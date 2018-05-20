@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint \"lib/*.js\" \"scripts/*.js\" \"test/*.js\" cli.js",
-    "prepublishOnly": "node cli.js distribute && npm run test",
+    "prepublishOnly": "npm run lint && node cli.js distribute && npm run test",
     "version": "node cli.js version",
-    "test": "_mocha --full-trace --require test/common.js test/"
+    "test": "_mocha --full-trace --require test/common.js \"test/*-test.js\""
   },
   "repository": {
     "type": "git",

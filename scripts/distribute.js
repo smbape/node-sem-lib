@@ -3,7 +3,6 @@ const webpack = require("./webpack");
 const merge = require("lodash/merge");
 const anyspawn = require("anyspawn");
 const rootpath = sysPath.resolve(__dirname, "..");
-const push = Array.prototype.push;
 
 module.exports = function(options, done) {
     const coverage = /^(?:1|true|on|TRUE|ON)$/.test(String(process.env.COVERAGE));
