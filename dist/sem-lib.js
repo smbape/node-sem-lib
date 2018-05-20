@@ -7,7 +7,7 @@
 		exports["semLib"] = factory();
 	else
 		root["semLib"] = factory();
-})(this, function() {
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -367,6 +367,10 @@ Semaphore.prototype.semTake = function semTake(options, result) {
             }
         },
         setPriority: function setPriority(nextPriority) {
+            if (item.group == null) {
+                return;
+            }
+
             nextPriority = toPositiveInt(nextPriority, _this2.priority);
             if (nextPriority === item.priority) {
                 return;

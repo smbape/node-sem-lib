@@ -30,15 +30,23 @@ module.exports = function(options, done) {
     }
 
     const allTasks = tasks("development", "", options).concat(tasks("production", "", options));
-    push.apply(allTasks, [
-        "node node_modules/uglify-js/bin/uglifyjs dist/sem-lib.js --source-map filename:dist/sem-lib.min.js.map --in-source-map dist/sem-lib.js.map -o dist/sem-lib.min.js --compress --mangle"
+
+    allTasks.push(...[
+        ["node", [
+            "node_modules/uglify-js/bin/uglifyjs",
+            "dist/sem-lib.js",
+            "--source-map", "filename=dist/sem-lib.min.js.map,content=dist/sem-lib.js.map",
+            "-o", "dist/sem-lib.min.js",
+            "--compress",
+            "--mangle",
+        ]]
     ]);
 
     anyspawn.spawnSeries(allTasks, {
         stdio: "inherit",
         env: process.env,
         cwd: rootpath,
-    // prompt: anyspawn.defaults.prompt
+        prompt: true
     }, done);
 };
 
@@ -49,7 +57,15 @@ function tasks(NODE_ENV, suffix, options) {
         "sem-lib": sysPath.join(rootpath, "lib", "sem-lib.js")
     };
 
-    const tasks = [];
+    let NODE_ENV_;
+
+    const tasks = [
+        next => {
+            NODE_ENV_ = process.env.NODE_ENV;
+            process.env.NODE_ENV = NODE_ENV;
+            next();
+        }
+    ];
     addPackTasks(entries, suffix, loaders, tasks);
 
     if (options.coverage) {
@@ -70,6 +86,11 @@ function tasks(NODE_ENV, suffix, options) {
         suffix = suffix + "-cov";
         addPackTasks(entries, suffix, loaders, tasks);
     }
+
+    tasks.push(next => {
+        process.env.NODE_ENV = NODE_ENV_;
+        next();
+    });
 
     return tasks;
 }
@@ -136,6 +157,9 @@ function pack(name, suffix, entry, loaders, options, done) {
         },
         module: {
             loaders: loaders
+        },
+        convertOptions: {
+            outputFilename: sysPath.resolve(rootpath, "dist/[name].js")
         }
     }, options);
 
