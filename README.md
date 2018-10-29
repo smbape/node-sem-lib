@@ -107,6 +107,8 @@ Create a semaphore. See Semaphore#constructor() for more detauls
 
 ### SemLib.Semaphore
 
+See the Semaphore Class
+
 ## Semaphore : `Class`
 
 ### constructor(capacity, isFull, priority)
@@ -162,10 +164,10 @@ Usefull to access limited resources in a collection of tasks without locking the
 
 #### Usage
 
-**schedule(collection : `Iterable`, priority : `Integer`)**
-**schedule(collection : `Iterable`, callback : `Function`)**
-**schedule(collection : `Iterable`, priority : `Integer`, callback : `Function`)**
-**schedule(collection : `Iterable`, iteratee : `Function`, callback : `Function`)**
+**schedule(collection : `Iterable`, priority : `Integer`)** 
+**schedule(collection : `Iterable`, callback : `Function`)** 
+**schedule(collection : `Iterable`, priority : `Integer`, callback : `Function`)** 
+**schedule(collection : `Iterable`, iteratee : `Function`, callback : `Function`)** 
 **schedule(collection : `Iterable`, priority : `Integer`, iteratee : `Function`, callback : `Function`)**
 
 #### Examples
@@ -187,7 +189,7 @@ semID.schedule([
 ```
 
 ```js
-const semID = semLib.semCreate(3, true); // 3 tokens full capacity
+const semID = semLib.semCreate(3, true); // 3 tokens ful
 
 semID.schedule([
     [/* args 1 */],
@@ -211,7 +213,7 @@ semID.schedule({
 ```
 
 ```js
-const semID = semLib.semCreate(3, true); // 3 tokens full capacity
+const semID = semLib.semCreate(3, true); // 3 tokens full
 
 semID.schedule({
     s1: [ /* args 1 */ ],
@@ -230,7 +232,8 @@ Destroy all inwaiting tasks
 
 **Parameters**
 
-**safe**: `Boolean`, if true, wait for all inwaiting tasks to be performed, else, cancel inwaiting tasks and destroy
+**safe**: `Boolean`, optional, default: `undefined`, if not false, wait for all inwaiting tasks to be performed, else, cancel inwaiting tasks and destroy
+**onDestroy**: `Function` optional, Called after semaphore destruction
 
 ## Inwaiting : `Class`
 
