@@ -200,7 +200,7 @@ function Semaphore(capacity, isFull, priority) {
     this.priority = isNumeric(priority) ? parseInt(priority, 10) : 15;
 }
 
-Semaphore.prototype.setImmediateTick = function () {
+Semaphore.prototype._setImmediateTick = function () {
     if (typeof global === "object" && typeof global.setImmediate === "function") {
         return global.setImmediate;
     }
@@ -210,7 +210,7 @@ Semaphore.prototype.setImmediateTick = function () {
     };
 }();
 
-Semaphore.prototype.clearImmediateTick = function () {
+Semaphore.prototype._clearImmediateTick = function () {
     if (typeof global === "object" && typeof global.clearImmediate === "function") {
         return global.clearImmediate;
     }
@@ -234,6 +234,20 @@ Semaphore.prototype.getNumTokens = function getNumTokens() {
  */
 Semaphore.prototype.getCapacity = function getCapacity() {
     return this._capacity;
+};
+
+/**
+ * Set the maximum of available tokens
+ * @return {Integer} maximum of available tokens
+ */
+Semaphore.prototype.setCapacity = function getCapacity(capacity) {
+    if (isNumeric(capacity)) {
+        capacity = parseInt(capacity, 10);
+        if (capacity <= 0) {
+            capacity = Number.POSITIVE_INFINITY;
+        }
+        this._capacity = capacity;
+    }
 };
 
 /**
@@ -357,7 +371,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
 
             if (taken !== 0) {
                 // give on next tick to wait for all synchronous canceled to be done
-                _this2.setImmediateTick(function () {
+                _this2._setImmediateTick(function () {
                     _this2.semGive(taken, true);
                 });
             }
@@ -396,7 +410,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
 
             if (taken !== 0) {
                 // give on next tick to wait for all synchronous canceled to be done
-                _this2.setImmediateTick(function () {
+                _this2._setImmediateTick(function () {
                     _this2.semGive(taken, true);
                 });
             }
@@ -558,19 +572,19 @@ Semaphore.prototype._semTake = function _semTake() {
     // Non blocking call of callback
     // A way to loop through in waiting tasks without blocking
     // semaphore the process until done
-    var timerID = this.setImmediateTick(function () {
+    var timerID = this._setImmediateTick(function () {
         item.cancel = undefined;
         timerID = null;
         task();
     });
     item.cancel = function () {
         if (timerID) {
-            _this3.clearImmediateTick(timerID);
+            _this3._clearImmediateTick(timerID);
             item.cancel = undefined;
             timerID = null;
 
             // give on next tick to wait for all synchronous canceled to be done
-            _this3.setImmediateTick(function () {
+            _this3._setImmediateTick(function () {
                 _this3.semGive(taken, true);
             });
 
@@ -635,18 +649,18 @@ Semaphore.prototype._destroy = function (safe) {
     return true;
 };
 
-Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
+Semaphore.prototype.schedule = function (collection, priority, iteratee, callback) {
     var semID = this;
 
     switch (arguments.length) {
         case 2:
             if (typeof priority === "function") {
-                done = priority;
+                callback = priority;
                 priority = null;
             }
             break;
         case 3:
-            done = iteratee;
+            callback = iteratee;
             iteratee = null;
 
             if ("function" === typeof priority) {
@@ -658,8 +672,8 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
         // Nothing to do
     }
 
-    if (done == null) {
-        done = Function.prototype;
+    if (callback == null) {
+        callback = Function.prototype;
     }
 
     var count = 0;
@@ -669,7 +683,7 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
     var len = isArray ? collection.length : keys.length;
 
     if (len === 0) {
-        done();
+        callback();
         return null;
     }
 
@@ -720,7 +734,7 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, done) {
                 if (canceled) {
                     errors.code = "CANCELED";
                 }
-                done(hasError ? errors : null);
+                callback(hasError ? errors : null);
             }
         };
 

@@ -6,7 +6,7 @@ const semLib = require("../");
 describe("schedule", function() {
     // eslint-disable-next-line no-invalid-this
     this.timeout(300 * 1000);
-    const ms = Math.pow(2, 5);
+    const ms = Math.pow(2, 7);
     const hasProp = Object.prototype.hasOwnProperty;
 
     function actualPush(actual, count, timerDiff) {

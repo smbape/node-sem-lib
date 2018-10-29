@@ -2,7 +2,7 @@
 
 const semLib = require("../");
 const hasProp = Object.prototype.hasOwnProperty;
-const ms = Math.pow(2, 4);
+const ms = Math.pow(2, 7);
 
 describe("basic", () => {
     it("should construct", () => {

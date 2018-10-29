@@ -1,43 +1,43 @@
-sem-lib
-=======
+# sem-lib
+
 A semaphore library for nodejs
   - Limit simultaneous access to resources
   - Synchronize multiple tasks
 
 ```javascript
 // Create
-var semLib = require("sem-lib");
-var semID = semLib.semCreate();
+var SemLib = require("sem-lib");
+var semID = SemLib.semCreate();
 
 // wait for a token
 semID.semTake(callback);
 
 // Add a token to semaphore
-semLib.semGive();
+SemLib.semGive();
 ```
 
 ```javascript
 // Exclusive access
-var semLib = require("sem-lib");
-var semRessource = semLib.semCreate(1, true);
+var SemLib = require("sem-lib");
+var semID = SemLib.semCreate(1, true);
 
-semRessource.semTake(function() {
+semID.semTake(function() {
   // first exclusive access
   ...
-  semLib.semGive();
+  semID.semGive();
 });
 
-semLib.semTake(function() {
+semID.semTake(function() {
   // second exclusive access
   ...
-  semLib.semGive();
+  semID.semGive();
 });
 ```
 
 ```javascript
 // Synchronization
-var semLib = require("sem-lib");
-var semID = semLib.semCreate(3);
+var SemLib = require("sem-lib");
+var semID = SemLib.semCreate(3, true);
 
 function AsyncTask1(semID) {
   console.log("AsyncTask1");
@@ -76,10 +76,10 @@ semID.semTake(3, function(){
 // Limit simultaneous access
 // You have multiple downloads to do and you don't want to blow your memory nor cpu
 
-var semLib = require("sem-lib");
+var SemLib = require("sem-lib");
 
 // 8 simultanenous downloads at same time
-var semID = semLib.semCreate(8, true);
+var semID = SemLib.semCreate(8, true);
 
 require('fs').readFile('links.txt', function (err, data) {
   if (err) throw err;
@@ -99,78 +99,158 @@ function download(link) {
 
 ```
 
-## Class: Semaphore
+## SemLib
 
+### SemLib.semCreate(capacity, isFull, priority)
 
-### Semaphore.getId() 
+Create a semaphore. See Semaphore#constructor() for more detauls
 
-Return semaphore id. Usefull for debugging
+### SemLib.Semaphore
 
-**Returns**: `Interger`, Semaphore id
+## Semaphore : `Class`
 
-### Semaphore.getNumTokens() 
+### constructor(capacity, isFull, priority)
 
-Return number of available tokens
+| Option      | Type      | Optional  | Default | Description                                                                     |
+|-------------|-----------|:---------:|---------|---------------------------------------------------------------------------------|
+| `capacity`  | `Integer` | Yes       | `1`     | Number of available tokens. i.e. how much concurrency                           |
+| `isFull`    | `Boolean` | Yes       | `false` | Create semaphore with all tokens available                                      |
+| `priority`  | `Integer` | Yes       | `15`    | Default take priority. The lower the number is, the more priority the take has  |
 
-**Returns**: `Interger`, number of available tokens
+### semTake(task : `Function`) : `Inwaiting`
 
-### Semaphore.getCapacity() 
+Shortcut to `semTake({onTake: task})`
 
-Return maximum of available tokens
+### semTake(settings : `Object`) : `Inwaiting | false`
 
-**Returns**: `Integer`, maximum of available tokens
+Wait for Semaphore availability before calling onTake callback.
 
-### Semaphore.semGive(num) 
+Returns `false` if the semaphore has been destroyed.
 
-Add tokens to the Semaphore
+#### `task`()
 
-**Parameters**
+Function to call when all tokens have been taken. Optional
 
-**num**: `Interger`, Number of tokens to add
+#### `shouldTakeToken`(available : `Integer`, required : `Integer`, take : `Integer`, semID : `Semaphore`) : `Boolean`
 
+In case you want to allow the waiting task to take tokens only if certains conditions are met.
 
-### Semaphore.semFlush() 
+#### Other options
 
-Give tokens to every inwaiting tasks
+| Option            | Type        | Optional  | Default             | Description                                                     |
+|-------------------|-------------|:---------:|---------------------|-----------------------------------------------------------------|
+| `priority`        | `Integer`   | Yes       | Semaphore priority  | Task priority. Lower values means higher priority               |
+| `num`             | `Integer`   | Yes       | `1`                 | Number of tokens to take                                        |
+| `timeOut`         | `Integer`   | Yes       | `undefined`         | Time to wait until the task is abandonned                       |
+| `onTimeOut`       | `Function`  | Yes       | `undefined`         | Function to call when waiting has reached timeout               |
+| `onCancel`        | `Function`  | Yes       | `undefined`         | Function to call when waiting has been canceled                 |
+| `unfair`          | `Boolean`   | Yes       | `false`             | Allows to take tokens from waiting tasks with lower priorities  |
 
+### semGive(num : `Integer`)
 
-### Semaphore.semTake(settings) 
+Give the number of tokens to the semaphore
 
-Wait for Semaphore availability before calling onTake callback
+### semFlush()
 
-**Parameters**
+Run all waiting tasks
 
-**settings**: `Object`, settings with the following properties:
-<ul>
-<li>{Function} <b><em>onTake</em></b></li>: called on successful take
-<li>{Integer} <b><em>num</em></b></li>(optional, default = 1): Number of tokens to take before calling onTake callback
-<li>{Integer} <b><em>priority</em></b></li>(optional): task priority, smaller is higher priority
-<li>{Number} <b><em>timeOut</em></b></li>(optional): milliseconds to wait before timeOut. If !(settings['timeOut'] > 0), waiting will last forever
-<li>{Function} <b><em>onTimeOut</em></b></li>(optional): called if timeOut occurs
-</ul>
+### schedule : `Scheduler`
 
-**Returns**: `Object | false`, item item.addCounter(n = 1) => wait for n more tokens
+Run a collection of tasks, take one token for each task.
 
-**Example**:
+Usefull to access limited resources in a collection of tasks without locking the resource for tasks with higher priorities.
+
+#### Usage
+
+**schedule(collection : `Iterable`, priority : `Integer`)**
+**schedule(collection : `Iterable`, callback : `Function`)**
+**schedule(collection : `Iterable`, priority : `Integer`, callback : `Function`)**
+**schedule(collection : `Iterable`, iteratee : `Function`, callback : `Function`)**
+**schedule(collection : `Iterable`, priority : `Integer`, iteratee : `Function`, callback : `Function`)**
+
+#### Examples
+
 ```js
-semTake(Function[, takeInstance]);
-semTake(Settings[, takeInstance]);
+const semID = semLib.semCreate(3, true); // 3 tokens full
+semID.schedule([
+    next => {
+      // task 1
+      next()
+    },
+    next => {
+      // task 2
+      next()
+    }
+], () => {
+    // All tasks were run;
+});
 ```
 
-### Semaphore.destroy(safe) 
+```js
+const semID = semLib.semCreate(3, true); // 3 tokens full capacity
+
+semID.schedule([
+    [/* args 1 */],
+    [/* args 2 */],
+], (args, i, next) => {
+    // process args
+    next();
+}, () => {
+    // All args were processed;
+});
+```
+
+```js
+const semID = semLib.semCreate(3, true); // 3 tokens full
+semID.schedule({
+    s1: next => { /* task 1 */; next() },
+    s2: next => { /* task 2 */; next() },
+}, () => {
+    // All tasks were run;
+});
+```
+
+```js
+const semID = semLib.semCreate(3, true); // 3 tokens full capacity
+
+semID.schedule({
+    s1: [ /* args 1 */ ],
+    s2: [ /* args 2 */ ],
+}, (args, key, next) => {
+    // process args
+    next();
+}, () => {
+    // All args were processed;
+});
+```
+
+### destroy(safe, onDestroy) 
 
 Destroy all inwaiting tasks
 
 **Parameters**
 
-**safe**: `Boolean`, if true, wait for all inwaiting tasks to be performed, else, destroy with no warn
+**safe**: `Boolean`, if true, wait for all inwaiting tasks to be performed, else, cancel inwaiting tasks and destroy
 
+## Inwaiting : `Class`
 
-License
--------
+### addCounter(num : `Integer`)
+
+The task should take more tokens before running
+
+### setPriority(priority : `Integer`)
+
+Change the task priority
+
+### cancel()
+
+Cancel the task
+
+# License
+
 The MIT License (MIT)
 
-Copyright (c) 2014-2015 Stéphane MBAPE (http://smbape.com)
+Copyright (c) 2014-2018 Stéphane MBAPE (https://smbape.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
