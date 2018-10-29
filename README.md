@@ -164,10 +164,10 @@ Usefull to access limited resources in a collection of tasks without locking the
 
 #### Usage
 
-**schedule(collection : `Iterable`, priority : `Integer`)** 
-**schedule(collection : `Iterable`, callback : `Function`)** 
-**schedule(collection : `Iterable`, priority : `Integer`, callback : `Function`)** 
-**schedule(collection : `Iterable`, iteratee : `Function`, callback : `Function`)** 
+**schedule(collection : `Iterable`, priority : `Integer`)**  
+**schedule(collection : `Iterable`, callback : `Function`)**  
+**schedule(collection : `Iterable`, priority : `Integer`, callback : `Function`)**  
+**schedule(collection : `Iterable`, iteratee : `Function`, callback : `Function`)**  
 **schedule(collection : `Iterable`, priority : `Integer`, iteratee : `Function`, callback : `Function`)**
 
 #### Examples
