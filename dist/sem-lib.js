@@ -200,7 +200,7 @@ function Semaphore(capacity, isFull, priority) {
     this.priority = isNumeric(priority) ? parseInt(priority, 10) : 15;
 }
 
-Semaphore.prototype._setImmediateTick = function () {
+Semaphore.prototype.setImmediateTick = function () {
     if (typeof global === "object" && typeof global.setImmediate === "function") {
         return global.setImmediate;
     }
@@ -255,7 +255,7 @@ Semaphore.prototype.setCapacity = function getCapacity(capacity) {
  *
  * @param {Interger} num Number of tokens to add
  */
-Semaphore.prototype.semGive = function semGive(num, checkLimitAfter) {
+Semaphore.prototype.semGive = function semGive(num, isGivenBack) {
     if (this.destroyed) {
         return false;
     }
@@ -270,13 +270,13 @@ Semaphore.prototype.semGive = function semGive(num, checkLimitAfter) {
         this._numTokens = num;
     }
 
-    if (!checkLimitAfter && this._numTokens > this._capacity) {
+    if (!isGivenBack && this._numTokens > this._capacity) {
         this._numTokens = this._capacity;
     }
 
-    this._semTake();
+    this._semTake(isGivenBack);
 
-    if (checkLimitAfter && this._numTokens > this._capacity) {
+    if (isGivenBack && this._numTokens > this._capacity) {
         this._numTokens = this._capacity;
     }
 
@@ -371,7 +371,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
 
             if (taken !== 0) {
                 // give on next tick to wait for all synchronous canceled to be done
-                _this2._setImmediateTick(function () {
+                _this2.setImmediateTick(function () {
                     _this2.semGive(taken, true);
                 });
             }
@@ -410,7 +410,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
 
             if (taken !== 0) {
                 // give on next tick to wait for all synchronous canceled to be done
-                _this2._setImmediateTick(function () {
+                _this2.setImmediateTick(function () {
                     _this2.semGive(taken, true);
                 });
             }
@@ -484,7 +484,7 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
  * Take tokens if available
  *
  */
-Semaphore.prototype._semTake = function _semTake() {
+Semaphore.prototype._semTake = function _semTake(sync) {
     var _this3 = this;
 
     if (!this._hasInWaitingTask()) {
@@ -569,35 +569,42 @@ Semaphore.prototype._semTake = function _semTake() {
     var taken = item.taken;
     this._removeItem(item);
 
-    // Non blocking call of callback
-    // A way to loop through in waiting tasks without blocking
-    // semaphore the process until done
-    var timerID = this._setImmediateTick(function () {
-        item.cancel = undefined;
-        timerID = null;
-        task();
-    });
-    item.cancel = function () {
-        if (timerID) {
-            _this3._clearImmediateTick(timerID);
+    try {
+        if (sync) {
             item.cancel = undefined;
-            timerID = null;
-
-            // give on next tick to wait for all synchronous canceled to be done
-            _this3._setImmediateTick(function () {
-                _this3.semGive(taken, true);
+            task();
+        } else {
+            // Non blocking call of callback
+            // A way to loop through in waiting tasks without blocking
+            // semaphore the process until done
+            var timerID = this.setImmediateTick(function () {
+                item.cancel = undefined;
+                timerID = null;
+                task();
             });
+            item.cancel = function () {
+                if (timerID) {
+                    _this3._clearImmediateTick(timerID);
+                    item.cancel = undefined;
+                    timerID = null;
 
-            var onCancel = item.onCancel;
+                    // give on next tick to wait for all synchronous canceled to be done
+                    _this3.setImmediateTick(function () {
+                        _this3.semGive(taken, true);
+                    });
 
-            if (typeof onCancel === "function") {
-                onCancel();
-            }
+                    var onCancel = item.onCancel;
+
+                    if (typeof onCancel === "function") {
+                        onCancel();
+                    }
+                }
+            };
         }
-    };
-
-    if (this._checkKeepAlive(this._destroyWaiting)) {
-        this._semTake();
+    } finally {
+        if (this._checkKeepAlive(this._destroyWaiting)) {
+            this._semTake();
+        }
     }
 };
 
