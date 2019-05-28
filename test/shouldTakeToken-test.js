@@ -61,4 +61,49 @@ describe("shouldTakeToken", () => {
         expect(fired).to.deep.equal(["medium", "high", "low"]);
 
     });
+
+    it("should take token when shouldTakeToken sync", async () => {
+        const semID = semLib.semCreate(1, true, null, true);
+
+        const fired = [];
+
+        semID.semTake({
+            shouldTakeToken: () => {
+                return fired.length === 2;
+            },
+
+            onTake: () => {
+                fired.push("low");
+                semID.semGive();
+            }
+        });
+
+        await ptimeout(5 * ms);
+
+        // should not shouldTakeToken take
+        expect(fired).to.deep.equal([]);
+
+        semID.semTake({
+            onTake: () => {
+                fired.push("medium");
+                semID.semGive();
+            }
+        });
+
+        await ptimeout();
+
+        expect(fired).to.deep.equal(["medium"]);
+
+        semID.semTake({
+            onTake: () => {
+                fired.push("high");
+                semID.semGive();
+            }
+        });
+
+        await ptimeout();
+
+        expect(fired).to.deep.equal(["medium", "high", "low"]);
+
+    });
 });

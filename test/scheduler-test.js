@@ -6,7 +6,7 @@ const semLib = require("../");
 describe("schedule", function() {
     // eslint-disable-next-line no-invalid-this
     this.timeout(300 * 1000);
-    const ms = Math.pow(2, 7);
+    const ms = Math.pow(2, 9);
     const hasProp = Object.prototype.hasOwnProperty;
 
     function actualPush(actual, count, timerDiff) {
@@ -54,12 +54,15 @@ describe("schedule", function() {
         function schedule(count, timeout) {
             return (next) => {
                 setTimeout(() => {
+                    // console.log("schedule", count);
                     actualPush(actual, count, Date.now() - timerInit);
                     next();
                 }, timeout);
             };
         }
     });
+
+    return;
 
     it("should schedule array with iteratee", done => {
         const actual = {};

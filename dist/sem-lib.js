@@ -156,17 +156,14 @@ var globalCounter = 0;
  * @param  {Interger} _default default value
  * @return {Interger} parsing result
  */
-function toPositiveInt(num, _default) {
-    if (isNumeric(num)) {
-        num = parseInt(num, 10);
-    } else {
-        return _default;
-    }
-    if (num < 0) {
+function toInteger(num, positive, _default) {
+    if (!isNumeric(num)) {
         return _default;
     }
 
-    return num;
+    num = parseInt(num, 10);
+
+    return positive && num < 0 ? _default : num;
 }
 
 /**
@@ -176,7 +173,7 @@ function toPositiveInt(num, _default) {
  * @param {Boolean} isFull (default = false) if true object is created with tokens
  * @param {Integer} priority (default = 15) default priority
  */
-function Semaphore(capacity, isFull, priority) {
+function Semaphore(capacity, isFull, priority, sync) {
     if (isNumeric(capacity)) {
         capacity = parseInt(capacity, 10);
         if (capacity <= 0) {
@@ -198,6 +195,7 @@ function Semaphore(capacity, isFull, priority) {
     this._numTokens = isFull ? capacity : 0;
     // eslint-disable-next-line no-magic-numbers
     this.priority = isNumeric(priority) ? parseInt(priority, 10) : 15;
+    this.sync = sync;
 }
 
 Semaphore.prototype.setImmediateTick = function () {
@@ -261,7 +259,7 @@ Semaphore.prototype.semGive = function semGive(num, isGivenBack) {
     }
 
     if (num !== Number.POSITIVE_INFINITY) {
-        num = toPositiveInt(num, 1);
+        num = toInteger(num, true, 1);
         if (num < 1) {
             num = 1;
         }
@@ -351,8 +349,8 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         task = Function.prototype;
     }
 
-    num = toPositiveInt(num, 1);
-    priority = toPositiveInt(priority, this.priority);
+    num = toInteger(num, true, 1);
+    priority = toInteger(priority, false, this.priority);
 
     var item = {
         id: ++globalCounter,
@@ -385,7 +383,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
                 return;
             }
 
-            nextPriority = toPositiveInt(nextPriority, _this2.priority);
+            nextPriority = toInteger(nextPriority, false, _this2.priority);
             if (nextPriority === item.priority) {
                 return;
             }
@@ -423,7 +421,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
 
     var res = {
         addCounter: function addCounter(nextNum) {
-            item.num += toPositiveInt(nextNum, 1);
+            item.num += toInteger(nextNum, 1);
         },
         cancel: function cancel() {
             item.cancel();
@@ -487,10 +485,7 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
 Semaphore.prototype._semTake = function _semTake(sync) {
     var _this3 = this;
 
-    if (!this._hasInWaitingTask()) {
-        if (this._destroyWaiting) {
-            this._destroy();
-        }
+    if (this.taking) {
         return;
     }
 
@@ -498,86 +493,92 @@ Semaphore.prototype._semTake = function _semTake(sync) {
         this._keepAlive();
     }
 
-    var _nextGroupItem2 = this._nextGroupItem(),
-        _nextGroupItem3 = _slicedToArray(_nextGroupItem2, 2),
-        group = _nextGroupItem3[0],
-        item = _nextGroupItem3[1];
-
-    if (item == null) {
-        return;
+    if (typeof sync === "undefined") {
+        sync = this.sync;
     }
 
-    var weakerIterator = void 0,
-        wearkeGroup = void 0,
-        weakerItemIterator = void 0,
-        weakerItem = void 0;
+    this.taking = true;
 
-    // if item is still waiting for tokens
-    if (item.num > this._numTokens) {
-        item.taken += this._numTokens;
-        item.num -= this._numTokens;
-        this._numTokens = 0;
+    var _loop = function _loop() {
+        var _nextGroupItem2 = _this3._nextGroupItem(),
+            _nextGroupItem3 = _slicedToArray(_nextGroupItem2, 2),
+            group = _nextGroupItem3[0],
+            item = _nextGroupItem3[1];
 
-        // take token from tasks with weaker priority
-        if (item.unfair && this._queue.length !== 1) {
-            weakerIterator = this._queue.endIterator().previous();
+        if (item == null) {
+            return "break";
+        }
 
-            while (weakerIterator && item.num !== 0) {
-                wearkeGroup = weakerIterator.value();
-                if (wearkeGroup === group || wearkeGroup.priority <= this.priority) {
-                    // can only be unfair on tasks with lower priority that semaphore default priority
-                    break;
-                }
+        var weakerIterator = void 0,
+            wearkeGroup = void 0,
+            weakerItemIterator = void 0,
+            weakerItem = void 0;
 
-                weakerItemIterator = wearkeGroup.stack.endIterator().previous();
-                weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
+        // if item is still waiting for tokens
+        if (item.num > _this3._numTokens) {
+            item.taken += _this3._numTokens;
+            item.num -= _this3._numTokens;
+            _this3._numTokens = 0;
 
-                while (weakerItem && item.num !== 0) {
-                    if (weakerItem.taken > 0 && this._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
-                        if (item.num > weakerItem.taken) {
-                            weakerItem.num += weakerItem.taken;
-                            item.num -= weakerItem.taken;
-                            weakerItem.taken = 0;
-                        } else {
-                            weakerItem.taken -= item.num;
-                            weakerItem.num += item.num;
-                            item.num = 0;
-                        }
+            // take token from tasks with weaker priority
+            if (item.unfair && _this3._queue.length !== 1) {
+                weakerIterator = _this3._queue.endIterator().previous();
+
+                while (weakerIterator && item.num !== 0) {
+                    wearkeGroup = weakerIterator.value();
+                    if (wearkeGroup === group || wearkeGroup.priority <= _this3.priority) {
+                        // can only be unfair on tasks with lower priority that semaphore default priority
+                        break;
                     }
 
-                    weakerItemIterator = weakerItemIterator.hasPrevious() && weakerItemIterator.previous();
+                    weakerItemIterator = wearkeGroup.stack.endIterator().previous();
                     weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
-                }
 
-                weakerIterator = weakerIterator.hasPrevious() && weakerIterator.previous();
+                    while (weakerItem && item.num !== 0) {
+                        if (weakerItem.taken > 0 && _this3._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
+                            if (item.num > weakerItem.taken) {
+                                weakerItem.num += weakerItem.taken;
+                                item.num -= weakerItem.taken;
+                                weakerItem.taken = 0;
+                            } else {
+                                weakerItem.taken -= item.num;
+                                weakerItem.num += item.num;
+                                item.num = 0;
+                            }
+                        }
+
+                        weakerItemIterator = weakerItemIterator.hasPrevious() && weakerItemIterator.previous();
+                        weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
+                    }
+
+                    weakerIterator = weakerIterator.hasPrevious() && weakerIterator.previous();
+                }
+            }
+
+            // if item is still waiting for tokens, try again at next give or flush
+            if (item.num !== 0) {
+                return "break";
             }
         }
 
-        // if item is still waiting for tokens, try again at next give or flush
-        if (item.num !== 0) {
-            return;
+        item.taken += item.num;
+        if (_this3._numTokens !== Number.POSITIVE_INFINITY) {
+            _this3._numTokens -= item.num;
         }
-    }
+        item.num = 0;
 
-    item.taken += item.num;
-    if (this._numTokens !== Number.POSITIVE_INFINITY) {
-        this._numTokens -= item.num;
-    }
-    item.num = 0;
+        var task = item.task;
+        var taken = item.taken;
+        _this3._removeItem(item);
 
-    var task = item.task;
-    var taken = item.taken;
-    this._removeItem(item);
-
-    try {
         if (sync) {
             item.cancel = undefined;
             task();
         } else {
             // Non blocking call of callback
             // A way to loop through in waiting tasks without blocking
-            // semaphore the process until done
-            var timerID = this.setImmediateTick(function () {
+            // the semaphore process until done
+            var timerID = _this3.setImmediateTick(function () {
                 item.cancel = undefined;
                 timerID = null;
                 task();
@@ -601,11 +602,14 @@ Semaphore.prototype._semTake = function _semTake(sync) {
                 }
             };
         }
-    } finally {
-        if (this._checkKeepAlive(this._destroyWaiting)) {
-            this._semTake();
-        }
+    };
+
+    while (this._checkKeepAlive(this._destroyWaiting)) {
+        var _ret = _loop();
+
+        if (_ret === "break") break;
     }
+    this.taking = false;
 };
 
 /**
@@ -634,13 +638,13 @@ Semaphore.prototype._destroy = function (safe) {
 
     // for loop to avoid infinite loop with while
     for (var i = 0, _len = this._queue.length; i < _len; i++) {
-        var group = this._queue.beginIterator().value();
-        var item = group.stack.beginIterator().value();
+        var _group = this._queue.beginIterator().value();
+        var _item = _group.stack.beginIterator().value();
 
         if (safe !== false) {
-            item.cancel();
+            _item.cancel();
         }
-        this._removeItem(item);
+        this._removeItem(_item);
     }
 
     if (this._checkKeepAlive()) {
@@ -780,7 +784,7 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
             }
         };
 
-        var _loop = function _loop(key) {
+        var _loop2 = function _loop2(key) {
             if (key === "cancel") {
                 return "continue";
             }
@@ -799,9 +803,9 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
         };
 
         for (var key in item) {
-            var _ret = _loop(key);
+            var _ret2 = _loop2(key);
 
-            if (_ret === "continue") continue;
+            if (_ret2 === "continue") continue;
         }
 
         return proxy;
