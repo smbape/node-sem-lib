@@ -325,7 +325,8 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         num = void 0,
         priority = void 0,
         unfair = void 0,
-        shouldTakeToken = void 0;
+        shouldTakeToken = void 0,
+        sync = void 0;
 
     if (this.destroyed) {
         return false;
@@ -340,6 +341,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         onCancel = options.onCancel;
         unfair = options.unfair;
         shouldTakeToken = options.shouldTakeToken;
+        sync = options.sync;
     } else if (typeof options === "function") {
         task = options;
         options = {};
@@ -361,6 +363,7 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         onCancel: onCancel,
         unfair: unfair,
         shouldTakeToken: shouldTakeToken,
+        sync: sync,
         semaphore: this,
         taken: 0,
         cancel: function cancel() {
@@ -431,11 +434,25 @@ Semaphore.prototype.semTake = function semTake(options, result) {
         }
     };
 
-    if (isObject(result)) {
+    var hasResult = isObject(result);
+
+    if (hasResult) {
         result.addCounter = res.addCounter;
         result.cancel = res.cancel;
         result.setPriority = res.setPriority;
     }
+
+    item.disable = function () {
+        delete res.addCounter;
+        delete res.cancel;
+        delete res.setPriority;
+
+        if (hasResult) {
+            delete result.addCounter;
+            delete result.cancel;
+            delete result.setPriority;
+        }
+    };
 
     this._semTake();
     return res;
@@ -482,7 +499,7 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
  * Take tokens if available
  *
  */
-Semaphore.prototype._semTake = function _semTake(sync) {
+Semaphore.prototype._semTake = function _semTake(topSync) {
     var _this3 = this;
 
     if (this.taking) {
@@ -491,10 +508,6 @@ Semaphore.prototype._semTake = function _semTake(sync) {
 
     if (typeof this.keepAlive === "undefined") {
         this._keepAlive();
-    }
-
-    if (typeof sync === "undefined") {
-        sync = this.sync;
     }
 
     this.taking = true;
@@ -567,38 +580,39 @@ Semaphore.prototype._semTake = function _semTake(sync) {
         }
         item.num = 0;
 
-        var task = item.task;
-        var taken = item.taken;
+        var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : _this3.sync;
+        var disable = item.disable,
+            taken = item.taken,
+            task = item.task;
+
         _this3._removeItem(item);
 
         if (sync) {
-            item.cancel = undefined;
+            disable();
             task();
         } else {
             // Non blocking call of callback
             // A way to loop through in waiting tasks without blocking
             // the semaphore process until done
             var timerID = _this3.setImmediateTick(function () {
-                item.cancel = undefined;
                 timerID = null;
+                disable();
                 task();
             });
             item.cancel = function () {
-                if (timerID) {
-                    _this3._clearImmediateTick(timerID);
-                    item.cancel = undefined;
-                    timerID = null;
+                _this3._clearImmediateTick(timerID);
+                disable();
+                timerID = null;
 
-                    // give on next tick to wait for all synchronous canceled to be done
-                    _this3.setImmediateTick(function () {
-                        _this3.semGive(taken, true);
-                    });
+                // give on next tick to wait for all synchronous canceled to be done
+                _this3.setImmediateTick(function () {
+                    _this3.semGive(taken, true);
+                });
 
-                    var onCancel = item.onCancel;
+                var onCancel = item.onCancel;
 
-                    if (typeof onCancel === "function") {
-                        onCancel();
-                    }
+                if (typeof onCancel === "function") {
+                    onCancel();
                 }
             };
         }
