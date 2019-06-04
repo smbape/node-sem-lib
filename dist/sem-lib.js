@@ -140,7 +140,16 @@ RedBlackTreeStrategy.prototype.get = function (value) {
 };
 
 var isNumeric = function isNumeric(obj) {
-    return !Array.isArray(obj) && obj - parseFloat(obj) + 1 >= 0;
+    if (Array.isArray(obj)) {
+        return false;
+    }
+
+    var parsed = parseFloat(obj);
+    if (obj === parsed) {
+        return true;
+    }
+
+    return obj - parsed + 1 >= 0;
 };
 
 var isObject = function isObject(obj) {
@@ -161,6 +170,14 @@ function toInteger(num, positive, _default) {
         return _default;
     }
 
+    if (num === Number.POSITIVE_INFINITY) {
+        return num;
+    }
+
+    if (num === Number.NEGATIVE_INFINITY) {
+        return positive ? _default : num;
+    }
+
     num = parseInt(num, 10);
 
     return positive && num < 0 ? _default : num;
@@ -173,28 +190,19 @@ function toInteger(num, positive, _default) {
  * @param {Boolean} isFull (default = false) if true object is created with tokens
  * @param {Integer} priority (default = 15) default priority
  */
-function Semaphore(capacity, isFull, priority, sync) {
-    if (isNumeric(capacity)) {
-        capacity = parseInt(capacity, 10);
-        if (capacity <= 0) {
-            capacity = Number.POSITIVE_INFINITY;
-        }
-    } else if (capacity !== Number.POSITIVE_INFINITY) {
-        capacity = 1;
-    } else {
-        isFull = false;
-    }
+function Semaphore(capacity, isFull, priority) {
+    var sync = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
     var _queue = new SortedSet({
         comparator: priorityComparator
     });
 
     this.id = ++globalCounter;
-    this._capacity = capacity;
+    this._capacity = toInteger(capacity, true, 1);
     this._queue = _queue;
-    this._numTokens = isFull ? capacity : 0;
+    this._numTokens = isFull ? this._capacity : 0;
     // eslint-disable-next-line no-magic-numbers
-    this.priority = isNumeric(priority) ? parseInt(priority, 10) : 15;
+    this.priority = toInteger(priority, false, 15);
     this.sync = sync;
 }
 
@@ -239,13 +247,7 @@ Semaphore.prototype.getCapacity = function getCapacity() {
  * @return {Integer} maximum of available tokens
  */
 Semaphore.prototype.setCapacity = function getCapacity(capacity) {
-    if (isNumeric(capacity)) {
-        capacity = parseInt(capacity, 10);
-        if (capacity <= 0) {
-            capacity = Number.POSITIVE_INFINITY;
-        }
-        this._capacity = capacity;
-    }
+    this._capacity = toInteger(capacity, true, this._capacity);
 };
 
 /**
