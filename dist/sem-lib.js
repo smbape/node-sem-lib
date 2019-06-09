@@ -794,10 +794,10 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
         });
 
         var proxy = {
-            cancel: function cancel() {
+            cancel: item.cancel ? function cancel() {
                 item.cancel();
                 onTake(collection, i);
-            }
+            } : undefined
         };
 
         var _loop2 = function _loop2(key) {
