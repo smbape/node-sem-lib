@@ -143,7 +143,7 @@ In case you want to allow the waiting task to take tokens only if certains condi
 |-------------------|-------------|:---------:|---------------------|-----------------------------------------------------------------|
 | `priority`        | `Integer`   | Yes       | Semaphore priority  | Task priority. Lower values means higher priority               |
 | `num`             | `Integer`   | Yes       | `1`                 | Number of tokens to take                                        |
-| `timeOut`         | `Integer`   | Yes       | `undefined`         | Time to wait until the task is abandonned                       |
+| `timeOut`         | `Integer`   | Yes       | `undefined`         | Time to wait until the task is abandoned                       |
 | `onTimeOut`       | `Function`  | Yes       | `undefined`         | Function to call when waiting has reached timeout               |
 | `onCancel`        | `Function`  | Yes       | `undefined`         | Function to call when waiting has been canceled                 |
 | `unfair`          | `Boolean`   | Yes       | `false`             | Allows to take tokens from waiting tasks with lower priorities  |
