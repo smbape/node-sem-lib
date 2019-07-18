@@ -12,7 +12,7 @@ var semID = SemLib.semCreate();
 // wait for a token
 semID.semTake(callback);
 
-// Add a token to semaphore
+// Add a token to the semaphore
 SemLib.semGive();
 ```
 
@@ -74,11 +74,11 @@ semID.semTake(3, function(){
 
 ```javascript
 // Limit simultaneous access
-// You have multiple downloads to do and you don't want to blow your memory nor cpu
+// You have multiple downloads to do and you don't want to blow up your memory nor your cpu
 
 var SemLib = require("sem-lib");
 
-// 8 simultanenous downloads at same time
+// At most 8 simultanenous downloads
 var semID = SemLib.semCreate(8, true);
 
 require('fs').readFile('links.txt', function (err, data) {
@@ -117,7 +117,7 @@ See the Semaphore Class
 |-------------|-----------|:---------:|---------|---------------------------------------------------------------------------------|
 | `capacity`  | `Integer` | Yes       | `1`     | Number of available tokens. i.e. how much concurrency                           |
 | `isFull`    | `Boolean` | Yes       | `false` | Create semaphore with all tokens available                                      |
-| `priority`  | `Integer` | Yes       | `15`    | Default take priority. The lower the number is, the more priority the take has  |
+| `priority`  | `Integer` | Yes       | `15`    | Default take priority. Lower values means higher priority                       |
 
 ### semTake(task : `Function`) : `Inwaiting`
 
@@ -125,15 +125,15 @@ Shortcut to `semTake({onTake: task})`
 
 ### semTake(settings : `Object`) : `Inwaiting | false`
 
-Wait for Semaphore availability before calling onTake callback.
+Wait for the Semaphore availability before calling onTake callback.
 
 Returns `false` if the semaphore has been destroyed.
 
 #### `task`()
 
-Function to call when all tokens have been taken. Optional
+Function to call when all the tokens have been taken.
 
-#### `shouldTakeToken`(available : `Integer`, required : `Integer`, take : `Integer`, semID : `Semaphore`) : `Boolean`
+#### `shouldTakeToken`(availableTokens : `Integer`, missingTokens : `Integer`, alreadyTakenTokens : `Integer`, semID : `Semaphore`) : `Boolean`
 
 In case you want to allow the waiting task to take tokens only if certains conditions are met.
 
@@ -143,7 +143,7 @@ In case you want to allow the waiting task to take tokens only if certains condi
 |-------------------|-------------|:---------:|---------------------|-----------------------------------------------------------------|
 | `priority`        | `Integer`   | Yes       | Semaphore priority  | Task priority. Lower values means higher priority               |
 | `num`             | `Integer`   | Yes       | `1`                 | Number of tokens to take                                        |
-| `timeOut`         | `Integer`   | Yes       | `undefined`         | Time to wait until the task is abandoned                       |
+| `timeOut`         | `Integer`   | Yes       | `undefined`         | Time to wait until the task is abandoned                        |
 | `onTimeOut`       | `Function`  | Yes       | `undefined`         | Function to call when waiting has reached timeout               |
 | `onCancel`        | `Function`  | Yes       | `undefined`         | Function to call when waiting has been canceled                 |
 | `unfair`          | `Boolean`   | Yes       | `false`             | Allows to take tokens from waiting tasks with lower priorities  |
@@ -253,7 +253,7 @@ Cancel the task
 
 The MIT License (MIT)
 
-Copyright (c) 2014-2018 Stéphane MBAPE (https://smbape.com)
+Copyright (c) 2014-2019 Stéphane MBAPE (https://smbape.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
