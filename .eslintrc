@@ -159,8 +159,7 @@
     "no-unused-vars": [2, {
       "vars": "all",
       "args": "none",
-      "caughtErrors": "none",
-        "varsIgnorePattern": "\\b(?:factory|deps|freact|#{basename})\\b"
+      "caughtErrors": "none"
     }],
     "no-catch-shadow": 2,
     "no-label-var": 2,

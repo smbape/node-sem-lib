@@ -77,112 +77,122 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+/* WEBPACK VAR INJECTION */(function(global) {function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var AbstractSortedSet = __webpack_require__(2);
+
 var RedBlackTreeStrategy = __webpack_require__(3);
 
 var hasProp = Object.hasOwnProperty;
 
 var inherits = function inherits(child, parent) {
-    for (var key in parent) {
-        if (hasProp.call(parent, key)) {
-            child[key] = parent[key];
-        }
+  for (var key in parent) {
+    if (hasProp.call(parent, key)) {
+      child[key] = parent[key];
     }
+  }
 
-    function ctor() {
-        // eslint-disable-next-line no-invalid-this
-        this.constructor = child;
-    }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor();
-    child.__super__ = parent.prototype;return child;
+  function ctor() {
+    // eslint-disable-next-line no-invalid-this
+    this.constructor = child;
+  }
+
+  ctor.prototype = parent.prototype;
+  child.prototype = new ctor();
+  child.__super__ = parent.prototype;
+  return child;
 };
 
 function SortedSet(options) {
-    if (options == null) {
-        options = {};
-    }
-    if (!options.strategy) {
-        options.strategy = RedBlackTreeStrategy;
-    }
-    SortedSet.__super__.constructor.call(this, options);
+  if (options == null) {
+    options = {};
+  }
+
+  if (!options.strategy) {
+    options.strategy = RedBlackTreeStrategy;
+  }
+
+  SortedSet.__super__.constructor.call(this, options);
 }
 
 inherits(SortedSet, AbstractSortedSet);
-
 SortedSet.prototype.add = SortedSet.prototype.insert;
 
 SortedSet.prototype.get = function (value) {
-    // Use our optimzed get on RedBlackTreeStrategy
-    return this.priv.get(value);
-};
+  // Use our optimzed get on RedBlackTreeStrategy
+  return this.priv.get(value);
+}; // Optimization: take the first match.
 
-// Optimization: take the first match.
+
 RedBlackTreeStrategy.prototype.get = function (value) {
-    var comparator = this.comparator;
-    var node = this.root;
-    var cmp = void 0;
+  var comparator = this.comparator;
+  var node = this.root;
+  var cmp;
 
-    while (node !== null) {
-        cmp = comparator(value, node.value);
-        if (cmp === 0) {
-            break;
-        } else if (cmp < 0) {
-            node = node.left;
-        } else {
-            node = node.right;
-        }
+  while (node !== null) {
+    cmp = comparator(value, node.value);
+
+    if (cmp === 0) {
+      break;
+    } else if (cmp < 0) {
+      node = node.left;
+    } else {
+      node = node.right;
     }
+  }
 
-    return node === null ? undefined : node.value;
+  return node === null ? undefined : node.value;
 };
 
 var isNumeric = function isNumeric(obj) {
-    if (Array.isArray(obj)) {
-        return false;
-    }
+  if (Array.isArray(obj)) {
+    return false;
+  }
 
-    var parsed = parseFloat(obj);
-    if (obj === parsed) {
-        return true;
-    }
+  var parsed = parseFloat(obj);
 
-    return obj - parsed + 1 >= 0;
+  if (obj === parsed) {
+    return true;
+  }
+
+  return obj - parsed + 1 >= 0;
 };
 
 var isObject = function isObject(obj) {
-    return typeof obj === "object" && obj !== null;
-};
+  return typeof obj === "object" && obj !== null;
+}; // Debugging purpose
 
-// Debugging purpose
+
 var globalCounter = 0;
-
 /**
  * Value of parsed interger or default value if not a number or < 0
  * @param  {Any} num value to parse
  * @param  {Interger} _default default value
  * @return {Interger} parsing result
  */
+
 function toInteger(num, positive, _default) {
-    if (!isNumeric(num)) {
-        return _default;
-    }
+  if (!isNumeric(num)) {
+    return _default;
+  }
 
-    if (num === Number.POSITIVE_INFINITY) {
-        return num;
-    }
+  if (num === Number.POSITIVE_INFINITY) {
+    return num;
+  }
 
-    if (num === Number.NEGATIVE_INFINITY) {
-        return positive ? _default : num;
-    }
+  if (num === Number.NEGATIVE_INFINITY) {
+    return positive ? _default : num;
+  }
 
-    num = parseInt(num, 10);
-
-    return positive && num < 0 ? _default : num;
+  num = parseInt(num, 10);
+  return positive && num < 0 ? _default : num;
 }
-
 /**
  * @constructor
  *
@@ -190,117 +200,128 @@ function toInteger(num, positive, _default) {
  * @param {Boolean} isFull (default = false) if true object is created with tokens
  * @param {Integer} priority (default = 15) default priority
  */
+
+
 function Semaphore(capacity, isFull, priority) {
-    var sync = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  var sync = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
-    var _queue = new SortedSet({
-        comparator: priorityComparator
-    });
+  var _queue = new SortedSet({
+    comparator: priorityComparator
+  });
 
-    this.id = ++globalCounter;
-    this._capacity = toInteger(capacity, true, 1);
-    this._queue = _queue;
-    this._numTokens = isFull ? this._capacity : 0;
-    // eslint-disable-next-line no-magic-numbers
-    this.priority = toInteger(priority, false, 15);
-    this.sync = sync;
+  this.id = ++globalCounter;
+  this._capacity = toInteger(capacity, true, 1);
+  this._queue = _queue;
+  this._numTokens = isFull ? this._capacity : 0; // eslint-disable-next-line no-magic-numbers
+
+  this.priority = toInteger(priority, false, 15);
+  this.sync = sync;
 }
 
 Semaphore.prototype.setImmediateTick = function () {
-    if (typeof global === "object" && typeof global.setImmediate === "function") {
-        return global.setImmediate;
-    }
+  if (typeof global === "object" && typeof global.setImmediate === "function") {
+    return global.setImmediate;
+  }
 
-    return function (fn) {
-        return setTimeout(fn, 1);
-    };
+  return function (fn) {
+    return setTimeout(fn, 1);
+  };
 }();
 
 Semaphore.prototype._clearImmediateTick = function () {
-    if (typeof global === "object" && typeof global.clearImmediate === "function") {
-        return global.clearImmediate;
-    }
+  if (typeof global === "object" && typeof global.clearImmediate === "function") {
+    return global.clearImmediate;
+  }
 
-    return function (id) {
-        clearTimeout(id);
-    };
+  return function (id) {
+    clearTimeout(id);
+  };
 }();
-
 /**
  * Return number of available tokens
  * @return {Interger} number of available tokens
  */
-Semaphore.prototype.getNumTokens = function getNumTokens() {
-    return this._numTokens;
-};
 
+
+Semaphore.prototype.getNumTokens = function getNumTokens() {
+  return this._numTokens;
+};
 /**
  * Return maximum of available tokens
  * @return {Integer} maximum of available tokens
  */
-Semaphore.prototype.getCapacity = function getCapacity() {
-    return this._capacity;
-};
 
+
+Semaphore.prototype.getCapacity = function getCapacity() {
+  return this._capacity;
+};
 /**
  * Set the maximum of available tokens
  * @return {Integer} maximum of available tokens
  */
-Semaphore.prototype.setCapacity = function getCapacity(capacity) {
-    this._capacity = toInteger(capacity, true, this._capacity);
-};
 
+
+Semaphore.prototype.setCapacity = function getCapacity(capacity) {
+  this._capacity = toInteger(capacity, true, this._capacity);
+};
 /**
  * Add tokens to the Semaphore
  *
  * @param {Interger} num Number of tokens to add
  */
+
+
 Semaphore.prototype.semGive = function semGive(num, isGivenBack) {
-    if (this.destroyed) {
-        return false;
+  if (this.destroyed) {
+    return false;
+  }
+
+  if (num !== Number.POSITIVE_INFINITY) {
+    num = toInteger(num, true, 1);
+
+    if (num < 1) {
+      num = 1;
     }
 
-    if (num !== Number.POSITIVE_INFINITY) {
-        num = toInteger(num, true, 1);
-        if (num < 1) {
-            num = 1;
-        }
-        this._numTokens += num;
-    } else {
-        this._numTokens = num;
-    }
+    this._numTokens += num;
+  } else {
+    this._numTokens = num;
+  }
 
-    if (!isGivenBack && this._numTokens > this._capacity) {
-        this._numTokens = this._capacity;
-    }
+  if (!isGivenBack && this._numTokens > this._capacity) {
+    this._numTokens = this._capacity;
+  }
 
-    this._semTake(isGivenBack);
+  this._semTake(isGivenBack);
 
-    if (isGivenBack && this._numTokens > this._capacity) {
-        this._numTokens = this._capacity;
-    }
+  if (isGivenBack && this._numTokens > this._capacity) {
+    this._numTokens = this._capacity;
+  }
 
-    return true;
+  return true;
 };
-
 /**
  * Give tokens to every inwaiting tasks
  */
+
+
 Semaphore.prototype.semFlush = function semFlush() {
-    if (this.destroyed) {
-        return false;
-    }
+  if (this.destroyed) {
+    return false;
+  }
 
-    this._numTokens = 0;
-    this._queue.forEach(function (group) {
-        group.stack.forEach(function (item) {
-            item.num = 0;
-        });
+  this._numTokens = 0;
+
+  this._queue.forEach(function (group) {
+    group.stack.forEach(function (item) {
+      item.num = 0;
     });
-    this._semTake();
-    return true;
-};
+  });
 
+  this._semTake();
+
+  return true;
+};
 /**
  * Wait for Semaphore availability before calling onTake callback
  * @example
@@ -317,689 +338,706 @@ Semaphore.prototype.semFlush = function semFlush() {
  * </ul>
  * @return {Object|false} item item.addCounter(n = 1) => wait for n more tokens
  */
+
+
 Semaphore.prototype.semTake = function semTake(options, result) {
-    var _this2 = this;
+  var _this2 = this;
 
-    var task = void 0,
-        timeOut = void 0,
-        onTimeOut = void 0,
-        onCancel = void 0,
-        num = void 0,
-        priority = void 0,
-        unfair = void 0,
-        shouldTakeToken = void 0,
-        sync = void 0;
+  var task, timeOut, onTimeOut, onCancel, num, priority, unfair, shouldTakeToken, sync;
 
-    if (this.destroyed) {
-        return false;
+  if (this.destroyed) {
+    return false;
+  }
+
+  if (isObject(options)) {
+    task = options.onTake;
+    priority = options.priority;
+    num = options.num;
+    timeOut = options.timeOut;
+    onTimeOut = options.onTimeOut;
+    onCancel = options.onCancel;
+    unfair = options.unfair;
+    shouldTakeToken = options.shouldTakeToken;
+    sync = options.sync;
+  } else if (typeof options === "function") {
+    task = options;
+    options = {};
+  }
+
+  if (typeof task !== "function") {
+    task = Function.prototype;
+  }
+
+  num = toInteger(num, true, 1);
+  priority = toInteger(priority, false, this.priority);
+  var item = {
+    id: ++globalCounter,
+    task: task,
+    priority: priority,
+    num: num,
+    onTimeOut: onTimeOut,
+    onCancel: onCancel,
+    unfair: unfair,
+    shouldTakeToken: shouldTakeToken,
+    sync: sync,
+    semaphore: this,
+    taken: 0,
+    cancel: function cancel() {
+      var taken = item.taken;
+
+      _this2._removeItem(item);
+
+      if (taken !== 0) {
+        // give on next tick to wait for all synchronous canceled to be done
+        _this2.setImmediateTick(function () {
+          _this2.semGive(taken, true);
+        });
+      }
+
+      if (typeof onCancel === "function") {
+        onCancel();
+      }
+    },
+    setPriority: function setPriority(nextPriority) {
+      if (item.group == null) {
+        return;
+      }
+
+      nextPriority = toInteger(nextPriority, false, _this2.priority);
+
+      if (nextPriority === item.priority) {
+        return;
+      }
+
+      item.group.stack.remove(item);
+
+      if (item.group.stack.length === 0) {
+        // No more inWaiting for this priority group
+        item.semaphore._queue.remove(item.group);
+      }
+
+      item.priority = nextPriority;
+
+      _this2._addItemPriority(item);
     }
+  };
 
-    if (isObject(options)) {
-        task = options.onTake;
-        priority = options.priority;
-        num = options.num;
-        timeOut = options.timeOut;
-        onTimeOut = options.onTimeOut;
-        onCancel = options.onCancel;
-        unfair = options.unfair;
-        shouldTakeToken = options.shouldTakeToken;
-        sync = options.sync;
-    } else if (typeof options === "function") {
-        task = options;
-        options = {};
+  this._addItemPriority(item);
+
+  if (isNumeric(timeOut) && timeOut > 0) {
+    item.timer = setTimeout(function () {
+      var taken = item.taken;
+
+      _this2._removeItem(item);
+
+      if (taken !== 0) {
+        // give on next tick to wait for all synchronous canceled to be done
+        _this2.setImmediateTick(function () {
+          _this2.semGive(taken, true);
+        });
+      }
+
+      if (typeof onTimeOut === "function") {
+        onTimeOut();
+      }
+    }, timeOut);
+  }
+
+  var res = {
+    addCounter: function addCounter(nextNum) {
+      item.num += toInteger(nextNum, 1);
+    },
+    cancel: function cancel() {
+      item.cancel();
+    },
+    setPriority: function setPriority(nextPriority) {
+      item.setPriority(nextPriority);
     }
+  };
+  var hasResult = isObject(result);
 
-    if (typeof task !== "function") {
-        task = Function.prototype;
-    }
+  if (hasResult) {
+    result.addCounter = res.addCounter;
+    result.cancel = res.cancel;
+    result.setPriority = res.setPriority;
+  }
 
-    num = toInteger(num, true, 1);
-    priority = toInteger(priority, false, this.priority);
-
-    var item = {
-        id: ++globalCounter,
-        task: task,
-        priority: priority,
-        num: num,
-        onTimeOut: onTimeOut,
-        onCancel: onCancel,
-        unfair: unfair,
-        shouldTakeToken: shouldTakeToken,
-        sync: sync,
-        semaphore: this,
-        taken: 0,
-        cancel: function cancel() {
-            var taken = item.taken;
-            _this2._removeItem(item);
-
-            if (taken !== 0) {
-                // give on next tick to wait for all synchronous canceled to be done
-                _this2.setImmediateTick(function () {
-                    _this2.semGive(taken, true);
-                });
-            }
-
-            if (typeof onCancel === "function") {
-                onCancel();
-            }
-        },
-        setPriority: function setPriority(nextPriority) {
-            if (item.group == null) {
-                return;
-            }
-
-            nextPriority = toInteger(nextPriority, false, _this2.priority);
-            if (nextPriority === item.priority) {
-                return;
-            }
-
-            item.group.stack.remove(item);
-            if (item.group.stack.length === 0) {
-                // No more inWaiting for this priority group
-                item.semaphore._queue.remove(item.group);
-            }
-
-            item.priority = nextPriority;
-            _this2._addItemPriority(item);
-        }
-    };
-
-    this._addItemPriority(item);
-
-    if (isNumeric(timeOut) && timeOut > 0) {
-        item.timer = setTimeout(function () {
-            var taken = item.taken;
-            _this2._removeItem(item);
-
-            if (taken !== 0) {
-                // give on next tick to wait for all synchronous canceled to be done
-                _this2.setImmediateTick(function () {
-                    _this2.semGive(taken, true);
-                });
-            }
-
-            if (typeof onTimeOut === "function") {
-                onTimeOut();
-            }
-        }, timeOut);
-    }
-
-    var res = {
-        addCounter: function addCounter(nextNum) {
-            item.num += toInteger(nextNum, 1);
-        },
-        cancel: function cancel() {
-            item.cancel();
-        },
-        setPriority: function setPriority(nextPriority) {
-            item.setPriority(nextPriority);
-        }
-    };
-
-    var hasResult = isObject(result);
+  item.disable = function () {
+    delete res.addCounter;
+    delete res.cancel;
+    delete res.setPriority;
 
     if (hasResult) {
-        result.addCounter = res.addCounter;
-        result.cancel = res.cancel;
-        result.setPriority = res.setPriority;
+      delete result.addCounter;
+      delete result.cancel;
+      delete result.setPriority;
     }
+  };
 
-    item.disable = function () {
-        delete res.addCounter;
-        delete res.cancel;
-        delete res.setPriority;
+  this._semTake();
 
-        if (hasResult) {
-            delete result.addCounter;
-            delete result.cancel;
-            delete result.setPriority;
-        }
-    };
-
-    this._semTake();
-    return res;
+  return res;
 };
 
 Semaphore.prototype._shouldTakeToken = function _shouldTakeToken(item, num) {
-    // avoid giving item as context when calling shouldTakeToken
-    return typeof item.shouldTakeToken !== "function" || (0, item.shouldTakeToken)(num, item.num, item.taken, this);
+  // avoid giving item as context when calling shouldTakeToken
+  return typeof item.shouldTakeToken !== "function" || (0, item.shouldTakeToken)(num, item.num, item.taken, this);
 };
 
 Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
-    var groupIterator = void 0,
-        group = void 0,
-        itemIterator = void 0,
-        item = void 0;
+  var groupIterator, group, itemIterator, item;
+  groupIterator = this._queue.beginIterator();
+  group = groupIterator.value();
+  itemIterator = group.stack.beginIterator();
+  item = itemIterator.value();
 
-    groupIterator = this._queue.beginIterator();
-    group = groupIterator.value();
+  while (item && item.num !== 0 && !this._shouldTakeToken(item, Math.min(item.num, this._numTokens))) {
+    item = null;
+    itemIterator = itemIterator.next();
 
-    itemIterator = group.stack.beginIterator();
-    item = itemIterator.value();
+    if (itemIterator === null) {
+      groupIterator = groupIterator.next();
 
-    while (item && item.num !== 0 && !this._shouldTakeToken(item, Math.min(item.num, this._numTokens))) {
-        item = null;
+      if (groupIterator === null) {
+        break;
+      }
 
-        itemIterator = itemIterator.next();
-        if (itemIterator === null) {
-            groupIterator = groupIterator.next();
-            if (groupIterator === null) {
-                break;
-            }
-
-            group = groupIterator.value();
-            itemIterator = group.stack.beginIterator();
-        }
-
-        item = itemIterator.value();
+      group = groupIterator.value();
+      itemIterator = group.stack.beginIterator();
     }
 
-    return [group, item];
-};
+    item = itemIterator.value();
+  }
 
+  return [group, item];
+};
 /**
  * Take tokens if available
  *
  */
+
+
 Semaphore.prototype._semTake = function _semTake(topSync) {
-    var _this3 = this;
+  var _this3 = this;
 
-    if (this.taking) {
-        return;
+  if (this.taking) {
+    return;
+  }
+
+  if (typeof this.keepAlive === "undefined") {
+    this._keepAlive();
+  }
+
+  this.taking = true;
+
+  var _loop = function _loop() {
+    var _this3$_nextGroupItem = _this3._nextGroupItem(),
+        _this3$_nextGroupItem2 = _slicedToArray(_this3$_nextGroupItem, 2),
+        group = _this3$_nextGroupItem2[0],
+        item = _this3$_nextGroupItem2[1];
+
+    if (item == null) {
+      return "break";
     }
 
-    if (typeof this.keepAlive === "undefined") {
-        this._keepAlive();
-    }
+    var weakerIterator = void 0,
+        wearkeGroup = void 0,
+        weakerItemIterator = void 0,
+        weakerItem = void 0; // if item is still waiting for tokens
 
-    this.taking = true;
+    if (item.num > _this3._numTokens) {
+      item.taken += _this3._numTokens;
+      item.num -= _this3._numTokens;
+      _this3._numTokens = 0; // take token from tasks with weaker priority
 
-    var _loop = function _loop() {
-        var _nextGroupItem2 = _this3._nextGroupItem(),
-            _nextGroupItem3 = _slicedToArray(_nextGroupItem2, 2),
-            group = _nextGroupItem3[0],
-            item = _nextGroupItem3[1];
+      if (item.unfair && _this3._queue.length !== 1) {
+        weakerIterator = _this3._queue.endIterator().previous();
 
-        if (item == null) {
-            return "break";
-        }
+        while (weakerIterator && item.num !== 0) {
+          wearkeGroup = weakerIterator.value();
 
-        var weakerIterator = void 0,
-            wearkeGroup = void 0,
-            weakerItemIterator = void 0,
-            weakerItem = void 0;
+          if (wearkeGroup === group || wearkeGroup.priority <= _this3.priority) {
+            // can only be unfair on tasks with lower priority that semaphore default priority
+            break;
+          }
 
-        // if item is still waiting for tokens
-        if (item.num > _this3._numTokens) {
-            item.taken += _this3._numTokens;
-            item.num -= _this3._numTokens;
-            _this3._numTokens = 0;
+          weakerItemIterator = wearkeGroup.stack.endIterator().previous();
+          weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
 
-            // take token from tasks with weaker priority
-            if (item.unfair && _this3._queue.length !== 1) {
-                weakerIterator = _this3._queue.endIterator().previous();
-
-                while (weakerIterator && item.num !== 0) {
-                    wearkeGroup = weakerIterator.value();
-                    if (wearkeGroup === group || wearkeGroup.priority <= _this3.priority) {
-                        // can only be unfair on tasks with lower priority that semaphore default priority
-                        break;
-                    }
-
-                    weakerItemIterator = wearkeGroup.stack.endIterator().previous();
-                    weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
-
-                    while (weakerItem && item.num !== 0) {
-                        if (weakerItem.taken > 0 && _this3._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
-                            if (item.num > weakerItem.taken) {
-                                weakerItem.num += weakerItem.taken;
-                                item.num -= weakerItem.taken;
-                                weakerItem.taken = 0;
-                            } else {
-                                weakerItem.taken -= item.num;
-                                weakerItem.num += item.num;
-                                item.num = 0;
-                            }
-                        }
-
-                        weakerItemIterator = weakerItemIterator.hasPrevious() && weakerItemIterator.previous();
-                        weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
-                    }
-
-                    weakerIterator = weakerIterator.hasPrevious() && weakerIterator.previous();
-                }
+          while (weakerItem && item.num !== 0) {
+            if (weakerItem.taken > 0 && _this3._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
+              if (item.num > weakerItem.taken) {
+                weakerItem.num += weakerItem.taken;
+                item.num -= weakerItem.taken;
+                weakerItem.taken = 0;
+              } else {
+                weakerItem.taken -= item.num;
+                weakerItem.num += item.num;
+                item.num = 0;
+              }
             }
 
-            // if item is still waiting for tokens, try again at next give or flush
-            if (item.num !== 0) {
-                return "break";
-            }
+            weakerItemIterator = weakerItemIterator.hasPrevious() && weakerItemIterator.previous();
+            weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
+          }
+
+          weakerIterator = weakerIterator.hasPrevious() && weakerIterator.previous();
         }
+      } // if item is still waiting for tokens, try again at next give or flush
 
-        item.taken += item.num;
-        if (_this3._numTokens !== Number.POSITIVE_INFINITY) {
-            _this3._numTokens -= item.num;
-        }
-        item.num = 0;
 
-        var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : _this3.sync;
-        var disable = item.disable,
-            taken = item.taken,
-            task = item.task;
-
-        _this3._removeItem(item);
-
-        if (sync) {
-            disable();
-            task();
-        } else {
-            // Non blocking call of callback
-            // A way to loop through in waiting tasks without blocking
-            // the semaphore process until done
-            var timerID = _this3.setImmediateTick(function () {
-                timerID = null;
-                disable();
-                task();
-            });
-            item.cancel = function () {
-                _this3._clearImmediateTick(timerID);
-                disable();
-                timerID = null;
-
-                // give on next tick to wait for all synchronous canceled to be done
-                _this3.setImmediateTick(function () {
-                    _this3.semGive(taken, true);
-                });
-
-                var onCancel = item.onCancel;
-
-                if (typeof onCancel === "function") {
-                    onCancel();
-                }
-            };
-        }
-    };
-
-    while (this._checkKeepAlive(this._destroyWaiting)) {
-        var _ret = _loop();
-
-        if (_ret === "break") break;
+      if (item.num !== 0) {
+        return "break";
+      }
     }
-    this.taking = false;
+
+    item.taken += item.num;
+
+    if (_this3._numTokens !== Number.POSITIVE_INFINITY) {
+      _this3._numTokens -= item.num;
+    }
+
+    item.num = 0;
+    var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : _this3.sync;
+    var disable = item.disable,
+        taken = item.taken,
+        task = item.task;
+
+    _this3._removeItem(item);
+
+    if (sync) {
+      disable();
+      task();
+    } else {
+      // Non blocking call of callback
+      // A way to loop through in waiting tasks without blocking
+      // the semaphore process until done
+      var timerID = _this3.setImmediateTick(function () {
+        timerID = null;
+        disable();
+        task();
+      });
+
+      item.cancel = function () {
+        _this3._clearImmediateTick(timerID);
+
+        disable();
+        timerID = null; // give on next tick to wait for all synchronous canceled to be done
+
+        _this3.setImmediateTick(function () {
+          _this3.semGive(taken, true);
+        });
+
+        var onCancel = item.onCancel;
+
+        if (typeof onCancel === "function") {
+          onCancel();
+        }
+      };
+    }
+  };
+
+  while (this._checkKeepAlive(this._destroyWaiting)) {
+    var _ret = _loop();
+
+    if (_ret === "break") break;
+  }
+
+  this.taking = false;
 };
-
 /**
  * Destroy all inwaiting tasks
  * @param  {Boolean} safe if true, wait for all inwaiting tasks to be performed, else, destroy with no warn
  */
+
+
 Semaphore.prototype.destroy = function (safe, onDestroy) {
-    if (this._destroying) {
-        return false;
-    }
+  if (this._destroying) {
+    return false;
+  }
 
-    this._destroying = true;
-    this.__onDestroy = onDestroy;
+  this._destroying = true;
+  this.__onDestroy = onDestroy;
 
-    if (safe !== false) {
-        this._destroyWaiting = true;
-        this._semTake();
-        return true;
-    }
+  if (safe !== false) {
+    this._destroyWaiting = true;
 
-    return this._destroy(safe);
+    this._semTake();
+
+    return true;
+  }
+
+  return this._destroy(safe);
 };
 
 Semaphore.prototype._destroy = function (safe) {
-    this._destroyWaiting = false;
+  this._destroyWaiting = false; // for loop to avoid infinite loop with while
 
-    // for loop to avoid infinite loop with while
-    for (var i = 0, _len = this._queue.length; i < _len; i++) {
-        var _group = this._queue.beginIterator().value();
-        var _item = _group.stack.beginIterator().value();
+  for (var i = 0, _len = this._queue.length; i < _len; i++) {
+    var group = this._queue.beginIterator().value();
 
-        if (safe !== false) {
-            _item.cancel();
-        }
-        this._removeItem(_item);
+    var item = group.stack.beginIterator().value();
+
+    if (safe !== false) {
+      item.cancel();
     }
 
-    if (this._checkKeepAlive()) {
-        return false;
-    }
+    this._removeItem(item);
+  }
 
-    var __onDestroy = this.__onDestroy;
+  if (this._checkKeepAlive()) {
+    return false;
+  }
 
-    this.destroyed = true;
-    if ("function" === typeof __onDestroy) {
-        __onDestroy();
-    }
-    return true;
+  var __onDestroy = this.__onDestroy;
+  this.destroyed = true;
+
+  if ("function" === typeof __onDestroy) {
+    __onDestroy();
+  }
+
+  return true;
 };
 
 Semaphore.prototype.schedule = function (collection, priority, iteratee, callback) {
-    var semID = this;
+  var semID = this;
 
-    switch (arguments.length) {
-        case 2:
-            if (typeof priority === "function") {
-                callback = priority;
-                priority = null;
-            }
-            break;
-        case 3:
-            callback = iteratee;
-            iteratee = null;
+  switch (arguments.length) {
+    case 2:
+      if (typeof priority === "function") {
+        callback = priority;
+        priority = null;
+      }
 
-            if ("function" === typeof priority) {
-                iteratee = priority;
-                priority = null;
-            }
-            break;
-        default:
-        // Nothing to do
+      break;
+
+    case 3:
+      callback = iteratee;
+      iteratee = null;
+
+      if ("function" === typeof priority) {
+        iteratee = priority;
+        priority = null;
+      }
+
+      break;
+
+    default: // Nothing to do
+
+  }
+
+  if (callback == null) {
+    callback = Function.prototype;
+  }
+
+  var count = 0;
+  var index = -1;
+  var isArray = Array.isArray(collection);
+  var keys = isArray ? null : Object.keys(collection);
+  var len = isArray ? collection.length : keys.length;
+
+  if (len === 0) {
+    callback();
+    return null;
+  }
+
+  var items = new Array(len);
+  var doneCalled = false;
+  var canceled = false;
+  var taken = 0;
+  var errors = new Array(len);
+  var hasError = false;
+
+  var onTake = function onTake(coll, i) {
+    taken++;
+    items[i] = null;
+    var key = isArray ? i : keys[i];
+    var called = false;
+
+    var next = function next(err) {
+      if (called) {
+        throw new Error("callback already called");
+      }
+
+      called = true;
+      items[i] = null;
+      semID.semGive();
+      taken--;
+
+      if (doneCalled) {
+        return;
+      }
+
+      if (canceled && !err) {
+        err = new Error("canceled");
+        err.code = "CANCELED";
+      }
+
+      if (err) {
+        if (!hasError) {
+          hasError = true;
+
+          if (!canceled) {
+            cancel();
+          }
+        }
+
+        errors[i] = err;
+      }
+
+      if (++count === len || hasError && taken === 0) {
+        doneCalled = true;
+
+        if (canceled) {
+          errors.code = "CANCELED";
+        }
+
+        callback(hasError ? errors : null);
+      }
+    };
+
+    if (canceled) {
+      next();
+      return;
     }
 
-    if (callback == null) {
-        callback = Function.prototype;
+    var icancel = typeof iteratee === "function" ? iteratee(coll[key], key, next) : coll[key](next);
+    items[i] = {
+      cancel: function cancel() {
+        if (typeof icancel === "function") {
+          icancel();
+        } else if (icancel !== null && typeof icancel === "object") {
+          if (typeof icancel.cancel === "function") {
+            icancel.cancel();
+          } else if (typeof icancel.abort === "function") {
+            icancel.abort();
+          }
+        }
+      }
+    };
+  };
+
+  var iterate = function iterate(i) {
+    var item = semID.semTake({
+      priority: priority,
+      onTake: onTake.bind(null, collection, i)
+    });
+    var proxy = {
+      cancel: item.cancel ? function () {
+        item.cancel();
+        onTake(collection, i);
+      } : undefined
+    };
+
+    var _loop2 = function _loop2(key) {
+      if (key === "cancel") {
+        return "continue";
+      }
+
+      Object.defineProperty(proxy, key, {
+        configurable: true,
+        enumerable: true,
+        get: function get() {
+          return item[key];
+        },
+        set: function set(value) {
+          item[key] = value;
+          return value;
+        }
+      });
+    };
+
+    for (var key in item) {
+      var _ret2 = _loop2(key);
+
+      if (_ret2 === "continue") continue;
     }
 
-    var count = 0;
-    var index = -1;
-    var isArray = Array.isArray(collection);
-    var keys = isArray ? null : Object.keys(collection);
-    var len = isArray ? collection.length : keys.length;
+    return proxy;
+  };
 
-    if (len === 0) {
-        callback();
-        return null;
+  var loop = function loop() {
+    do {
+      ++index;
+      items[index] = iterate(index);
+    } while (index !== len - 1);
+  };
+
+  function cancel() {
+    if (canceled) {
+      return;
     }
 
-    var items = new Array(len);
-    var doneCalled = false;
-    var canceled = false;
-    var taken = 0;
-    var errors = new Array(len);
-    var hasError = false;
+    canceled = true;
 
-    var onTake = function onTake(coll, i) {
-        taken++;
+    for (var i = 0, size = items.length; i < size; i++) {
+      if (items[i] !== null && typeof items[i] === "object" && typeof items[i].cancel === "function") {
+        items[i].cancel();
         items[i] = null;
-        var key = isArray ? i : keys[i];
-
-        var called = false;
-        var next = function next(err) {
-            if (called) {
-                throw new Error("callback already called");
-            }
-            called = true;
-            items[i] = null;
-
-            semID.semGive();
-            taken--;
-
-            if (doneCalled) {
-                return;
-            }
-
-            if (canceled && !err) {
-                err = new Error("canceled");
-                err.code = "CANCELED";
-            }
-
-            if (err) {
-                if (!hasError) {
-                    hasError = true;
-                    if (!canceled) {
-                        cancel();
-                    }
-                }
-                errors[i] = err;
-            }
-
-            if (++count === len || hasError && taken === 0) {
-                doneCalled = true;
-                if (canceled) {
-                    errors.code = "CANCELED";
-                }
-                callback(hasError ? errors : null);
-            }
-        };
-
-        if (canceled) {
-            next();
-            return;
-        }
-
-        var icancel = typeof iteratee === "function" ? iteratee(coll[key], key, next) : coll[key](next);
-
-        items[i] = {
-            cancel: function cancel() {
-                if (typeof icancel === "function") {
-                    icancel();
-                } else if (icancel !== null && typeof icancel === "object") {
-                    if (typeof icancel.cancel === "function") {
-                        icancel.cancel();
-                    } else if (typeof icancel.abort === "function") {
-                        icancel.abort();
-                    }
-                }
-            }
-        };
-    };
-
-    var iterate = function iterate(i) {
-        var item = semID.semTake({
-            priority: priority,
-            onTake: onTake.bind(null, collection, i)
-        });
-
-        var proxy = {
-            cancel: item.cancel ? function () {
-                item.cancel();
-                onTake(collection, i);
-            } : undefined
-        };
-
-        var _loop2 = function _loop2(key) {
-            if (key === "cancel") {
-                return "continue";
-            }
-
-            Object.defineProperty(proxy, key, {
-                configurable: true,
-                enumerable: true,
-                get: function get() {
-                    return item[key];
-                },
-                set: function set(value) {
-                    item[key] = value;
-                    return value;
-                }
-            });
-        };
-
-        for (var key in item) {
-            var _ret2 = _loop2(key);
-
-            if (_ret2 === "continue") continue;
-        }
-
-        return proxy;
-    };
-
-    var loop = function loop() {
-        do {
-            ++index;
-            items[index] = iterate(index);
-        } while (index !== len - 1);
-    };
-
-    function cancel() {
-        if (canceled) {
-            return;
-        }
-
-        canceled = true;
-        for (var i = 0, size = items.length; i < size; i++) {
-            if (items[i] !== null && typeof items[i] === "object" && typeof items[i].cancel === "function") {
-                items[i].cancel();
-                items[i] = null;
-            }
-        }
+      }
     }
+  }
 
-    var setPriority = function setPriority(nextPriority) {
-        for (var i = 0, size = items.length; i < size; i++) {
-            if (items[i] !== null && typeof items[i] === "object" && typeof items[i].setPriority === "function") {
-                items[i].setPriority(nextPriority);
-            }
-        }
-    };
+  var setPriority = function setPriority(nextPriority) {
+    for (var i = 0, size = items.length; i < size; i++) {
+      if (items[i] !== null && typeof items[i] === "object" && typeof items[i].setPriority === "function") {
+        items[i].setPriority(nextPriority);
+      }
+    }
+  };
 
-    loop();
-
-    return {
-        setPriority: setPriority,
-        cancel: cancel
-    };
+  loop();
+  return {
+    setPriority: setPriority,
+    cancel: cancel
+  };
 };
 
 Semaphore.prototype._addItemPriority = function (item) {
-    var group = this._queue.get({
-        priority: item.priority
-    });
-    if (!group) {
-        group = this._addGroup(item);
-    }
-    group.stack.add(item);
-    item.group = group;
+  var group = this._queue.get({
+    priority: item.priority
+  });
+
+  if (!group) {
+    group = this._addGroup(item);
+  }
+
+  group.stack.add(item);
+  item.group = group;
 };
 
 Semaphore.prototype._checkKeepAlive = function _checkKeepAlive(_destroyWaiting) {
-    if (this._hasInWaitingTask()) {
-        return true;
-    }
+  if (this._hasInWaitingTask()) {
+    return true;
+  }
 
-    if (this.keepAlive) {
-        clearTimeout(this.keepAlive);
-        delete this.keepAlive;
-    }
+  if (this.keepAlive) {
+    clearTimeout(this.keepAlive);
+    delete this.keepAlive;
+  }
 
-    if (_destroyWaiting) {
-        this._destroy();
-    }
-    return false;
+  if (_destroyWaiting) {
+    this._destroy();
+  }
+
+  return false;
 };
 
 Semaphore.prototype.isAlive = function isAlive() {
-    return Boolean(this.keepAlive);
+  return Boolean(this.keepAlive);
 };
 
 Semaphore.prototype.hasInWaitingTask = function hasInWaitingTask() {
-    return hasProp.call(this, "_queue") && this._hasInWaitingTask();
+  return hasProp.call(this, "_queue") && this._hasInWaitingTask();
 };
 
 Semaphore.prototype._countInWaitingTokens = function _countInWaitingTokens() {
-    var count = 0;
+  var count = 0;
 
-    if (!this.hasInWaitingTask()) {
-        return count;
-    }
+  if (!this.hasInWaitingTask()) {
+    return count;
+  }
 
-    var iterator = this._queue.beginIterator();
+  var iterator = this._queue.beginIterator();
 
-    var group = void 0,
-        itemerator = void 0,
-        item = void 0;
-    while (iterator) {
-        group = iterator.value();
+  var group, itemerator, item;
 
-        if (group != null && group.stack.length !== 0) {
-            itemerator = group.stack.beginIterator();
+  while (iterator) {
+    group = iterator.value();
 
-            while (itemerator) {
-                item = itemerator.value();
-                if (item != null) {
-                    count += item.num;
-                }
-                itemerator = itemerator.hasNext() && itemerator.next();
-            }
+    if (group != null && group.stack.length !== 0) {
+      itemerator = group.stack.beginIterator();
+
+      while (itemerator) {
+        item = itemerator.value();
+
+        if (item != null) {
+          count += item.num;
         }
 
-        iterator = iterator.hasNext() && iterator.next();
+        itemerator = itemerator.hasNext() && itemerator.next();
+      }
     }
 
-    return count;
+    iterator = iterator.hasNext() && iterator.next();
+  }
+
+  return count;
 };
 
 Semaphore.prototype._hasInWaitingTask = function _hasInWaitingTask() {
-    return this._queue.length !== 0;
+  return this._queue.length !== 0;
 };
 
 Semaphore.prototype._keepAlive = function _keepAlive() {
-    if (!this._hasInWaitingTask()) {
-        return;
-    }
-    var _this = this;
-    this.keepAlive = setTimeout(function () {
-        _this._keepAlive();
-    }, 1000);
-};
+  if (!this._hasInWaitingTask()) {
+    return;
+  }
 
+  var _this = this;
+
+  this.keepAlive = setTimeout(function () {
+    _this._keepAlive();
+  }, 1000);
+};
 /**
  * Remove item from a priority group
  *
  */
+
+
 Semaphore.prototype._removeItem = function _removeItem(item) {
-    if (item.timer) {
-        clearTimeout(item.timer);
-    }
+  if (item.timer) {
+    clearTimeout(item.timer);
+  }
 
-    item.group.stack.remove(item);
-    if (item.group.stack.length === 0) {
-        // No more inWaiting for this priority group
-        item.semaphore._queue.remove(item.group);
+  item.group.stack.remove(item);
 
-        item.semaphore._checkKeepAlive();
-    }
+  if (item.group.stack.length === 0) {
+    // No more inWaiting for this priority group
+    item.semaphore._queue.remove(item.group);
 
-    // Remove properties to allow garbage collector
-    // eslint-disable-next-line guard-for-in
-    for (var property in item) {
-        if (property !== "id") {
-            delete item[property];
-        }
+    item.semaphore._checkKeepAlive();
+  } // Remove properties to allow garbage collector
+  // eslint-disable-next-line guard-for-in
+
+
+  for (var property in item) {
+    if (property !== "id") {
+      delete item[property];
     }
+  }
 };
 
 Semaphore.prototype._addGroup = function _addGroup(item) {
-    var stack = new SortedSet({
-        comparator: idComparator
-    });
+  var stack = new SortedSet({
+    comparator: idComparator
+  });
+  var group = {
+    priority: item.priority,
+    stack: stack
+  };
 
-    var group = {
-        priority: item.priority,
-        stack: stack
-    };
-    item.semaphore._queue.add(group);
-    return group;
+  item.semaphore._queue.add(group);
+
+  return group;
 };
 
 function idComparator(a, b) {
-    return a.id > b.id ? 1 : a.id < b.id ? -1 : 0;
+  return a.id > b.id ? 1 : a.id < b.id ? -1 : 0;
 }
 
 function priorityComparator(a, b) {
-    return a.priority > b.priority ? 1 : a.priority < b.priority ? -1 : 0;
+  return a.priority > b.priority ? 1 : a.priority < b.priority ? -1 : 0;
 }
 
 exports.semCreate = function () {
-    var semID = Object.create(Semaphore.prototype);
-    Semaphore.apply(semID, arguments);
-    return semID;
-};
+  var semID = Object.create(Semaphore.prototype);
+  Semaphore.apply(semID, arguments);
+  return semID;
+}; // Allow customization/Patch fix from outside
 
-// Allow customization/Patch fix from outside
+
 exports.Semaphore = Semaphore;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
@@ -1007,24 +1045,22 @@ exports.Semaphore = Semaphore;
 /* 1 */
 /***/ (function(module, exports) {
 
-var g;
+var g; // This works in non-strict mode
 
-// This works in non-strict mode
 g = function () {
-	return this;
+  return this;
 }();
 
 try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
+  // This works if eval is allowed (see CSP)
+  g = g || Function("return this")() || (1, eval)("this");
 } catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
+  // This works if the window reference is available
+  if (typeof window === "object") g = window;
+} // g can still be undefined, but nothing to do about it...
 // We return undefined, instead of nothing here, so it's
 // easier to handle this case. if(!global) { ...}
+
 
 module.exports = g;
 
