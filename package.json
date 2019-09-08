@@ -7,7 +7,7 @@
     "lint": "eslint \"lib/*.js\" \"scripts/*.js\" \"test/*.js\" cli.js",
     "prepublishOnly": "npm run lint && node cli.js distribute && npm run test",
     "version": "node cli.js version",
-    "test": "_mocha --full-trace --require test/common.js \"test/*-test.js\""
+    "test": "_mocha --full-trace --require test/common.js \"test/sorted-set/**/*Spec.js\" \"test/*-test.js\""
   },
   "repository": {
     "type": "git",
@@ -22,23 +22,21 @@
     "url": "https://github.com/smbape/node-sem-lib/issues"
   },
   "homepage": "https://github.com/smbape/node-sem-lib",
-  "dependencies": {
-    "js-sorted-set": "^0.1.0"
-  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "anyspawn": "^1.1.1",
     "async": "^3.1.0",
-    "babel-eslint": "^10.0.2",
+    "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
+    "benchmark": "^2.1.4",
     "chai": "^4.2.0",
-    "coffee-loader": "^0.7.3",
-    "coffee-script": "^1.12.7",
-    "eslint": "^6.0.1",
+    "eslint": "^6.3.0",
     "loader-utils": "^1.1.0",
     "lodash": "^4.17.14",
     "mocha": "^5.2.0",
+    "sinon": "^7.4.2",
+    "sinon-chai": "^3.3.0",
     "uglify-js": "^3.0.26",
     "webpack": "^3.12.0",
     "yargs": "^11.0.0"

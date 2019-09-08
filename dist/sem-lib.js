@@ -70,14 +70,59 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var BinaryTreeNode = __webpack_require__(4); // Here are some differences:
+// * This isn't a map structure: it's just a tree. There are no keys: the
+//   comparator applies to the values.
+// * We use the passed comparator.
+
+
+module.exports =
+/*#__PURE__*/
+function (_BinaryTreeNode) {
+  _inherits(RedBlackTreeNode, _BinaryTreeNode);
+
+  function RedBlackTreeNode(value) {
+    var _this;
+
+    _classCallCheck(this, RedBlackTreeNode);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(RedBlackTreeNode).call(this, value));
+    _this.isRed = true; // null nodes -- leaves -- are black
+
+    return _this;
+  }
+
+  return RedBlackTreeNode;
+}(BinaryTreeNode);
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
 
@@ -85,73 +130,30 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var AbstractSortedSet = __webpack_require__(2);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var RedBlackTreeStrategy = __webpack_require__(3);
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-var hasProp = Object.hasOwnProperty;
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var inherits = function inherits(child, parent) {
-  for (var key in parent) {
-    if (hasProp.call(parent, key)) {
-      child[key] = parent[key];
-    }
-  }
+function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-  function ctor() {
-    // eslint-disable-next-line no-invalid-this
-    this.constructor = child;
-  }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-  ctor.prototype = parent.prototype;
-  child.prototype = new ctor();
-  child.__super__ = parent.prototype;
-  return child;
-};
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-function SortedSet(options) {
-  if (options == null) {
-    options = {};
-  }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
-  if (!options.strategy) {
-    options.strategy = RedBlackTreeStrategy;
-  }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-  SortedSet.__super__.constructor.call(this, options);
-}
+var AbstractSortedSet = __webpack_require__(3);
 
-inherits(SortedSet, AbstractSortedSet);
-SortedSet.prototype.add = SortedSet.prototype.insert;
+var RedBlackTreeNode = __webpack_require__(0);
 
-SortedSet.prototype.get = function (value) {
-  // Use our optimzed get on RedBlackTreeStrategy
-  return this.priv.get(value);
-}; // Optimization: take the first match.
-
-
-RedBlackTreeStrategy.prototype.get = function (value) {
-  var comparator = this.comparator;
-  var node = this.root;
-  var cmp;
-
-  while (node !== null) {
-    cmp = comparator(value, node.value);
-
-    if (cmp === 0) {
-      break;
-    } else if (cmp < 0) {
-      node = node.left;
-    } else {
-      node = node.right;
-    }
-  }
-
-  return node === null ? undefined : node.value;
-};
+var RedBlackTreeStrategy = __webpack_require__(5);
 
 var isNumeric = function isNumeric(obj) {
-  if (Array.isArray(obj)) {
+  if (obj === undefined || obj === null || Array.isArray(obj)) {
     return false;
   }
 
@@ -166,10 +168,7 @@ var isNumeric = function isNumeric(obj) {
 
 var isObject = function isObject(obj) {
   return typeof obj === "object" && obj !== null;
-}; // Debugging purpose
-
-
-var globalCounter = 0;
+};
 /**
  * Value of parsed interger or default value if not a number or < 0
  * @param  {Any} num value to parse
@@ -177,7 +176,8 @@ var globalCounter = 0;
  * @return {Interger} parsing result
  */
 
-function toInteger(num, positive, _default) {
+
+var toInteger = function toInteger(num, positive, _default) {
   if (!isNumeric(num)) {
     return _default;
   }
@@ -192,13 +192,146 @@ function toInteger(num, positive, _default) {
 
   num = parseInt(num, 10);
   return positive && num < 0 ? _default : num;
-}
+};
+
+var idComparator = function idComparator(a, b) {
+  return a.id > b.id ? 1 : a.id < b.id ? -1 : 0;
+};
+
+var priorityComparator = function priorityComparator(a, b) {
+  return a.priority > b.priority ? 1 : a.priority < b.priority ? -1 : 0;
+};
+
+var hasProp = Object.hasOwnProperty; // Debugging purpose
+
+var globalCounter = 0;
+
+var SortedSet =
+/*#__PURE__*/
+function (_AbstractSortedSet) {
+  _inherits(SortedSet, _AbstractSortedSet);
+
+  function SortedSet() {
+    _classCallCheck(this, SortedSet);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(SortedSet).apply(this, arguments));
+  }
+
+  _createClass(SortedSet, [{
+    key: "get",
+    value: function get(value) {
+      var comparator = this.priv.comparator;
+      var node = this.priv.root;
+      var cmp;
+
+      while (node !== null) {
+        cmp = comparator(value, node.value);
+
+        if (cmp === 0) {
+          break;
+        } else if (cmp < 0) {
+          node = node.left;
+        } else {
+          node = node.right;
+        }
+      }
+
+      return node === null ? undefined : node.value;
+    }
+  }]);
+
+  return SortedSet;
+}(AbstractSortedSet);
+
+var Inwaiting =
+/*#__PURE__*/
+function (_RedBlackTreeNode) {
+  _inherits(Inwaiting, _RedBlackTreeNode);
+
+  function Inwaiting(semID, task, priority, num, options) {
+    var _this2;
+
+    _classCallCheck(this, Inwaiting);
+
+    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Inwaiting).call(this));
+    _this2.value = _assertThisInitialized(_this2);
+    _this2.id = ++globalCounter;
+    _this2.taken = 0;
+    _this2.task = task;
+    _this2.priority = priority;
+    _this2.num = num;
+    _this2.semaphore = semID;
+
+    if (options) {
+      ["onTimeOut", "onCancel", "unfair", "shouldTakeToken", "sync"].forEach(function (prop) {
+        if (hasProp.call(options, prop)) {
+          _this2[prop] = options[prop];
+        }
+      });
+    }
+
+    return _this2;
+  }
+
+  _createClass(Inwaiting, [{
+    key: "addCounter",
+    value: function addCounter(nextNum) {
+      this.num += toInteger(nextNum, true, 1);
+    }
+  }, {
+    key: "cancel",
+    value: function cancel() {
+      var onCancel = this.onCancel,
+          taken = this.taken,
+          semID = this.semaphore;
+
+      semID._removeItem(this);
+
+      if (taken !== 0) {
+        // give on next tick to wait for all synchronous canceled to be done
+        semID._setImmediate(function () {
+          semID.semGive(taken, true);
+        });
+      }
+
+      if (typeof onCancel === "function") {
+        onCancel();
+      }
+    }
+  }, {
+    key: "setPriority",
+    value: function setPriority(nextPriority) {
+      if (this.group == null) {
+        return;
+      }
+
+      var semID = this.semaphore;
+      nextPriority = toInteger(nextPriority, false, semID.priority);
+
+      if (nextPriority === this.priority) {
+        return;
+      }
+
+      this.group.stack.remove(this);
+
+      if (this.group.stack.length === 0) {
+        // No more inWaiting for this priority group
+        semID._queue.remove(this.group);
+      }
+
+      this.priority = nextPriority;
+
+      semID._insertItem(this);
+    }
+  }]);
+
+  return Inwaiting;
+}(RedBlackTreeNode);
 /**
- * @constructor
- *
- * @param {Integer} capacity (default = 1) Number of tokens that can be handled by the Semaphore
- * @param {Boolean} isFull (default = false) if true object is created with tokens
- * @param {Integer} priority (default = 15) default priority
+ * @param  {Integer} capacity (default = 1) Number of tokens that can be handled by the Semaphore
+ * @param  {Boolean} isFull   (default = false) if true object is created with tokens
+ * @param  {Integer} priority (default = 15) default priority
+ * @param  {Boolean} sync     if true tasks will be run synchronously
  */
 
 
@@ -206,7 +339,8 @@ function Semaphore(capacity, isFull, priority) {
   var sync = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
   var _queue = new SortedSet({
-    comparator: priorityComparator
+    comparator: priorityComparator,
+    strategy: RedBlackTreeStrategy
   });
 
   this.id = ++globalCounter;
@@ -217,26 +351,6 @@ function Semaphore(capacity, isFull, priority) {
   this.priority = toInteger(priority, false, 15);
   this.sync = sync;
 }
-
-Semaphore.prototype.setImmediateTick = function () {
-  if (typeof global === "object" && typeof global.setImmediate === "function") {
-    return global.setImmediate;
-  }
-
-  return function (fn) {
-    return setTimeout(fn, 1);
-  };
-}();
-
-Semaphore.prototype._clearImmediateTick = function () {
-  if (typeof global === "object" && typeof global.clearImmediate === "function") {
-    return global.clearImmediate;
-  }
-
-  return function (id) {
-    clearTimeout(id);
-  };
-}();
 /**
  * Return number of available tokens
  * @return {Interger} number of available tokens
@@ -261,7 +375,7 @@ Semaphore.prototype.getCapacity = function getCapacity() {
  */
 
 
-Semaphore.prototype.setCapacity = function getCapacity(capacity) {
+Semaphore.prototype.setCapacity = function setCapacity(capacity) {
   this._capacity = toInteger(capacity, true, this._capacity);
 };
 /**
@@ -322,6 +436,26 @@ Semaphore.prototype.semFlush = function semFlush() {
 
   return true;
 };
+
+Semaphore.prototype.handleTimeout = function handleTimeout(item) {
+  var _this3 = this;
+
+  var onTimeOut = item.onTimeOut,
+      taken = item.taken;
+
+  this._removeItem(item);
+
+  if (taken !== 0) {
+    // give on next tick to wait for all synchronous canceled to be done
+    this._setImmediate(function () {
+      _this3.semGive(taken, true);
+    });
+  }
+
+  if (typeof onTimeOut === "function") {
+    onTimeOut();
+  }
+};
 /**
  * Wait for Semaphore availability before calling onTake callback
  * @example
@@ -341,27 +475,21 @@ Semaphore.prototype.semFlush = function semFlush() {
 
 
 Semaphore.prototype.semTake = function semTake(options, result) {
-  var _this2 = this;
-
-  var task, timeOut, onTimeOut, onCancel, num, priority, unfair, shouldTakeToken, sync;
-
   if (this.destroyed) {
     return false;
   }
 
-  if (isObject(options)) {
+  var hasOptions = isObject(options);
+  var task, timeOut, num, priority;
+
+  if (hasOptions) {
     task = options.onTake;
     priority = options.priority;
     num = options.num;
     timeOut = options.timeOut;
-    onTimeOut = options.onTimeOut;
-    onCancel = options.onCancel;
-    unfair = options.unfair;
-    shouldTakeToken = options.shouldTakeToken;
-    sync = options.sync;
   } else if (typeof options === "function") {
     task = options;
-    options = {};
+    options = null;
   }
 
   if (typeof task !== "function") {
@@ -370,113 +498,23 @@ Semaphore.prototype.semTake = function semTake(options, result) {
 
   num = toInteger(num, true, 1);
   priority = toInteger(priority, false, this.priority);
-  var item = {
-    id: ++globalCounter,
-    task: task,
-    priority: priority,
-    num: num,
-    onTimeOut: onTimeOut,
-    onCancel: onCancel,
-    unfair: unfair,
-    shouldTakeToken: shouldTakeToken,
-    sync: sync,
-    semaphore: this,
-    taken: 0,
-    cancel: function cancel() {
-      var taken = item.taken;
+  var item = new Inwaiting(this, task, priority, num, hasOptions ? options : false);
 
-      _this2._removeItem(item);
-
-      if (taken !== 0) {
-        // give on next tick to wait for all synchronous canceled to be done
-        _this2.setImmediateTick(function () {
-          _this2.semGive(taken, true);
-        });
-      }
-
-      if (typeof onCancel === "function") {
-        onCancel();
-      }
-    },
-    setPriority: function setPriority(nextPriority) {
-      if (item.group == null) {
-        return;
-      }
-
-      nextPriority = toInteger(nextPriority, false, _this2.priority);
-
-      if (nextPriority === item.priority) {
-        return;
-      }
-
-      item.group.stack.remove(item);
-
-      if (item.group.stack.length === 0) {
-        // No more inWaiting for this priority group
-        item.semaphore._queue.remove(item.group);
-      }
-
-      item.priority = nextPriority;
-
-      _this2._addItemPriority(item);
-    }
-  };
-
-  this._addItemPriority(item);
+  this._insertItem(item);
 
   if (isNumeric(timeOut) && timeOut > 0) {
-    item.timer = setTimeout(function () {
-      var taken = item.taken;
-
-      _this2._removeItem(item);
-
-      if (taken !== 0) {
-        // give on next tick to wait for all synchronous canceled to be done
-        _this2.setImmediateTick(function () {
-          _this2.semGive(taken, true);
-        });
-      }
-
-      if (typeof onTimeOut === "function") {
-        onTimeOut();
-      }
-    }, timeOut);
+    item.timer = setTimeout(this.handleTimeout.bind(this, item), timeOut);
   }
 
-  var res = {
-    addCounter: function addCounter(nextNum) {
-      item.num += toInteger(nextNum, 1);
-    },
-    cancel: function cancel() {
-      item.cancel();
-    },
-    setPriority: function setPriority(nextPriority) {
-      item.setPriority(nextPriority);
-    }
-  };
-  var hasResult = isObject(result);
-
-  if (hasResult) {
-    result.addCounter = res.addCounter;
-    result.cancel = res.cancel;
-    result.setPriority = res.setPriority;
+  if (isObject(result)) {
+    result.addCounter = item.addCounter.bind(item);
+    result.cancel = item.cancel.bind(item);
+    result.setPriority = item.setPriority.bind(item);
   }
-
-  item.disable = function () {
-    delete res.addCounter;
-    delete res.cancel;
-    delete res.setPriority;
-
-    if (hasResult) {
-      delete result.addCounter;
-      delete result.cancel;
-      delete result.setPriority;
-    }
-  };
 
   this._semTake();
 
-  return res;
+  return item;
 };
 
 Semaphore.prototype._shouldTakeToken = function _shouldTakeToken(item, num) {
@@ -503,6 +541,11 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
       }
 
       group = groupIterator.value();
+
+      if (group === null) {
+        break;
+      }
+
       itemIterator = group.stack.beginIterator();
     }
 
@@ -518,7 +561,7 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
 
 
 Semaphore.prototype._semTake = function _semTake(topSync) {
-  var _this3 = this;
+  var _this4 = this;
 
   if (this.taking) {
     return;
@@ -531,10 +574,10 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
   this.taking = true;
 
   var _loop = function _loop() {
-    var _this3$_nextGroupItem = _this3._nextGroupItem(),
-        _this3$_nextGroupItem2 = _slicedToArray(_this3$_nextGroupItem, 2),
-        group = _this3$_nextGroupItem2[0],
-        item = _this3$_nextGroupItem2[1];
+    var _this4$_nextGroupItem = _this4._nextGroupItem(),
+        _this4$_nextGroupItem2 = _slicedToArray(_this4$_nextGroupItem, 2),
+        group = _this4$_nextGroupItem2[0],
+        item = _this4$_nextGroupItem2[1];
 
     if (item == null) {
       return "break";
@@ -545,18 +588,18 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
         weakerItemIterator = void 0,
         weakerItem = void 0; // if item is still waiting for tokens
 
-    if (item.num > _this3._numTokens) {
-      item.taken += _this3._numTokens;
-      item.num -= _this3._numTokens;
-      _this3._numTokens = 0; // take token from tasks with weaker priority
+    if (item.num > _this4._numTokens) {
+      item.taken += _this4._numTokens;
+      item.num -= _this4._numTokens;
+      _this4._numTokens = 0; // take token from tasks with weaker priority
 
-      if (item.unfair && _this3._queue.length !== 1) {
-        weakerIterator = _this3._queue.endIterator().previous();
+      if (item.unfair && _this4._queue.length !== 1) {
+        weakerIterator = _this4._queue.endIterator().previous();
 
         while (weakerIterator && item.num !== 0) {
           wearkeGroup = weakerIterator.value();
 
-          if (wearkeGroup === group || wearkeGroup.priority <= _this3.priority) {
+          if (wearkeGroup === group || wearkeGroup.priority <= _this4.priority) {
             // can only be unfair on tasks with lower priority that semaphore default priority
             break;
           }
@@ -565,7 +608,7 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
           weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
 
           while (weakerItem && item.num !== 0) {
-            if (weakerItem.taken > 0 && _this3._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
+            if (weakerItem.taken > 0 && _this4._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
               if (item.num > weakerItem.taken) {
                 weakerItem.num += weakerItem.taken;
                 item.num -= weakerItem.taken;
@@ -593,42 +636,37 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
 
     item.taken += item.num;
 
-    if (_this3._numTokens !== Number.POSITIVE_INFINITY) {
-      _this3._numTokens -= item.num;
+    if (_this4._numTokens !== Number.POSITIVE_INFINITY) {
+      _this4._numTokens -= item.num;
     }
 
     item.num = 0;
-    var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : _this3.sync;
-    var disable = item.disable,
-        taken = item.taken,
-        task = item.task;
+    var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : _this4.sync;
+    var taken = item.taken,
+        task = item.task,
+        onCancel = item.onCancel;
 
-    _this3._removeItem(item);
+    _this4._removeItem(item);
 
     if (sync) {
-      disable();
       task();
     } else {
       // Non blocking call of callback
       // A way to loop through in waiting tasks without blocking
       // the semaphore process until done
-      var timerID = _this3.setImmediateTick(function () {
+      var timerID = _this4._setImmediate(function () {
         timerID = null;
-        disable();
         task();
       });
 
       item.cancel = function () {
-        _this3._clearImmediateTick(timerID);
+        _this4._clearImmediate(timerID);
 
-        disable();
         timerID = null; // give on next tick to wait for all synchronous canceled to be done
 
-        _this3.setImmediateTick(function () {
-          _this3.semGive(taken, true);
+        _this4._setImmediate(function () {
+          _this4.semGive(taken, true);
         });
-
-        var onCancel = item.onCancel;
 
         if (typeof onCancel === "function") {
           onCancel();
@@ -671,18 +709,23 @@ Semaphore.prototype.destroy = function (safe, onDestroy) {
 };
 
 Semaphore.prototype._destroy = function (safe) {
-  this._destroyWaiting = false; // for loop to avoid infinite loop with while
+  this._destroyWaiting = false;
 
-  for (var i = 0, _len = this._queue.length; i < _len; i++) {
+  var i, _len, j, _jlen; // for loop to avoid infinite loop with while
+
+
+  for (i = 0, _len = this._queue.length; i < _len; i++) {
     var group = this._queue.beginIterator().value();
 
-    var item = group.stack.beginIterator().value();
+    for (j = 0, _jlen = group.stack.length; j < _jlen; j++) {
+      var item = group.stack.beginIterator().value();
 
-    if (safe !== false) {
-      item.cancel();
+      if (safe !== false) {
+        item.cancel();
+      }
+
+      this._removeItem(item);
     }
-
-    this._removeItem(item);
   }
 
   if (this._checkKeepAlive()) {
@@ -893,16 +936,16 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
   };
 };
 
-Semaphore.prototype._addItemPriority = function (item) {
+Semaphore.prototype._insertItem = function (item) {
   var group = this._queue.get({
     priority: item.priority
   });
 
   if (!group) {
-    group = this._addGroup(item);
+    group = this._insertGroup(item);
   }
 
-  group.stack.add(item);
+  group.stack.insert(item);
   item.group = group;
 };
 
@@ -995,54 +1038,70 @@ Semaphore.prototype._removeItem = function _removeItem(item) {
 
   if (item.group.stack.length === 0) {
     // No more inWaiting for this priority group
-    item.semaphore._queue.remove(item.group);
+    this._queue.remove(item.group);
 
-    item.semaphore._checkKeepAlive();
-  } // Remove properties to allow garbage collector
-  // eslint-disable-next-line guard-for-in
+    this._checkKeepAlive();
+  } // Remove properties to allow garbage collection
 
 
-  for (var property in item) {
-    if (property !== "id") {
-      delete item[property];
+  Object.keys(item).forEach(function (prop) {
+    if (prop !== "id") {
+      // delete is more cpu expensive
+      item[prop] = undefined;
     }
-  }
+  });
 };
 
-Semaphore.prototype._addGroup = function _addGroup(item) {
+Semaphore.prototype._insertGroup = function _insertGroup(item) {
   var stack = new SortedSet({
-    comparator: idComparator
+    comparator: idComparator,
+    strategy: RedBlackTreeStrategy,
+    allowNode: true
   });
   var group = {
     priority: item.priority,
     stack: stack
   };
 
-  item.semaphore._queue.add(group);
+  this._queue.insert(group);
 
   return group;
 };
 
-function idComparator(a, b) {
-  return a.id > b.id ? 1 : a.id < b.id ? -1 : 0;
-}
+Semaphore.prototype._setImmediate = function () {
+  if (typeof global === "object" && typeof global.setImmediate === "function") {
+    return global.setImmediate;
+  }
 
-function priorityComparator(a, b) {
-  return a.priority > b.priority ? 1 : a.priority < b.priority ? -1 : 0;
-}
+  return function (fn) {
+    return setTimeout(fn, 1);
+  };
+}();
+
+Semaphore.prototype._clearImmediate = function () {
+  if (typeof global === "object" && typeof global.clearImmediate === "function") {
+    return global.clearImmediate;
+  }
+
+  return function (id) {
+    clearTimeout(id);
+  };
+}();
 
 exports.semCreate = function () {
-  var semID = Object.create(Semaphore.prototype);
-  Semaphore.apply(semID, arguments);
-  return semID;
+  for (var _len2 = arguments.length, args = new Array(_len2), _key = 0; _key < _len2; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  return _construct(Semaphore, args);
 }; // Allow customization/Patch fix from outside
 
 
 exports.Semaphore = Semaphore;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports) {
 
 var g; // This works in non-strict mode
@@ -1065,521 +1124,806 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
-var AbstractSortedSet;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-module.exports = AbstractSortedSet = (function() {
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+module.exports =
+/*#__PURE__*/
+function () {
   function AbstractSortedSet(options) {
-    if ((options != null ? options.strategy : void 0) == null) {
-      throw 'Must pass options.strategy, a strategy';
+    _classCallCheck(this, AbstractSortedSet);
+
+    if (options === null || typeof options !== "object" || typeof options.strategy !== "function") {
+      throw new Error("Must pass options.strategy, a strategy");
     }
-    if ((options != null ? options.comparator : void 0) == null) {
-      throw 'Must pass options.comparator, a comparator';
+
+    if (options === null || typeof options !== "object" || typeof options.comparator !== "function") {
+      throw new Error("Must pass options.comparator, a comparator");
     }
+
     this.priv = new options.strategy(options);
     this.length = 0;
   }
 
-  AbstractSortedSet.prototype.insert = function(value) {
-    this.priv.insert(value);
-    this.length += 1;
-    return this;
-  };
+  _createClass(AbstractSortedSet, [{
+    key: "insert",
+    value: function insert(value) {
+      this.priv.insert(value);
+      this.length += 1;
+      return this;
+    }
+  }, {
+    key: "remove",
+    value: function remove(value) {
+      this.priv.remove(value);
+      this.length -= 1;
+      return this;
+    }
+  }, {
+    key: "contains",
+    value: function contains(value) {
+      return this.priv.contains(value);
+    } // Returns this set as an Array
 
-  AbstractSortedSet.prototype.remove = function(value) {
-    this.priv.remove(value);
-    this.length -= 1;
-    return this;
-  };
+  }, {
+    key: "toArray",
+    value: function toArray() {
+      return this.priv.toArray();
+    }
+  }, {
+    key: "forEach",
+    value: function forEach(callback, thisArg) {
+      this.priv.forEachImpl(callback, this, thisArg);
+    }
+  }, {
+    key: "map",
+    value: function map(callback, thisArg) {
+      var ret = [];
+      this.priv.forEachImpl(function (value, index, self) {
+        ret.push(callback.call(thisArg, value, index, self));
+      }, this, thisArg);
+      return ret;
+    }
+  }, {
+    key: "filter",
+    value: function filter(callback, thisArg) {
+      var ret = [];
+      this.priv.forEachImpl(function (value, index, self) {
+        if (callback.call(thisArg, value, index, self)) {
+          ret.push(value);
+        }
+      }, this, thisArg);
+      return ret;
+    }
+  }, {
+    key: "every",
+    value: function every(callback, thisArg) {
+      var ret = true;
+      this.priv.forEachImpl(function (value, index, self) {
+        if (!callback.call(thisArg, value, index, self)) {
+          ret = false;
+        }
 
-  AbstractSortedSet.prototype.contains = function(value) {
-    return this.priv.contains(value);
-  };
+        return !ret;
+      }, this, thisArg, true);
+      return ret;
+    }
+  }, {
+    key: "some",
+    value: function some(callback, thisArg) {
+      var ret = false;
+      this.priv.forEachImpl(function (value, index, self) {
+        if (callback.call(thisArg, value, index, self)) {
+          ret = true;
+        }
 
-  AbstractSortedSet.prototype.toArray = function() {
-    return this.priv.toArray();
-  };
+        return ret;
+      }, this, thisArg);
+      return ret;
+    } // An iterator is similar to a C++ iterator: it points _before_ a value.
+    // So in this sorted set:
+    //   | 1 | 2 | 3 | 4 | 5 |
+    //   ^a      ^b          ^c
+    // `a` is a pointer to the beginning of the iterator. `a.value()` returns
+    // `3`. `a.previous()` returns `null`. `a.setValue()` works, if
+    // `options.allowSetValue` is true.
+    // `b` is a pointer to the value `3`. `a.previous()` and `a.next()` both do
+    // the obvious.
+    // `c` is a pointer to the `null` value. `c.previous()` works; `c.next()`
+    // returns null. `c.setValue()` throws an exception, even if
+    // `options.allowSetValue` is true.
+    // Iterators have `hasNext()` and `hasPrevious()` methods, too.
+    // Iterators are immutible. `iterator.next()` returns a new iterator.
+    // Iterators become invalid as soon as `insert()` or `remove()` is called.
 
-  AbstractSortedSet.prototype.forEach = function(callback, thisArg) {
-    this.priv.forEachImpl(callback, this, thisArg);
-    return this;
-  };
+  }, {
+    key: "findIterator",
+    value: function findIterator(value) {
+      return this.priv.findIterator(value);
+    } // Finds an iterator pointing to the lowest possible value.
 
-  AbstractSortedSet.prototype.map = function(callback, thisArg) {
-    var ret;
-    ret = [];
-    this.forEach(function(value, index, self) {
-      return ret.push(callback.call(thisArg, value, index, self));
-    });
-    return ret;
-  };
+  }, {
+    key: "beginIterator",
+    value: function beginIterator() {
+      return this.priv.beginIterator();
+    } // Finds an iterator pointing to the `null` value.
 
-  AbstractSortedSet.prototype.filter = function(callback, thisArg) {
-    var ret;
-    ret = [];
-    this.forEach(function(value, index, self) {
-      if (callback.call(thisArg, value, index, self)) {
-        return ret.push(value);
-      }
-    });
-    return ret;
-  };
-
-  AbstractSortedSet.prototype.every = function(callback, thisArg) {
-    var ret;
-    ret = true;
-    this.forEach(function(value, index, self) {
-      if (ret && !callback.call(thisArg, value, index, self)) {
-        return ret = false;
-      }
-    });
-    return ret;
-  };
-
-  AbstractSortedSet.prototype.some = function(callback, thisArg) {
-    var ret;
-    ret = false;
-    this.forEach(function(value, index, self) {
-      if (!ret && callback.call(thisArg, value, index, self)) {
-        return ret = true;
-      }
-    });
-    return ret;
-  };
-
-  AbstractSortedSet.prototype.findIterator = function(value) {
-    return this.priv.findIterator(value);
-  };
-
-  AbstractSortedSet.prototype.beginIterator = function() {
-    return this.priv.beginIterator();
-  };
-
-  AbstractSortedSet.prototype.endIterator = function() {
-    return this.priv.endIterator();
-  };
+  }, {
+    key: "endIterator",
+    value: function endIterator() {
+      return this.priv.endIterator();
+    }
+  }]);
 
   return AbstractSortedSet;
-
-})();
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AbstractBinaryTreeStrategy, Node, RedBlackTreeStrategy, colorFlip, findMinNode, fixUp, insertInNode, moveRedLeft, moveRedRight, removeFromNode, removeMinNode, rotateLeft, rotateRight,
-  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-AbstractBinaryTreeStrategy = __webpack_require__(4);
-
-Node = (function() {
-  function Node(value1) {
-    this.value = value1;
-    this.left = null;
-    this.right = null;
-    this.isRed = true;
-  }
-
-  return Node;
-
-})();
-
-rotateLeft = function(h) {
-  var x;
-  x = h.right;
-  h.right = x.left;
-  x.left = h;
-  x.isRed = h.isRed;
-  h.isRed = true;
-  return x;
-};
-
-rotateRight = function(h) {
-  var x;
-  x = h.left;
-  h.left = x.right;
-  x.right = h;
-  x.isRed = h.isRed;
-  h.isRed = true;
-  return x;
-};
-
-colorFlip = function(h) {
-  h.isRed = !h.isRed;
-  h.left.isRed = !h.left.isRed;
-  h.right.isRed = !h.right.isRed;
-  return void 0;
-};
-
-moveRedLeft = function(h) {
-  colorFlip(h);
-  if (h.right !== null && h.right.left !== null && h.right.left.isRed) {
-    h.right = rotateRight(h.right);
-    h = rotateLeft(h);
-    colorFlip(h);
-  }
-  return h;
-};
-
-moveRedRight = function(h) {
-  colorFlip(h);
-  if (h.left !== null && h.left.left !== null && h.left.left.isRed) {
-    h = rotateRight(h);
-    colorFlip(h);
-  }
-  return h;
-};
-
-insertInNode = function(h, value, compare) {
-  if (h === null) {
-    return new Node(value);
-  }
-  if (h.value === value) {
-    throw 'Value already in set';
-  } else {
-    if (compare(value, h.value) < 0) {
-      h.left = insertInNode(h.left, value, compare);
-    } else {
-      h.right = insertInNode(h.right, value, compare);
-    }
-  }
-  if (h.right !== null && h.right.isRed && !(h.left !== null && h.left.isRed)) {
-    h = rotateLeft(h);
-  }
-  if (h.left !== null && h.left.isRed && h.left.left !== null && h.left.left.isRed) {
-    h = rotateRight(h);
-  }
-  if (h.left !== null && h.left.isRed && h.right !== null && h.right.isRed) {
-    colorFlip(h);
-  }
-  return h;
-};
-
-findMinNode = function(h) {
-  while (h.left !== null) {
-    h = h.left;
-  }
-  return h;
-};
-
-fixUp = function(h) {
-  if (h.right !== null && h.right.isRed) {
-    h = rotateLeft(h);
-  }
-  if (h.left !== null && h.left.isRed && h.left.left !== null && h.left.left.isRed) {
-    h = rotateRight(h);
-  }
-  if (h.left !== null && h.left.isRed && h.right !== null && h.right.isRed) {
-    colorFlip(h);
-  }
-  return h;
-};
-
-removeMinNode = function(h) {
-  if (h.left === null) {
-    return null;
-  }
-  if (!h.left.isRed && !(h.left.left !== null && h.left.left.isRed)) {
-    h = moveRedLeft(h);
-  }
-  h.left = removeMinNode(h.left);
-  return fixUp(h);
-};
-
-removeFromNode = function(h, value, compare) {
-  if (h === null) {
-    throw 'Value not in set';
-  }
-  if (h.value !== value && compare(value, h.value) < 0) {
-    if (h.left === null) {
-      throw 'Value not in set';
-    }
-    if (!h.left.isRed && !(h.left.left !== null && h.left.left.isRed)) {
-      h = moveRedLeft(h);
-    }
-    h.left = removeFromNode(h.left, value, compare);
-  } else {
-    if (h.left !== null && h.left.isRed) {
-      h = rotateRight(h);
-    }
-    if (h.right === null) {
-      if (value === h.value) {
-        return null;
-      } else {
-        throw 'Value not in set';
-      }
-    }
-    if (!h.right.isRed && !(h.right.left !== null && h.right.left.isRed)) {
-      h = moveRedRight(h);
-    }
-    if (value === h.value) {
-      h.value = findMinNode(h.right).value;
-      h.right = removeMinNode(h.right);
-    } else {
-      h.right = removeFromNode(h.right, value, compare);
-    }
-  }
-  if (h !== null) {
-    h = fixUp(h);
-  }
-  return h;
-};
-
-module.exports = RedBlackTreeStrategy = (function(superClass) {
-  extend(RedBlackTreeStrategy, superClass);
-
-  function RedBlackTreeStrategy(options) {
-    this.options = options;
-    this.comparator = this.options.comparator;
-    this.root = null;
-  }
-
-  RedBlackTreeStrategy.prototype.insert = function(value) {
-    this.root = insertInNode(this.root, value, this.comparator);
-    this.root.isRed = false;
-    return void 0;
-  };
-
-  RedBlackTreeStrategy.prototype.remove = function(value) {
-    this.root = removeFromNode(this.root, value, this.comparator);
-    if (this.root !== null) {
-      this.root.isRed = false;
-    }
-    return void 0;
-  };
-
-  return RedBlackTreeStrategy;
-
-})(AbstractBinaryTreeStrategy);
-
+}();
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var AbstractBinaryTree, BinaryTreeIterator, binaryTreeTraverse;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-BinaryTreeIterator = __webpack_require__(5);
+module.exports = function BinaryTreeNode(value) {
+  _classCallCheck(this, BinaryTreeNode);
 
-binaryTreeTraverse = function(node, callback) {
-  if (node !== null) {
-    binaryTreeTraverse(node.left, callback);
-    callback(node.value);
-    binaryTreeTraverse(node.right, callback);
-  }
-  return void 0;
+  this.value = value;
+  this.left = null;
+  this.right = null;
 };
-
-AbstractBinaryTree = (function() {
-  function AbstractBinaryTree() {}
-
-  AbstractBinaryTree.prototype.toArray = function() {
-    var ret;
-    ret = [];
-    binaryTreeTraverse(this.root, function(value) {
-      return ret.push(value);
-    });
-    return ret;
-  };
-
-  AbstractBinaryTree.prototype.forEachImpl = function(callback, sortedSet, thisArg) {
-    var i;
-    i = 0;
-    binaryTreeTraverse(this.root, function(value) {
-      callback.call(thisArg, value, i, sortedSet);
-      return i += 1;
-    });
-    return void 0;
-  };
-
-  AbstractBinaryTree.prototype.contains = function(value) {
-    var cmp, comparator, node;
-    comparator = this.comparator;
-    node = this.root;
-    while (node !== null) {
-      cmp = comparator(value, node.value);
-      if (cmp === 0) {
-        break;
-      } else if (cmp < 0) {
-        node = node.left;
-      } else {
-        node = node.right;
-      }
-    }
-    return node !== null && node.value === value;
-  };
-
-  AbstractBinaryTree.prototype.findIterator = function(value) {
-    return BinaryTreeIterator.find(this, value, this.comparator);
-  };
-
-  AbstractBinaryTree.prototype.beginIterator = function() {
-    return BinaryTreeIterator.left(this);
-  };
-
-  AbstractBinaryTree.prototype.endIterator = function() {
-    return BinaryTreeIterator.right(this);
-  };
-
-  return AbstractBinaryTree;
-
-})();
-
-module.exports = AbstractBinaryTree;
-
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var AbstractBinaryTreeStrategy = __webpack_require__(6);
+
+var RedBlackTreeNode = __webpack_require__(0); // An implementation of Left-Leaning Red-Black trees.
+// It's copied from http://www.cs.princeton.edu/~rs/talks/LLRB/LLRB.pdf.
+// It's practically a copy-paste job, minus the semicolons. missing bits were
+// filled in with hints from
+// https://www.teachsolaisgames.com/articles/balanced_left_leaning.html
+
+
+var rotateLeft = function rotateLeft(node) {
+  var tmp = node.right;
+  node.right = tmp.left;
+  tmp.left = node;
+  tmp.isRed = node.isRed;
+  node.isRed = true;
+  return tmp;
+};
+
+var rotateRight = function rotateRight(node) {
+  var tmp = node.left;
+  node.left = tmp.right;
+  tmp.right = node;
+  tmp.isRed = node.isRed;
+  node.isRed = true;
+  return tmp;
+};
+
+var colorFlip = function colorFlip(node) {
+  node.isRed = !node.isRed;
+  node.left.isRed = !node.left.isRed;
+  node.right.isRed = !node.right.isRed;
+};
+
+var moveRedLeft = function moveRedLeft(node) {
+  //throw 'Preconditions failed' if !(!node.left.isRed && !node.left.left?.isRed)
+  colorFlip(node);
+
+  if (node.right !== null && node.right.left !== null && node.right.left.isRed) {
+    node.right = rotateRight(node.right);
+    node = rotateLeft(node);
+    colorFlip(node);
+  }
+
+  return node;
+};
+
+var moveRedRight = function moveRedRight(node) {
+  //throw 'Preconditions failed' if !(!node.right.isRed && !node.right.left?.isRed)
+  colorFlip(node);
+
+  if (node.left !== null && node.left.left !== null && node.left.left.isRed) {
+    node = rotateRight(node);
+    colorFlip(node);
+  }
+
+  return node;
+};
+
+var insertInNode = function insertInNode(node, value, compare, allowNode) {
+  if (node === null) {
+    if (allowNode && value instanceof RedBlackTreeNode) {
+      if (!value.isRed) {
+        value.isRed = true;
+      }
+
+      return value;
+    }
+
+    return new RedBlackTreeNode(value);
+  } //if node.left isnt null && node.left.isRed && node.right isnt null && node.right.isRed
+  //  colorFlip(node)
+
+
+  if (node.value === value) {
+    throw new Error("Value already in set");
+  }
+
+  if (compare(value, node.value) < 0) {
+    node.left = insertInNode(node.left, value, compare, allowNode);
+  } else {
+    node.right = insertInNode(node.right, value, compare, allowNode);
+  }
+
+  if (node.right !== null && node.right.isRed && !(node.left !== null && node.left.isRed)) {
+    node = rotateLeft(node);
+  }
+
+  if (node.left !== null && node.left.isRed && node.left.left !== null && node.left.left.isRed) {
+    node = rotateRight(node);
+  } // Put this here -- I couldn't get the whole thing to work otherwise :(
+
+
+  if (node.left !== null && node.left.isRed && node.right !== null && node.right.isRed) {
+    colorFlip(node);
+  }
+
+  return node;
+};
+
+var findMinNode = function findMinNode(node) {
+  while (node.left !== null) {
+    node = node.left;
+  }
+
+  return node;
+};
+
+var fixUp = function fixUp(node) {
+  // Fix right-leaning red nodes
+  if (node.right !== null && node.right.isRed) {
+    node = rotateLeft(node);
+  } // Handle a 4-node that traverses down the left
+
+
+  if (node.left !== null && node.left.isRed && node.left.left !== null && node.left.left.isRed) {
+    node = rotateRight(node);
+  } // split 4-nodes
+
+
+  if (node.left !== null && node.left.isRed && node.right !== null && node.right.isRed) {
+    colorFlip(node);
+  }
+
+  return node;
+};
+
+var removeMinNode = function removeMinNode(node) {
+  if (node.left === null) {
+    return null;
+  }
+
+  if (!node.left.isRed && !(node.left.left !== null && node.left.left.isRed)) {
+    node = moveRedLeft(node);
+  }
+
+  node.left = removeMinNode(node.left);
+  return fixUp(node);
+}; // // const removeMinNodeStack = new Array(1024);
+// const removeMinNode = node => {
+//     let pos = 0;
+//     const removeMinNodeStack = [];
+//     removeMinNodeStack[pos++] = node;
+//     removeMinNodeStack[pos++] = 0;
+//     // let stackSize = pos;
+//     let ret;
+//     while (pos !== 0) {
+//         // if (pos > stackSize) {
+//         //     stackSize = pos;
+//         // }
+//         if (removeMinNodeStack[--pos] === 0) {
+//             node = removeMinNodeStack[--pos];
+//             if (node.left === null) {
+//                 ret = null;
+//                 continue;
+//             }
+//             if (!node.left.isRed && !(node.left.left !== null && node.left.left.isRed)) {
+//                 node = moveRedLeft(node);
+//             }
+//             removeMinNodeStack[pos++] = node;
+//             removeMinNodeStack[pos++] = 1;
+//             removeMinNodeStack[pos++] = node.left;
+//             removeMinNodeStack[pos++] = 0;
+//         } else {
+//             node = removeMinNodeStack[--pos];
+//             node.left = ret;
+//             ret = fixUp(node);
+//         }
+//     }
+//     // for (let i = 0; i < stackSize; i++) {
+//     //     removeMinNodeStack[i] = undefined;
+//     // }
+//     return ret;
+// };
+
+
+var removeFromNode = function removeFromNode(node, value, compare) {
+  if (node === null) {
+    throw new Error("Value not in set");
+  }
+
+  if (node.value !== value && compare(value, node.value) < 0) {
+    if (node.left === null) {
+      throw new Error("Value not in set");
+    }
+
+    if (!node.left.isRed && !(node.left.left !== null && node.left.left.isRed)) {
+      node = moveRedLeft(node);
+    }
+
+    node.left = removeFromNode(node.left, value, compare);
+  } else {
+    if (node.left !== null && node.left.isRed) {
+      node = rotateRight(node);
+    }
+
+    if (node.right === null) {
+      if (value === node.value) {
+        return null; // leaf node; LLRB assures no left value here
+      }
+
+      throw new Error("Value not in set");
+    }
+
+    if (!node.right.isRed && !(node.right.left !== null && node.right.left.isRed)) {
+      node = moveRedRight(node);
+    }
+
+    if (value === node.value) {
+      node.value = findMinNode(node.right).value;
+      node.right = removeMinNode(node.right);
+    } else {
+      node.right = removeFromNode(node.right, value, compare);
+    }
+  }
+
+  return fixUp(node);
+}; // // const removeFromNodeStask = new Array(1024);
+// const removeFromNode = (node, value, compare) => {
+//     let pos = 0;
+//     const removeFromNodeStask = [];
+//     removeFromNodeStask[pos++] = node;
+//     removeFromNodeStask[pos++] = 0;
+//     // let stackSize = pos;
+//     let ret, cmd;
+//     while (pos !== 0) {
+//         // if (pos > stackSize) {
+//         //     stackSize = pos;
+//         // }
+//         cmd = removeFromNodeStask[--pos];
+//         // eslint-disable-next-line default-case
+//         switch(cmd) {
+//             case 0:
+//                 node = removeFromNodeStask[--pos];
+//                 if (node === null) {
+//                     throw new Error("Value not in set");
+//                 }
+//                 if (node.value !== value && compare(value, node.value) < 0) {
+//                     if (node.left === null) {
+//                         throw new Error("Value not in set");
+//                     }
+//                     if (!node.left.isRed && !(node.left.left !== null && node.left.left.isRed)) {
+//                         node = moveRedLeft(node);
+//                     }
+//                     removeFromNodeStask[pos++] = node;
+//                     removeFromNodeStask[pos++] = 1;
+//                     removeFromNodeStask[pos++] = node.left;
+//                     removeFromNodeStask[pos++] = 0;
+//                     break;
+//                 }
+//                 if (node.left !== null && node.left.isRed) {
+//                     node = rotateRight(node);
+//                 }
+//                 if (node.right === null) {
+//                     if (value === node.value) {
+//                         ret = null; // leaf node; LLRB assures no left value here
+//                         break;
+//                     }
+//                     throw new Error("Value not in set");
+//                 }
+//                 if (!node.right.isRed && !(node.right.left !== null && node.right.left.isRed)) {
+//                     node = moveRedRight(node);
+//                 }
+//                 if (value === node.value) {
+//                     node.value = findMinNode(node.right).value;
+//                     node.right = removeMinNode(node.right);
+//                     ret = fixUp(node);
+//                     break;
+//                 }
+//                 removeFromNodeStask[pos++] = node;
+//                 removeFromNodeStask[pos++] = 2;
+//                 removeFromNodeStask[pos++] = node.right;
+//                 removeFromNodeStask[pos++] = 0;
+//                 break;
+//             case 1:
+//                 node = removeFromNodeStask[--pos];
+//                 node.left = ret;
+//                 ret = fixUp(node);
+//                 break;
+//             case 2:
+//                 node = removeFromNodeStask[--pos];
+//                 node.right = ret;
+//                 ret = fixUp(node);
+//                 break;
+//         }
+//     }
+//     // for (let i = 0; i < stackSize; i++) {
+//     //     removeFromNodeStask[i] = undefined;
+//     // }
+//     return ret;
+// };
+
+
+module.exports =
+/*#__PURE__*/
+function (_AbstractBinaryTreeSt) {
+  _inherits(RedBlackTreeStrategy, _AbstractBinaryTreeSt);
+
+  function RedBlackTreeStrategy() {
+    _classCallCheck(this, RedBlackTreeStrategy);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(RedBlackTreeStrategy).apply(this, arguments));
+  }
+
+  _createClass(RedBlackTreeStrategy, [{
+    key: "insert",
+    value: function insert(value) {
+      this.root = insertInNode(this.root, value, this.comparator, this.allowNode);
+      this.root.isRed = false; // always
+    }
+  }, {
+    key: "remove",
+    value: function remove(value) {
+      this.root = removeFromNode(this.root, value, this.comparator);
+
+      if (this.root !== null) {
+        this.root.isRed = false;
+      }
+    }
+  }]);
+
+  return RedBlackTreeStrategy;
+}(AbstractBinaryTreeStrategy);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var BinaryTreeIterator = __webpack_require__(7); // const binaryTreeTraverse = (node, callback, some) => {
+//     if (node === null) {
+//         return false;
+//     }
+//     let ret;
+//     ret = binaryTreeTraverse(node.left, callback, some);
+//     if (some && ret) {
+//         return true;
+//     }
+//     ret = callback(node.value);
+//     if (some && ret) {
+//         return true;
+//     }
+//     ret = binaryTreeTraverse(node.right, callback, some);
+//     if (some && ret) {
+//         return true;
+//     }
+//     return false;
+// };
+// Not subject to stackoverflow
+
+
+var binaryTreeTraverse = function binaryTreeTraverse(node, callback, some) {
+  if (node === null) {
+    return;
+  }
+
+  var stack = [1, node.right, 0, node.value, 1, node.left];
+  var pos = stack.length;
+  var ret;
+
+  while (pos !== 0) {
+    pos -= 2;
+    node = stack[pos + 1];
+
+    if (stack[pos] === 0) {
+      ret = callback(node);
+
+      if (some && ret) {
+        break;
+      }
+    } else if (node !== null) {
+      stack[pos++] = 1;
+      stack[pos++] = node.right;
+      stack[pos++] = 0;
+      stack[pos++] = node.value;
+      stack[pos++] = -1;
+      stack[pos++] = node.left;
+    }
+  }
+}; // An AbstractBinaryTreeStrategy has a @root. @root is null or an object with
+// `.left`, `.right` and `.value` properties.
+
+
+module.exports =
+/*#__PURE__*/
+function () {
+  function AbstractBinaryTreeStrategy(options) {
+    _classCallCheck(this, AbstractBinaryTreeStrategy);
+
+    this.root = null;
+    this.comparator = options.comparator;
+    this.allowSetValue = options.allowSetValue;
+    this.allowNode = options.allowNode;
+  }
+
+  _createClass(AbstractBinaryTreeStrategy, [{
+    key: "toArray",
+    value: function toArray() {
+      var ret = [];
+      binaryTreeTraverse(this.root, function (value) {
+        ret.push(value);
+      });
+      return ret;
+    }
+  }, {
+    key: "forEachImpl",
+    value: function forEachImpl(callback, sortedSet, thisArg, some) {
+      if (typeof thisArg === "undefined") {
+        thisArg = sortedSet;
+      }
+
+      var i = 0;
+      binaryTreeTraverse(this.root, function (value) {
+        return callback.call(thisArg, value, i++, sortedSet);
+      }, some);
+    }
+  }, {
+    key: "contains",
+    value: function contains(value) {
+      var comparator = this.comparator;
+      var node = this.root;
+      var cmp;
+
+      while (node !== null) {
+        cmp = comparator(value, node.value);
+
+        if (cmp === 0) {
+          break;
+        } else if (cmp < 0) {
+          node = node.left;
+        } else {
+          node = node.right;
+        }
+      }
+
+      return node !== null && node.value === value;
+    }
+  }, {
+    key: "findIterator",
+    value: function findIterator(value) {
+      return BinaryTreeIterator.find(this, value, this.comparator);
+    }
+  }, {
+    key: "beginIterator",
+    value: function beginIterator() {
+      return BinaryTreeIterator.left(this);
+    }
+  }, {
+    key: "endIterator",
+    value: function endIterator() {
+      return BinaryTreeIterator.right(this);
+    }
+  }]);
+
+  return AbstractBinaryTreeStrategy;
+}();
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports) {
 
-var BinaryTreeIterator, descendAllTheWay, moveCursor;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-descendAllTheWay = function(leftOrRight, node) {
-  var parent;
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var descendAllTheWay = function descendAllTheWay(leftOrRight, node) {
+  var parent; // Assumes node._iteratorParentNode is set
+
   while (node[leftOrRight] !== null) {
     parent = node;
     node = node[leftOrRight];
     node._iteratorParentNode = parent;
   }
+
   return node;
 };
 
-moveCursor = function(leftOrRight, node) {
+var moveCursor = function moveCursor(leftOrRight, node) {
   var parent, rightOrLeft;
+
   if (node[leftOrRight] !== null) {
     parent = node;
     node = node[leftOrRight];
     node._iteratorParentNode = parent;
-    rightOrLeft = leftOrRight === 'left' ? 'right' : 'left';
+    rightOrLeft = leftOrRight === "left" ? "right" : "left";
     node = descendAllTheWay(rightOrLeft, node);
   } else {
     while ((parent = node._iteratorParentNode) !== null && parent[leftOrRight] === node) {
       node = parent;
     }
-    node = parent;
+
+    node = parent; // either null or the correct-direction parent
   }
+
   return node;
-};
+}; // The BinaryTreeIterator actually writes to the tree: it maintains a
+// "_iteratorParentNode" variable on each node. Please ignore this.
 
-BinaryTreeIterator = (function() {
-  function BinaryTreeIterator(tree1, node1) {
-    this.tree = tree1;
-    this.node = node1;
+
+var BinaryTreeIterator =
+/*#__PURE__*/
+function () {
+  function BinaryTreeIterator(tree, node) {
+    _classCallCheck(this, BinaryTreeIterator);
+
+    this.tree = tree;
+    this.node = node;
   }
 
-  BinaryTreeIterator.prototype.next = function() {
-    var node;
-    if (this.node === null) {
-      return null;
-    } else {
-      node = moveCursor('right', this.node);
-      return new BinaryTreeIterator(this.tree, node);
+  _createClass(BinaryTreeIterator, [{
+    key: "next",
+    value: function next() {
+      return this.node === null ? null : new BinaryTreeIterator(this.tree, moveCursor("right", this.node));
     }
-  };
+  }, {
+    key: "previous",
+    value: function previous() {
+      if (this.node === null) {
+        if (this.tree.root === null) {
+          return null;
+        }
 
-  BinaryTreeIterator.prototype.previous = function() {
-    var node;
-    if (this.node === null) {
-      if (this.tree.root === null) {
-        return null;
-      } else {
         this.tree.root._iteratorParentNode = null;
-        node = descendAllTheWay('right', this.tree.root);
-        return new BinaryTreeIterator(this.tree, node);
+        return new BinaryTreeIterator(this.tree, descendAllTheWay("right", this.tree.root));
       }
-    } else {
-      node = moveCursor('left', this.node);
-      if (node === null) {
-        return null;
-      } else {
-        return new BinaryTreeIterator(this.tree, node);
+
+      var node = moveCursor("left", this.node);
+      return node === null ? null : new BinaryTreeIterator(this.tree, node);
+    }
+  }, {
+    key: "hasNext",
+    value: function hasNext() {
+      return this.node !== null;
+    }
+  }, {
+    key: "hasPrevious",
+    value: function hasPrevious() {
+      return this.previous() !== null;
+    }
+  }, {
+    key: "value",
+    value: function value() {
+      return this.node === null ? null : this.node.value;
+    }
+  }, {
+    key: "setValue",
+    value: function setValue(value) {
+      if (!this.tree.allowSetValue) {
+        throw new Error("Must set options.allowSetValue");
       }
-    }
-  };
 
-  BinaryTreeIterator.prototype.hasNext = function() {
-    return this.node !== null;
-  };
+      if (!this.hasNext()) {
+        throw new Error("Cannot set value at end of set");
+      }
 
-  BinaryTreeIterator.prototype.hasPrevious = function() {
-    return this.previous() !== null;
-  };
-
-  BinaryTreeIterator.prototype.value = function() {
-    if (this.node === null) {
-      return null;
-    } else {
-      return this.node.value;
+      this.node.value = value;
+      return value;
     }
-  };
-
-  BinaryTreeIterator.prototype.setValue = function(value) {
-    if (!this.tree.options.allowSetValue) {
-      throw 'Must set options.allowSetValue';
-    }
-    if (!this.hasNext()) {
-      throw 'Cannot set value at end of set';
-    }
-    return this.node.value = value;
-  };
+  }]);
 
   return BinaryTreeIterator;
+}();
 
-})();
+BinaryTreeIterator.find = function (tree, value, comparator) {
+  var root = tree.root;
 
-BinaryTreeIterator.find = function(tree, value, comparator) {
-  var cmp, nextNode, node, root;
-  root = tree.root;
   if (root != null) {
     root._iteratorParentNode = null;
   }
-  node = root;
-  nextNode = null;
+
+  var node = root;
+  var nextNode = null; // For finding an in-between node
+
+  var cmp;
+
   while (node !== null) {
     cmp = comparator(value, node.value);
+
     if (cmp === 0) {
       break;
-    } else if (cmp < 0) {
+    }
+
+    if (cmp < 0) {
       if (node.left === null) {
         break;
-      }
+      } // If we descend all right after this until there are
+      // no more right nodes, we want to return an
+      // "in-between" iterator ... pointing here.
+
+
       nextNode = node;
       node.left._iteratorParentNode = node;
       node = node.left;
+    } else if (node.right !== null) {
+      node.right._iteratorParentNode = node;
+      node = node.right;
     } else {
-      if (node.right !== null) {
-        node.right._iteratorParentNode = node;
-        node = node.right;
-      } else {
-        node = nextNode;
-        break;
-      }
+      node = nextNode;
+      break;
     }
   }
+
   return new BinaryTreeIterator(tree, node);
 };
 
-BinaryTreeIterator.left = function(tree) {
-  var node;
+BinaryTreeIterator.left = function (tree) {
   if (tree.root === null) {
     return new BinaryTreeIterator(tree, null);
-  } else {
-    tree.root._iteratorParentNode = null;
-    node = descendAllTheWay('left', tree.root);
-    return new BinaryTreeIterator(tree, node);
   }
+
+  tree.root._iteratorParentNode = null;
+  var node = descendAllTheWay("left", tree.root);
+  return new BinaryTreeIterator(tree, node);
 };
 
-BinaryTreeIterator.right = function(tree) {
+BinaryTreeIterator.right = function (tree) {
   return new BinaryTreeIterator(tree, null);
 };
 
 module.exports = BinaryTreeIterator;
-
 
 /***/ })
 /******/ ]);

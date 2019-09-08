@@ -1,6 +1,7 @@
 /* global describe:false, it:false, assert:false */
 
 const semLib = require("../");
+const { Semaphore } = semLib;
 const hasProp = Object.prototype.hasOwnProperty;
 const ms = Math.pow(2, 4);
 
@@ -451,6 +452,50 @@ describe("take", () => {
                 });
             });
         }, ms);
+    });
+
+    it("should call cancel callback on cancel", done => {
+        reload();
+        const semID = semLib.semCreate(3);
+        const item = semID.semTake({
+            num: 3,
+            onTake: fire,
+            onCancel: run
+        });
+        semID.semGive();
+        item.cancel();
+        assertExpectedAfterMs(semID, ms, false, function() {
+            assert.strictEqual(semID.hasInWaitingTask(), false);
+            assert.strictEqual(semID.getNumTokens(), 1);
+            done();
+        });
+    });
+
+    it("should addCounter", () => {
+        const semID = new Semaphore(1, false, 15, true);
+        let item, called
+
+        called = false;
+        item = semID.semTake(() => {
+            called = true;
+        });
+        item.addCounter();
+        semID.semGive();
+        assert.strictEqual(called, false);
+        semID.semGive();
+        assert.strictEqual(called, true);
+
+        called = false;
+        item = semID.semTake(() => {
+            called = true;
+        });
+        item.addCounter(5);
+        semID.semGive();
+        assert.strictEqual(called, false);
+        semID.semGive(4, true);
+        assert.strictEqual(called, false);
+        semID.semGive();
+        assert.strictEqual(called, true);
     });
 });
 

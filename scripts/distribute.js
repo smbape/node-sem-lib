@@ -128,9 +128,6 @@ function getLoaders(ispartaLoader) {
     const loaders = [{
         test: /\.js$/,
         loaders: jsLoaders
-    }, {
-        test: /\.coffee$/,
-        loaders: ["coffee-loader"]
     }];
 
     return loaders;
@@ -140,7 +137,7 @@ function pack(name, suffix, entry, loaders, options, done) {
     options = merge({
         devtool: "source-map",
         resolve: {
-            extensions: [".js", ".coffee"]
+            extensions: [".js"]
         },
         entry: entry,
         output: {
