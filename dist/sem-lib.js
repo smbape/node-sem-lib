@@ -103,9 +103,11 @@ function (_BinaryTreeNode) {
   function RedBlackTreeNode(value) {
     var _this;
 
+    var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
     _classCallCheck(this, RedBlackTreeNode);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(RedBlackTreeNode).call(this, value));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(RedBlackTreeNode).call(this, value, parent));
     _this.isRed = true; // null nodes -- leaves -- are black
 
     return _this;
@@ -620,11 +622,11 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
               }
             }
 
-            weakerItemIterator = weakerItemIterator.hasPrevious() && weakerItemIterator.previous();
+            weakerItemIterator = weakerItemIterator.previous();
             weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
           }
 
-          weakerIterator = weakerIterator.hasPrevious() && weakerIterator.previous();
+          weakerIterator = weakerIterator ? weakerIterator.previous() : null;
         }
       } // if item is still waiting for tokens, try again at next give or flush
 
@@ -998,11 +1000,11 @@ Semaphore.prototype._countInWaitingTokens = function _countInWaitingTokens() {
           count += item.num;
         }
 
-        itemerator = itemerator.hasNext() && itemerator.next();
+        itemerator = itemerator.next();
       }
     }
 
-    iterator = iterator.hasNext() && iterator.next();
+    iterator = iterator.next();
   }
 
   return count;
@@ -1088,16 +1090,17 @@ Semaphore.prototype._clearImmediate = function () {
   };
 }();
 
-exports.semCreate = function () {
-  for (var _len2 = arguments.length, args = new Array(_len2), _key = 0; _key < _len2; _key++) {
-    args[_key] = arguments[_key];
-  }
+Object.assign(exports, {
+  semCreate: function semCreate() {
+    for (var _len2 = arguments.length, args = new Array(_len2), _key = 0; _key < _len2; _key++) {
+      args[_key] = arguments[_key];
+    }
 
-  return _construct(Semaphore, args);
-}; // Allow customization/Patch fix from outside
-
-
-exports.Semaphore = Semaphore;
+    return _construct(Semaphore, args);
+  },
+  Semaphore: Semaphore,
+  Inwaiting: Inwaiting
+});
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
@@ -1271,11 +1274,14 @@ function () {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 module.exports = function BinaryTreeNode(value) {
+  var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
   _classCallCheck(this, BinaryTreeNode);
 
   this.value = value;
   this.left = null;
   this.right = null;
+  this.parent = parent;
 };
 
 /***/ }),
@@ -1309,8 +1315,19 @@ var RedBlackTreeNode = __webpack_require__(0); // An implementation of Left-Lean
 
 var rotateLeft = function rotateLeft(node) {
   var tmp = node.right;
+  tmp.parent = null;
   node.right = tmp.left;
+
+  if (node.right !== null) {
+    node.right.parent = node;
+  }
+
   tmp.left = node;
+
+  if (tmp.left !== null) {
+    tmp.left.parent = tmp;
+  }
+
   tmp.isRed = node.isRed;
   node.isRed = true;
   return tmp;
@@ -1318,8 +1335,19 @@ var rotateLeft = function rotateLeft(node) {
 
 var rotateRight = function rotateRight(node) {
   var tmp = node.left;
+  tmp.parent = null;
   node.left = tmp.right;
+
+  if (node.left !== null) {
+    node.left.parent = node;
+  }
+
   tmp.right = node;
+
+  if (tmp.right !== null) {
+    tmp.right.parent = tmp;
+  }
+
   tmp.isRed = node.isRed;
   node.isRed = true;
   return tmp;
@@ -1337,6 +1365,7 @@ var moveRedLeft = function moveRedLeft(node) {
 
   if (node.right !== null && node.right.left !== null && node.right.left.isRed) {
     node.right = rotateRight(node.right);
+    node.right.parent = node;
     node = rotateLeft(node);
     colorFlip(node);
   }
@@ -1356,7 +1385,7 @@ var moveRedRight = function moveRedRight(node) {
   return node;
 };
 
-var insertInNode = function insertInNode(node, value, compare, allowNode) {
+var insertInNode = function insertInNode(node, value, compare, allowNode, parent) {
   if (node === null) {
     if (allowNode && value instanceof RedBlackTreeNode) {
       if (!value.isRed) {
@@ -1376,9 +1405,11 @@ var insertInNode = function insertInNode(node, value, compare, allowNode) {
   }
 
   if (compare(value, node.value) < 0) {
-    node.left = insertInNode(node.left, value, compare, allowNode);
+    node.left = insertInNode(node.left, value, compare, allowNode, node);
+    node.left.parent = node;
   } else {
-    node.right = insertInNode(node.right, value, compare, allowNode);
+    node.right = insertInNode(node.right, value, compare, allowNode, node);
+    node.right.parent = node;
   }
 
   if (node.right !== null && node.right.isRed && !(node.left !== null && node.left.isRed)) {
@@ -1434,6 +1465,11 @@ var removeMinNode = function removeMinNode(node) {
   }
 
   node.left = removeMinNode(node.left);
+
+  if (node.left !== null) {
+    node.left.parent = node;
+  }
+
   return fixUp(node);
 }; // // const removeMinNodeStack = new Array(1024);
 // const removeMinNode = node => {
@@ -1463,6 +1499,9 @@ var removeMinNode = function removeMinNode(node) {
 //         } else {
 //             node = removeMinNodeStack[--pos];
 //             node.left = ret;
+//             if (node.left !== null) {
+//                 node.left.parent = node;
+//             }
 //             ret = fixUp(node);
 //         }
 //     }
@@ -1488,6 +1527,10 @@ var removeFromNode = function removeFromNode(node, value, compare) {
     }
 
     node.left = removeFromNode(node.left, value, compare);
+
+    if (node.left !== null) {
+      node.left.parent = node;
+    }
   } else {
     if (node.left !== null && node.left.isRed) {
       node = rotateRight(node);
@@ -1510,6 +1553,10 @@ var removeFromNode = function removeFromNode(node, value, compare) {
       node.right = removeMinNode(node.right);
     } else {
       node.right = removeFromNode(node.right, value, compare);
+    }
+
+    if (node.right !== null) {
+      node.right.parent = node;
     }
   }
 
@@ -1563,6 +1610,9 @@ var removeFromNode = function removeFromNode(node, value, compare) {
 //                 if (value === node.value) {
 //                     node.value = findMinNode(node.right).value;
 //                     node.right = removeMinNode(node.right);
+//                     if (node.right !== null) {
+//                         node.right.parent = node;
+//                     }
 //                     ret = fixUp(node);
 //                     break;
 //                 }
@@ -1574,11 +1624,17 @@ var removeFromNode = function removeFromNode(node, value, compare) {
 //             case 1:
 //                 node = removeFromNodeStask[--pos];
 //                 node.left = ret;
+//                 if (node.left !== null) {
+//                     node.left.parent = node;
+//                 }
 //                 ret = fixUp(node);
 //                 break;
 //             case 2:
 //                 node = removeFromNodeStask[--pos];
 //                 node.right = ret;
+//                 if (node.right !== null) {
+//                     node.right.parent = node;
+//                 }
 //                 ret = fixUp(node);
 //                 break;
 //         }
@@ -1605,7 +1661,8 @@ function (_AbstractBinaryTreeSt) {
     key: "insert",
     value: function insert(value) {
       this.root = insertInNode(this.root, value, this.comparator, this.allowNode);
-      this.root.isRed = false; // always
+      this.root.parent = null;
+      this.root.isRed = false;
     }
   }, {
     key: "remove",
@@ -1613,6 +1670,7 @@ function (_AbstractBinaryTreeSt) {
       this.root = removeFromNode(this.root, value, this.comparator);
 
       if (this.root !== null) {
+        this.root.parent = null;
         this.root.isRed = false;
       }
     }
@@ -1770,12 +1828,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var descendAllTheWay = function descendAllTheWay(leftOrRight, node) {
-  var parent; // Assumes node._iteratorParentNode is set
-
   while (node[leftOrRight] !== null) {
-    parent = node;
     node = node[leftOrRight];
-    node._iteratorParentNode = parent;
   }
 
   return node;
@@ -1787,11 +1841,10 @@ var moveCursor = function moveCursor(leftOrRight, node) {
   if (node[leftOrRight] !== null) {
     parent = node;
     node = node[leftOrRight];
-    node._iteratorParentNode = parent;
     rightOrLeft = leftOrRight === "left" ? "right" : "left";
     node = descendAllTheWay(rightOrLeft, node);
   } else {
-    while ((parent = node._iteratorParentNode) !== null && parent[leftOrRight] === node) {
+    while ((parent = node.parent) !== null && parent[leftOrRight] === node) {
       node = parent;
     }
 
@@ -1800,7 +1853,7 @@ var moveCursor = function moveCursor(leftOrRight, node) {
 
   return node;
 }; // The BinaryTreeIterator actually writes to the tree: it maintains a
-// "_iteratorParentNode" variable on each node. Please ignore this.
+// "parent" variable on each node. Please ignore this.
 
 
 var BinaryTreeIterator =
@@ -1826,7 +1879,6 @@ function () {
           return null;
         }
 
-        this.tree.root._iteratorParentNode = null;
         return new BinaryTreeIterator(this.tree, descendAllTheWay("right", this.tree.root));
       }
 
@@ -1868,13 +1920,7 @@ function () {
 }();
 
 BinaryTreeIterator.find = function (tree, value, comparator) {
-  var root = tree.root;
-
-  if (root != null) {
-    root._iteratorParentNode = null;
-  }
-
-  var node = root;
+  var node = tree.root;
   var nextNode = null; // For finding an in-between node
 
   var cmp;
@@ -1895,10 +1941,8 @@ BinaryTreeIterator.find = function (tree, value, comparator) {
 
 
       nextNode = node;
-      node.left._iteratorParentNode = node;
       node = node.left;
     } else if (node.right !== null) {
-      node.right._iteratorParentNode = node;
       node = node.right;
     } else {
       node = nextNode;
@@ -1914,7 +1958,6 @@ BinaryTreeIterator.left = function (tree) {
     return new BinaryTreeIterator(tree, null);
   }
 
-  tree.root._iteratorParentNode = null;
   var node = descendAllTheWay("left", tree.root);
   return new BinaryTreeIterator(tree, node);
 };

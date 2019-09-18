@@ -473,7 +473,7 @@ describe("take", () => {
 
     it("should addCounter", () => {
         const semID = new Semaphore(1, false, 15, true);
-        let item, called
+        let item, called;
 
         called = false;
         item = semID.semTake(() => {

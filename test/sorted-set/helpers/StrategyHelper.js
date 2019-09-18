@@ -132,9 +132,54 @@ module.exports = (description, strategy) => {
             });
 
             it("should return a begin iterator", () => {
-                const iterator = priv.beginIterator();
-                expect(iterator.previous()).to.eq(null);
-                expect(iterator.value()).to.eq(1);
+                const validateIterator = expected => {
+                    const len = expected.length;
+                    for (let i = 0, iterator; i < len; i++) {
+                        if (i === 0) {
+                            iterator = priv.beginIterator();
+                            expect(iterator.previous()).to.eq(null);
+                        } else {
+                            iterator = iterator.next();
+                            expect(iterator.previous().value()).to.eq(expected[i - 1]);
+                        }
+                        expect(iterator.value()).to.eq(expected[i]);
+                    }
+                }
+
+                validateIterator([1, 2, 3]);
+
+                priv.insert(4);
+                validateIterator([1, 2, 3, 4]);
+
+                priv.insert(5);
+                validateIterator([1, 2, 3, 4, 5]);
+
+                priv.insert(6);
+                validateIterator([1, 2, 3, 4, 5, 6]);
+
+                priv.insert(7);
+                validateIterator([1, 2, 3, 4, 5, 6, 7]);
+
+                priv.insert(8);
+                validateIterator([1, 2, 3, 4, 5, 6, 7, 8]);
+
+                priv.remove(2);
+                validateIterator([1, 3, 4, 5, 6, 7, 8]);
+
+                priv.insert(9);
+                validateIterator([1, 3, 4, 5, 6, 7, 8, 9]);
+
+                priv.remove(7);
+                validateIterator([1, 3, 4, 5, 6, 8, 9]);
+
+                priv.insert(10);
+                validateIterator([1, 3, 4, 5, 6, 8, 9, 10]);
+
+                priv.remove(8);
+                validateIterator([1, 3, 4, 5, 6, 9, 10]);
+
+                priv.insert(11);
+                validateIterator([1, 3, 4, 5, 6, 9, 10, 11]);
             });
 
             it("should return an end iterator", () => {
@@ -174,8 +219,53 @@ module.exports = (description, strategy) => {
             });
 
             it("should step to previous from the end iterator", () => {
-                const iterator = priv.endIterator().previous();
-                expect(iterator.value()).to.eq(3);
+                const validateIterator = expected => {
+                    const len = expected.length;
+                    for (let i = 0, iterator; i < len; i++) {
+                        if (i === 0) {
+                            iterator = priv.endIterator().previous();
+                        } else {
+                            iterator = iterator.previous();
+                            expect(iterator.next().value()).to.eq(expected[len - i]);
+                        }
+                        expect(iterator.value()).to.eq(expected[len - 1 - i]);
+                    }
+                }
+
+                validateIterator([1, 2, 3]);
+
+                priv.insert(4);
+                validateIterator([1, 2, 3, 4]);
+
+                priv.insert(5);
+                validateIterator([1, 2, 3, 4, 5]);
+
+                priv.insert(6);
+                validateIterator([1, 2, 3, 4, 5, 6]);
+
+                priv.insert(7);
+                validateIterator([1, 2, 3, 4, 5, 6, 7]);
+
+                priv.insert(8);
+                validateIterator([1, 2, 3, 4, 5, 6, 7, 8]);
+
+                priv.remove(2);
+                validateIterator([1, 3, 4, 5, 6, 7, 8]);
+
+                priv.insert(9);
+                validateIterator([1, 3, 4, 5, 6, 7, 8, 9]);
+
+                priv.remove(7);
+                validateIterator([1, 3, 4, 5, 6, 8, 9]);
+
+                priv.insert(10);
+                validateIterator([1, 3, 4, 5, 6, 8, 9, 10]);
+
+                priv.remove(8);
+                validateIterator([1, 3, 4, 5, 6, 9, 10]);
+
+                priv.insert(11);
+                validateIterator([1, 3, 4, 5, 6, 9, 10, 11]);
             });
 
             it("should step to end from a previous iterator", () => {
