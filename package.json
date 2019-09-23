@@ -4,9 +4,10 @@
   "description": "A semaphore library for nodejs",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint \"lib/*.js\" \"scripts/*.js\" \"test/*.js\" cli.js",
+    "lint": "eslint --fix lib/sem-lib.js \"lib/SortedSet/*.js\" \"scripts/*.js\" \"test/*.js\" cli.js",
     "prepublishOnly": "npm run lint && node cli.js distribute && npm run test",
     "version": "node cli.js version",
+    "benchmark": "node --max-old-space-size=2560 benchmark/benchmark-semaphore.js",
     "test": "_mocha --full-trace --require test/common.js \"test/sorted-set/**/*Spec.js\" \"test/*-test.js\""
   },
   "repository": {

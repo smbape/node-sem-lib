@@ -325,6 +325,23 @@ function (_RedBlackTreeNode) {
 
       semID._insertItem(this);
     }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      var _this3 = this;
+
+      // Remove properties to allow garbage collection
+      Object.keys(this).forEach(function (prop) {
+        if (prop !== "id") {
+          delete _this3[prop];
+        }
+      }); // Prevent usage of these methods on a destroyed object
+
+      ["addCounter", "cancel", "setPriority", "destroy"].forEach(function (prop) {
+        _this3[prop] = undefined;
+      });
+      this.destroyed = true;
+    }
   }]);
 
   return Inwaiting;
@@ -440,7 +457,7 @@ Semaphore.prototype.semFlush = function semFlush() {
 };
 
 Semaphore.prototype.handleTimeout = function handleTimeout(item) {
-  var _this3 = this;
+  var _this4 = this;
 
   var onTimeOut = item.onTimeOut,
       taken = item.taken;
@@ -450,7 +467,7 @@ Semaphore.prototype.handleTimeout = function handleTimeout(item) {
   if (taken !== 0) {
     // give on next tick to wait for all synchronous canceled to be done
     this._setImmediate(function () {
-      _this3.semGive(taken, true);
+      _this4.semGive(taken, true);
     });
   }
 
@@ -563,7 +580,7 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
 
 
 Semaphore.prototype._semTake = function _semTake(topSync) {
-  var _this4 = this;
+  var _this5 = this;
 
   if (this.taking) {
     return;
@@ -576,10 +593,10 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
   this.taking = true;
 
   var _loop = function _loop() {
-    var _this4$_nextGroupItem = _this4._nextGroupItem(),
-        _this4$_nextGroupItem2 = _slicedToArray(_this4$_nextGroupItem, 2),
-        group = _this4$_nextGroupItem2[0],
-        item = _this4$_nextGroupItem2[1];
+    var _this5$_nextGroupItem = _this5._nextGroupItem(),
+        _this5$_nextGroupItem2 = _slicedToArray(_this5$_nextGroupItem, 2),
+        group = _this5$_nextGroupItem2[0],
+        item = _this5$_nextGroupItem2[1];
 
     if (item == null) {
       return "break";
@@ -590,18 +607,18 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
         weakerItemIterator = void 0,
         weakerItem = void 0; // if item is still waiting for tokens
 
-    if (item.num > _this4._numTokens) {
-      item.taken += _this4._numTokens;
-      item.num -= _this4._numTokens;
-      _this4._numTokens = 0; // take token from tasks with weaker priority
+    if (item.num > _this5._numTokens) {
+      item.taken += _this5._numTokens;
+      item.num -= _this5._numTokens;
+      _this5._numTokens = 0; // take token from tasks with weaker priority
 
-      if (item.unfair && _this4._queue.length !== 1) {
-        weakerIterator = _this4._queue.endIterator().previous();
+      if (item.unfair && _this5._queue.length !== 1) {
+        weakerIterator = _this5._queue.endIterator().previous();
 
         while (weakerIterator && item.num !== 0) {
           wearkeGroup = weakerIterator.value();
 
-          if (wearkeGroup === group || wearkeGroup.priority <= _this4.priority) {
+          if (wearkeGroup === group || wearkeGroup.priority <= _this5.priority) {
             // can only be unfair on tasks with lower priority that semaphore default priority
             break;
           }
@@ -610,7 +627,7 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
           weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
 
           while (weakerItem && item.num !== 0) {
-            if (weakerItem.taken > 0 && _this4._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
+            if (weakerItem.taken > 0 && _this5._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
               if (item.num > weakerItem.taken) {
                 weakerItem.num += weakerItem.taken;
                 item.num -= weakerItem.taken;
@@ -638,17 +655,17 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
 
     item.taken += item.num;
 
-    if (_this4._numTokens !== Number.POSITIVE_INFINITY) {
-      _this4._numTokens -= item.num;
+    if (_this5._numTokens !== Number.POSITIVE_INFINITY) {
+      _this5._numTokens -= item.num;
     }
 
     item.num = 0;
-    var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : _this4.sync;
+    var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : _this5.sync;
     var taken = item.taken,
         task = item.task,
         onCancel = item.onCancel;
 
-    _this4._removeItem(item);
+    _this5._removeItem(item);
 
     if (sync) {
       task();
@@ -656,18 +673,18 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
       // Non blocking call of callback
       // A way to loop through in waiting tasks without blocking
       // the semaphore process until done
-      var timerID = _this4._setImmediate(function () {
+      var timerID = _this5._setImmediate(function () {
         timerID = null;
         task();
       });
 
       item.cancel = function () {
-        _this4._clearImmediate(timerID);
+        _this5._clearImmediate(timerID);
 
         timerID = null; // give on next tick to wait for all synchronous canceled to be done
 
-        _this4._setImmediate(function () {
-          _this4.semGive(taken, true);
+        _this5._setImmediate(function () {
+          _this5.semGive(taken, true);
         });
 
         if (typeof onCancel === "function") {
@@ -1043,15 +1060,9 @@ Semaphore.prototype._removeItem = function _removeItem(item) {
     this._queue.remove(item.group);
 
     this._checkKeepAlive();
-  } // Remove properties to allow garbage collection
+  }
 
-
-  Object.keys(item).forEach(function (prop) {
-    if (prop !== "id") {
-      // delete is more cpu expensive
-      item[prop] = undefined;
-    }
-  });
+  item.destroy();
 };
 
 Semaphore.prototype._insertGroup = function _insertGroup(item) {
