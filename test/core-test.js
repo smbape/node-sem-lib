@@ -497,6 +497,41 @@ describe("take", () => {
         semID.semGive();
         assert.strictEqual(called, true);
     });
+
+    it("should cancel", () => {
+        const len = 8;
+        const expectedCancelled = 3;
+        const expectedTaken = len - expectedCancelled;
+        const semID = new Semaphore(len, false, 15, true);
+        const items = new Array(len);
+
+        let taken = 0;
+        let cancelled = 0;
+
+        const handleTake = () => {
+            taken++;
+        };
+
+        const handleCancel = () => {
+            cancelled++;
+        };
+
+        for (let i = 0; i < len; i++) {
+            items[i] = semID.semTake({
+                onTake: handleTake,
+                onCancel: handleCancel,
+            });
+        }
+
+        for (let i = 2; i < 2 + expectedCancelled; i++) {
+            items[i] .cancel();
+        }
+
+        semID.semGive(expectedTaken);
+
+        assert.strictEqual(taken, expectedTaken);
+        assert.strictEqual(cancelled, expectedCancelled);
+    });
 });
 
 describe("destroy", function () {

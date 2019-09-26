@@ -1523,7 +1523,7 @@ var removeMinNode = function removeMinNode(node) {
 // };
 
 
-var removeFromNode = function removeFromNode(node, value, compare) {
+var removeFromNode = function removeFromNode(node, value, compare, allowNode) {
   if (node === null) {
     throw new Error("Value not in set");
   }
@@ -1537,7 +1537,7 @@ var removeFromNode = function removeFromNode(node, value, compare) {
       node = moveRedLeft(node);
     }
 
-    node.left = removeFromNode(node.left, value, compare);
+    node.left = removeFromNode(node.left, value, compare, allowNode);
 
     if (node.left !== null) {
       node.left.parent = node;
@@ -1560,10 +1560,17 @@ var removeFromNode = function removeFromNode(node, value, compare) {
     }
 
     if (value === node.value) {
-      node.value = findMinNode(node.right).value;
-      node.right = removeMinNode(node.right);
+      value = findMinNode(node.right).value;
+      var right = removeMinNode(node.right);
+
+      if (allowNode && value instanceof RedBlackTreeNode) {
+        node = Object.assign(value, node);
+      }
+
+      node.value = value;
+      node.right = right;
     } else {
-      node.right = removeFromNode(node.right, value, compare);
+      node.right = removeFromNode(node.right, value, compare, allowNode);
     }
 
     if (node.right !== null) {
@@ -1573,7 +1580,7 @@ var removeFromNode = function removeFromNode(node, value, compare) {
 
   return fixUp(node);
 }; // // const removeFromNodeStask = new Array(1024);
-// const removeFromNode = (node, value, compare) => {
+// const removeFromNode = (node, value, compare, allowNode) => {
 //     let pos = 0;
 //     const removeFromNodeStask = [];
 //     removeFromNodeStask[pos++] = node;
@@ -1619,8 +1626,13 @@ var removeFromNode = function removeFromNode(node, value, compare) {
 //                     node = moveRedRight(node);
 //                 }
 //                 if (value === node.value) {
-//                     node.value = findMinNode(node.right).value;
-//                     node.right = removeMinNode(node.right);
+//                     value = findMinNode(node.right).value;
+//                     const right = removeMinNode(node.right);
+//                     if (allowNode && value instanceof RedBlackTreeNode) {
+//                         node = Object.assign(value, node);
+//                     }
+//                     node.value = value;
+//                     node.right = right;
 //                     if (node.right !== null) {
 //                         node.right.parent = node;
 //                     }
@@ -1678,7 +1690,7 @@ function (_AbstractBinaryTreeSt) {
   }, {
     key: "remove",
     value: function remove(value) {
-      this.root = removeFromNode(this.root, value, this.comparator);
+      this.root = removeFromNode(this.root, value, this.comparator, this.allowNode);
 
       if (this.root !== null) {
         this.root.parent = null;
