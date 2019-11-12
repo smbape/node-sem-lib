@@ -1,4 +1,4 @@
-/node_modules
-/project.sublime-workspace
-/package-lock.json
 /.work
+/node_modules
+/package-lock.json
+/project.sublime-workspace
