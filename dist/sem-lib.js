@@ -519,16 +519,18 @@ Semaphore.prototype.semTake = function semTake(options, result) {
   priority = toInteger(priority, false, this.priority);
   var item = new Inwaiting(this, task, priority, num, hasOptions ? options : false);
 
+  if (typeof result === "function") {
+    result(item);
+  } else if (isObject(result)) {
+    result.addCounter = item.addCounter.bind(item);
+    result.cancel = item.cancel.bind(item);
+    result.setPriority = item.setPriority.bind(item);
+  }
+
   this._insertItem(item);
 
   if (isNumeric(timeOut) && timeOut > 0) {
     item.timer = setTimeout(this.handleTimeout.bind(this, item), timeOut);
-  }
-
-  if (isObject(result)) {
-    result.addCounter = item.addCounter.bind(item);
-    result.cancel = item.cancel.bind(item);
-    result.setPriority = item.setPriority.bind(item);
   }
 
   this._semTake();
@@ -1564,7 +1566,10 @@ var removeFromNode = function removeFromNode(node, value, compare, allowNode) {
       var right = removeMinNode(node.right);
 
       if (allowNode && value instanceof RedBlackTreeNode) {
-        node = Object.assign(value, node);
+        value.left = node.left;
+        value.parent = node.parent;
+        value.isRed = node.isRed;
+        node = value;
       }
 
       node.value = value;
@@ -1629,7 +1634,10 @@ var removeFromNode = function removeFromNode(node, value, compare, allowNode) {
 //                     value = findMinNode(node.right).value;
 //                     const right = removeMinNode(node.right);
 //                     if (allowNode && value instanceof RedBlackTreeNode) {
-//                         node = Object.assign(value, node);
+//                         value.left = node.left;
+//                         value.parent = node.parent;
+//                         value.isRed = node.isRed;
+//                         node = value;
 //                     }
 //                     node.value = value;
 //                     node.right = right;
