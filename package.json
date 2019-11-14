@@ -1,6 +1,6 @@
 {
   "name": "sem-lib",
-  "version": "2.5.5",
+  "version": "2.5.6",
   "description": "A semaphore library for nodejs",
   "main": "index.js",
   "scripts": {
