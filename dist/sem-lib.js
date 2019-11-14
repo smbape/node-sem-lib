@@ -558,12 +558,7 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
       groupIterator = groupIterator.next();
 
       if (groupIterator === null) {
-        break;
-      }
-
-      group = groupIterator.value();
-
-      if (group === null) {
+        group = null;
         break;
       }
 
@@ -1004,22 +999,22 @@ Semaphore.prototype._countInWaitingTokens = function _countInWaitingTokens() {
 
   var iterator = this._queue.beginIterator();
 
-  var group, itemerator, item;
+  var group, itemIterator, item;
 
   while (iterator) {
     group = iterator.value();
 
     if (group != null && group.stack.length !== 0) {
-      itemerator = group.stack.beginIterator();
+      itemIterator = group.stack.beginIterator();
 
-      while (itemerator) {
-        item = itemerator.value();
+      while (itemIterator) {
+        item = itemIterator.value();
 
         if (item != null) {
           count += item.num;
         }
 
-        itemerator = itemerator.next();
+        itemIterator = itemIterator.next();
       }
     }
 
@@ -1567,6 +1562,11 @@ var removeFromNode = function removeFromNode(node, value, compare, allowNode) {
 
       if (allowNode && value instanceof RedBlackTreeNode) {
         value.left = node.left;
+
+        if (value.left !== null) {
+          value.left.parent = value;
+        }
+
         value.parent = node.parent;
         value.isRed = node.isRed;
         node = value;
@@ -1635,6 +1635,9 @@ var removeFromNode = function removeFromNode(node, value, compare, allowNode) {
 //                     const right = removeMinNode(node.right);
 //                     if (allowNode && value instanceof RedBlackTreeNode) {
 //                         value.left = node.left;
+//                         if (value.left !== null) {
+//                             value.left.parent = value;
+//                         }
 //                         value.parent = node.parent;
 //                         value.isRed = node.isRed;
 //                         node = value;
@@ -1900,7 +1903,12 @@ function () {
   _createClass(BinaryTreeIterator, [{
     key: "next",
     value: function next() {
-      return this.node === null ? null : new BinaryTreeIterator(this.tree, moveCursor("right", this.node));
+      if (this.node === null) {
+        return null;
+      }
+
+      var node = moveCursor("right", this.node);
+      return node === null ? null : new BinaryTreeIterator(this.tree, node);
     }
   }, {
     key: "previous",
@@ -1910,7 +1918,9 @@ function () {
           return null;
         }
 
-        return new BinaryTreeIterator(this.tree, descendAllTheWay("right", this.tree.root));
+        var _node = descendAllTheWay("right", this.tree.root);
+
+        return _node === null ? null : new BinaryTreeIterator(this.tree, _node);
       }
 
       var node = moveCursor("left", this.node);
@@ -1919,7 +1929,7 @@ function () {
   }, {
     key: "hasNext",
     value: function hasNext() {
-      return this.node !== null;
+      return this.next() !== null;
     }
   }, {
     key: "hasPrevious",
@@ -1938,7 +1948,7 @@ function () {
         throw new Error("Must set options.allowSetValue");
       }
 
-      if (!this.hasNext()) {
+      if (this.node === null) {
         throw new Error("Cannot set value at end of set");
       }
 

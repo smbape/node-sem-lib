@@ -8,12 +8,12 @@ const numberComparator = (a, b) => {
     return a - b;
 };
 
-module.exports = (description, strategy) => {
+module.exports = (description, Strategy, options, checkParent, cb) => {
     describe(description, () => {
         let priv;
         describe("starting empty", () => {
             beforeEach(() => {
-                priv = new strategy({
+                priv = new Strategy({
                     comparator: numberComparator
                 });
             });
@@ -64,7 +64,7 @@ module.exports = (description, strategy) => {
         });
         describe("with some numbers", () => {
             beforeEach(() => {
-                priv = new strategy({
+                priv = new Strategy({
                     comparator: numberComparator
                 });
                 // Insert in this order so binary tree isn't one-sided
@@ -132,7 +132,36 @@ module.exports = (description, strategy) => {
             });
 
             it("should return a begin iterator", () => {
+                const binaryTreeTraverse = node => {
+                    if (node === null) {
+                        return;
+                    }
+
+                    const stack = [node.right, node.left];
+                    let pos = stack.length;
+
+                    while (pos !== 0) {
+                        node = stack[--pos];
+                        if (node === null) {
+                            continue;
+                        }
+
+                        if (node.right) {
+                            expect(node.right.parent).to.equal(node);
+                        }
+                        if (node.left) {
+                            expect(node.left.parent).to.equal(node);
+                        }
+
+                        stack[pos++] = node.right;
+                        stack[pos++] = node.left;
+                    }
+                };
+
                 const validateIterator = expected => {
+                    if (checkParent) {
+                        binaryTreeTraverse(priv.root);
+                    }
                     const len = expected.length;
                     for (let i = 0, iterator; i < len; i++) {
                         if (i === 0) {
@@ -144,7 +173,7 @@ module.exports = (description, strategy) => {
                         }
                         expect(iterator.value()).to.eq(expected[i]);
                     }
-                }
+                };
 
                 validateIterator([1, 2, 3]);
 
@@ -219,7 +248,36 @@ module.exports = (description, strategy) => {
             });
 
             it("should step to previous from the end iterator", () => {
+                const binaryTreeTraverse = node => {
+                    if (node === null) {
+                        return;
+                    }
+
+                    const stack = [node.right, node.left];
+                    let pos = stack.length;
+
+                    while (pos !== 0) {
+                        node = stack[--pos];
+                        if (node === null) {
+                            continue;
+                        }
+
+                        if (node.right) {
+                            expect(node.right.parent).to.equal(node);
+                        }
+                        if (node.left) {
+                            expect(node.left.parent).to.equal(node);
+                        }
+
+                        stack[pos++] = node.right;
+                        stack[pos++] = node.left;
+                    }
+                };
+
                 const validateIterator = expected => {
+                    if (checkParent) {
+                        binaryTreeTraverse(priv.root);
+                    }
                     const len = expected.length;
                     for (let i = 0, iterator; i < len; i++) {
                         if (i === 0) {
@@ -230,7 +288,7 @@ module.exports = (description, strategy) => {
                         }
                         expect(iterator.value()).to.eq(expected[len - 1 - i]);
                     }
-                }
+                };
 
                 validateIterator([1, 2, 3]);
 
@@ -270,7 +328,7 @@ module.exports = (description, strategy) => {
 
             it("should step to end from a previous iterator", () => {
                 const iterator = priv.findIterator(3).next();
-                expect(iterator.value()).to.eq(null);
+                expect(iterator).to.eq(null);
             });
 
             it("should fail to setValue()", () => {
@@ -295,7 +353,7 @@ module.exports = (description, strategy) => {
 
         describe("with allowSetValue", () => {
             beforeEach(() => {
-                priv = new strategy({
+                priv = new Strategy({
                     comparator: numberComparator,
                     allowSetValue: true
                 });
@@ -316,5 +374,9 @@ module.exports = (description, strategy) => {
                 }).to.throw();
             });
         });
+
+        if (typeof cb === "function") {
+            cb();
+        }
     });
 };

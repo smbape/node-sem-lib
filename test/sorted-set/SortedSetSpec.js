@@ -88,8 +88,6 @@ describe("integration tests", () => {
         iterator = iterator.next();
         expect(iterator.value()).to.eq(2);
         iterator = iterator.next();
-        expect(iterator.value()).to.eq(null);
-        iterator = iterator.next();
         expect(iterator).to.eq(null);
     });
 });
