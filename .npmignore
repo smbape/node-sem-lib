@@ -2,7 +2,6 @@
 /.work
 /bower.json
 /node_modules
-/package-lock.json
 /project.sublime-project
 /project.sublime-workspace
 /test

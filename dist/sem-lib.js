@@ -95,9 +95,7 @@ var BinaryTreeNode = __webpack_require__(4); // Here are some differences:
 // * We use the passed comparator.
 
 
-module.exports =
-/*#__PURE__*/
-function (_BinaryTreeNode) {
+module.exports = /*#__PURE__*/function (_BinaryTreeNode) {
   _inherits(RedBlackTreeNode, _BinaryTreeNode);
 
   function RedBlackTreeNode(value) {
@@ -128,7 +126,7 @@ function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArra
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
 
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -208,9 +206,7 @@ var hasProp = Object.hasOwnProperty; // Debugging purpose
 
 var globalCounter = 0;
 
-var SortedSet =
-/*#__PURE__*/
-function (_AbstractSortedSet) {
+var SortedSet = /*#__PURE__*/function (_AbstractSortedSet) {
   _inherits(SortedSet, _AbstractSortedSet);
 
   function SortedSet() {
@@ -245,9 +241,7 @@ function (_AbstractSortedSet) {
   return SortedSet;
 }(AbstractSortedSet);
 
-var Inwaiting =
-/*#__PURE__*/
-function (_RedBlackTreeNode) {
+var Inwaiting = /*#__PURE__*/function (_RedBlackTreeNode) {
   _inherits(Inwaiting, _RedBlackTreeNode);
 
   function Inwaiting(semID, task, priority, num, options) {
@@ -1144,9 +1138,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-module.exports =
-/*#__PURE__*/
-function () {
+module.exports = /*#__PURE__*/function () {
   function AbstractSortedSet(options) {
     _classCallCheck(this, AbstractSortedSet);
 
@@ -1680,9 +1672,7 @@ var removeFromNode = function removeFromNode(node, value, compare, allowNode) {
 // };
 
 
-module.exports =
-/*#__PURE__*/
-function (_AbstractBinaryTreeSt) {
+module.exports = /*#__PURE__*/function (_AbstractBinaryTreeSt) {
   _inherits(RedBlackTreeStrategy, _AbstractBinaryTreeSt);
 
   function RedBlackTreeStrategy() {
@@ -1777,9 +1767,7 @@ var binaryTreeTraverse = function binaryTreeTraverse(node, callback, some) {
 // `.left`, `.right` and `.value` properties.
 
 
-module.exports =
-/*#__PURE__*/
-function () {
+module.exports = /*#__PURE__*/function () {
   function AbstractBinaryTreeStrategy(options) {
     _classCallCheck(this, AbstractBinaryTreeStrategy);
 
@@ -1890,9 +1878,7 @@ var moveCursor = function moveCursor(leftOrRight, node) {
 // "parent" variable on each node. Please ignore this.
 
 
-var BinaryTreeIterator =
-/*#__PURE__*/
-function () {
+var BinaryTreeIterator = /*#__PURE__*/function () {
   function BinaryTreeIterator(tree, node) {
     _classCallCheck(this, BinaryTreeIterator);
 
