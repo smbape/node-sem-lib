@@ -857,7 +857,11 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
         return target.setPriority.bind(target);
       }
 
-      return Reflect.get.apply(Reflect, arguments);
+      if (prop === "scheduled") {
+        return Reflect.get.apply(Reflect, arguments);
+      }
+
+      return undefined;
     }
   });
 };

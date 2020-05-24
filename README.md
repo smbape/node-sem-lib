@@ -6,8 +6,8 @@ A semaphore library for nodejs
 
 ```javascript
 // Create
-var SemLib = require("sem-lib");
-var semID = SemLib.semCreate();
+const SemLib = require("sem-lib");
+const semID = SemLib.semCreate();
 
 // wait for a token
 semID.semTake(callback);
@@ -18,8 +18,8 @@ SemLib.semGive();
 
 ```javascript
 // Exclusive access
-var SemLib = require("sem-lib");
-var semID = SemLib.semCreate(1, true);
+const SemLib = require("sem-lib");
+const semID = SemLib.semCreate(1, true);
 
 semID.semTake(function() {
   // first exclusive access
@@ -36,8 +36,8 @@ semID.semTake(function() {
 
 ```javascript
 // Synchronization
-var SemLib = require("sem-lib");
-var semID = SemLib.semCreate(3, true);
+const SemLib = require("sem-lib");
+const semID = SemLib.semCreate(3, true);
 
 function AsyncTask1(semID) {
   console.log("AsyncTask1");
@@ -76,32 +76,29 @@ semID.semTake(3, function(){
 // Limit simultaneous access
 // You have multiple downloads to do and you don't want to blow up your memory nor your cpu
 
-var SemLib = require("sem-lib");
+const SemLib = require("sem-lib");
 
 // At most 8 simultanenous downloads
-var semID = SemLib.semCreate(8, true);
+const semID = SemLib.semCreate(8, true);
 
-require('fs').readFile('links.txt', function (err, data) {
-  if (err) throw err;
-  var links = data.toString().split(/\n/);
-  for (var i = 0, _len = links.length; i < _len; i++) {
-    download(links[i]);
-  }
-});
-
-function download(link) {
-  semID.semTake(function() {
-    doDownload(link, function() {
-      semID.semGive();
+require('fs').readFile('links', function(err, data) {
+    if (err) {
+        throw err;
+    }
+    const links = data.toString().trim().split(/\r?\n/);
+    semID.schedule(links, (link, i, next) => {
+        console.log(`downloading ${ link }`);
+        download(link, next);
+    }, () => {
+        console.log(`downloaded ${ links.length } links`);
     });
-  });
-}
+});
 
 ```
 
 ## SemLib
 
-### SemLib.semCreate(capacity, isFull, priority)
+### SemLib.semCreate(capacity, isFull, priority, sync = false)
 
 Create a semaphore. See Semaphore#constructor() for more detauls
 
@@ -111,13 +108,14 @@ See the Semaphore Class
 
 ## Semaphore : `Class`
 
-### constructor(capacity, isFull, priority)
+### constructor(capacity, isFull, priority, sync = false)
 
-| Option      | Type      | Optional  | Default | Description                                                                     |
-|-------------|-----------|:---------:|---------|---------------------------------------------------------------------------------|
-| `capacity`  | `Integer` | Yes       | `1`     | Number of available tokens. i.e. how much concurrency                           |
-| `isFull`    | `Boolean` | Yes       | `false` | Create semaphore with all tokens available                                      |
-| `priority`  | `Integer` | Yes       | `15`    | Default take priority. Lower values means higher priority                       |
+| Option      | Type      | Optional  | Default | Description                                                     |
+|-------------|-----------|:---------:|---------|-----------------------------------------------------------------|
+| `capacity`  | `Integer` | Yes       | `1`     | Number of available tokens. i.e. how much concurrency           |
+| `isFull`    | `Boolean` | Yes       | `false` | Create semaphore with all tokens available                      |
+| `priority`  | `Integer` | Yes       | `15`    | Default take priority. Lower values means higher priority       |
+| `sync`      | `Boolean` | Yes       | `false` | Run tasks synchronously instead of waiting for the next tick    |
 
 ### semTake(task : `Function`) : `Inwaiting`
 
@@ -139,14 +137,15 @@ In case you want to allow the waiting task to take tokens only if certains condi
 
 #### Other options
 
-| Option            | Type        | Optional  | Default             | Description                                                     |
-|-------------------|-------------|:---------:|---------------------|-----------------------------------------------------------------|
-| `priority`        | `Integer`   | Yes       | Semaphore priority  | Task priority. Lower values means higher priority               |
-| `num`             | `Integer`   | Yes       | `1`                 | Number of tokens to take                                        |
-| `timeOut`         | `Integer`   | Yes       | `undefined`         | Time to wait until the task is abandoned                        |
-| `onTimeOut`       | `Function`  | Yes       | `undefined`         | Function to call when waiting has reached timeout               |
-| `onCancel`        | `Function`  | Yes       | `undefined`         | Function to call when waiting has been canceled                 |
-| `unfair`          | `Boolean`   | Yes       | `false`             | Allows to take tokens from waiting tasks with lower priorities  |
+| Option            | Type        | Optional  | Default             | Description                                                                     |
+|-------------------|-------------|:---------:|---------------------|---------------------------------------------------------------------------------|
+| `priority`        | `Integer`   | Yes       | Semaphore priority  | Task priority. Lower values means higher priority                               |
+| `num`             | `Integer`   | Yes       | `1`                 | Number of tokens to take                                                        |
+| `timeOut`         | `Integer`   | Yes       | `undefined`         | Time to wait until the task is abandoned                                        |
+| `onTimeOut`       | `Function`  | Yes       | `undefined`         | Function to call when waiting has reached timeout                               |
+| `onCancel`        | `Function`  | Yes       | `undefined`         | Function to call when waiting has been canceled                                 |
+| `unfair`          | `Boolean`   | Yes       | `false`             | Allows to take tokens from waiting tasks with lower priorities                  |
+| `sync`            | `Boolean`   | Yes       | `undefined`         | Run this task synchronously. If not defined, honor the semaphore sync option    |
 
 ### semGive(num : `Integer`, overflow: `Boolean`)
 
@@ -173,7 +172,7 @@ Return the maximum of available tokens
 
 Set the maximum of available tokens
 
-### schedule : `Scheduler`
+### schedule : `Inwaiting`
 
 Run a collection of tasks, take one token for each task.
 

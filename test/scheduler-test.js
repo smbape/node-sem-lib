@@ -346,7 +346,7 @@ describe("schedule", function() {
             schedule(++count, ms),
         ], 15);
 
-        const group2 = semID.schedule([
+        const item = semID.schedule([
             schedule(++count, 2 * ms),
             schedule(++count, 3 * ms),
             schedule(++count, ms),
@@ -360,7 +360,7 @@ describe("schedule", function() {
         assert.strictEqual(semID.getNumTokens(), 0);
 
         setTimeout(() => {
-            group2.setPriority(14);
+            item.setPriority(14);
             assert.strictEqual(waiting, 3);
             assert.strictEqual(semID.getNumTokens(), 0);
         }, ms / 2);
