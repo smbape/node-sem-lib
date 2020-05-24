@@ -93,7 +93,7 @@ describe("basic", () => {
             onTimeout: run
         });
 
-        setTimeout(function() {
+        setTimeout(() => {
             assert.strictEqual(fired, 0);
 
             assert.strictEqual(semID.hasInWaitingTask(), true);
@@ -103,11 +103,11 @@ describe("basic", () => {
                 onTake: fire,
                 onTimeout: run
             });
-            setTimeout(function() {
+            setTimeout(() => {
                 // Flush before only free inWaitingTasks
                 assert.strictEqual(fired, 3);
                 semID.semFlush();
-                setImmediate(function() {
+                setImmediate(() => {
                     assert.strictEqual(fired, 4);
                     assert.strictEqual(timeOuted, 0);
                     assert.strictEqual(semID.hasInWaitingTask(), false);
@@ -149,7 +149,7 @@ describe("take", () => {
             timeFunc = setTimeout;
         }
 
-        timeFunc(function() {
+        timeFunc(() => {
             if (expected) {
                 assert.strictEqual(fired, true);
                 assert.strictEqual(timeOuted, false);
@@ -166,7 +166,6 @@ describe("take", () => {
                 callback();
             }
         }, ms);
-
     }
 
     it("should semTake without arguments", () => {
@@ -190,10 +189,10 @@ describe("take", () => {
         const semID = semLib.semCreate();
         semID.semTake(fire);
 
-        setTimeout(function() {
+        setTimeout(() => {
             assertStillWaiting(semID);
             semID.semGive();
-            assertExpectedAfterMs(semID, ms, true, function() {
+            assertExpectedAfterMs(semID, ms, true, () => {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 done();
             });
@@ -208,10 +207,10 @@ describe("take", () => {
         });
         assert.strictEqual(semID.hasInWaitingTask(), true);
 
-        setTimeout(function() {
+        setTimeout(() => {
             assertStillWaiting(semID);
             semID.semGive();
-            assertExpectedAfterMs(semID, 0, true, function() {
+            assertExpectedAfterMs(semID, 0, true, () => {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 done();
             });
@@ -225,10 +224,10 @@ describe("take", () => {
             num: 1,
             onTake: fire
         });
-        setTimeout(function() {
+        setTimeout(() => {
             assertStillWaiting(semID);
             semID.semGive();
-            assertExpectedAfterMs(semID, 0, true, function() {
+            assertExpectedAfterMs(semID, 0, true, () => {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 done();
             });
@@ -243,10 +242,10 @@ describe("take", () => {
             onTake: fire,
             timeOut: ms * 2
         });
-        setTimeout(function() {
+        setTimeout(() => {
             assertStillWaiting(semID);
             semID.semGive(2);
-            assertExpectedAfterMs(semID, 0, true, function() {
+            assertExpectedAfterMs(semID, 0, true, () => {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 done();
             });
@@ -262,7 +261,7 @@ describe("take", () => {
             onTake: fire,
             timeOut: ms / 2
         });
-        assertExpectedAfterMs(semID, ms, null, function() {
+        assertExpectedAfterMs(semID, ms, null, () => {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             done();
         });
@@ -276,10 +275,10 @@ describe("take", () => {
             onTimeOut: run,
             timeOut: ms * 2
         });
-        setTimeout(function() {
+        setTimeout(() => {
             assertStillWaiting(semID);
             semID.semGive();
-            assertExpectedAfterMs(semID, 0, true, function() {
+            assertExpectedAfterMs(semID, 0, true, () => {
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 done();
             });
@@ -295,7 +294,7 @@ describe("take", () => {
             timeOut: ms / 2,
             onTimeOut: run
         });
-        assertExpectedAfterMs(semID, ms, false, function() {
+        assertExpectedAfterMs(semID, ms, false, () => {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             done();
         });
@@ -312,7 +311,7 @@ describe("take", () => {
             onTimeOut: run
         });
         semID.semGive(2);
-        assertExpectedAfterMs(semID, ms, false, function() {
+        assertExpectedAfterMs(semID, ms, false, () => {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             done();
         });
@@ -330,7 +329,7 @@ describe("take", () => {
             onTimeOut: run
         });
         semID.semGive(2);
-        assertExpectedAfterMs(semID, 0, true, function() {
+        assertExpectedAfterMs(semID, 0, true, () => {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             done();
         });
@@ -342,29 +341,29 @@ describe("take", () => {
             two = false,
             three = false;
         semID.semTake({
-            onTake: function() {
+            onTake() {
                 one = true;
             }
         });
         semID.semTake({
             num: 2,
             timeOut: ms / 2,
-            onTake: function() {
+            onTake() {
                 two = true;
             }
         });
         semID.semTake({
-            onTake: function() {
+            onTake() {
                 three = true;
             }
         });
         semID.semGive(2, true); // way of doing semGive() + semGive() with capacity of 1
-        setTimeout(function() {
+        setTimeout(() => {
             assert.strictEqual(one, true);
             assert.strictEqual(two, false);
             assert.strictEqual(three, true); // two has timeouted, giving back it's token
             semID.semGive();
-            setImmediate(function() {
+            setImmediate(() => {
                 assert.strictEqual(one, true);
                 assert.strictEqual(two, false);
                 assert.strictEqual(three, true);
@@ -384,30 +383,30 @@ describe("take", () => {
             five = false;
         semID.semTake({
             priority: 1,
-            onTake: function() {
+            onTake() {
                 one = true;
             }
         });
         semID.semTake({
             priority: 2,
-            onTake: function() {
+            onTake() {
                 two = true;
             }
         });
         semID.semTake({
             priority: 3,
-            onTake: function() {
+            onTake() {
                 three = true;
             }
         });
         semID.semTake({
             priority: 1,
-            onTake: function() {
+            onTake() {
                 four = true;
             }
         });
         semID.semGive();
-        setTimeout(function() {
+        setTimeout(() => {
             assert.strictEqual(one, true);
             assert.strictEqual(two, false);
             assert.strictEqual(three, false);
@@ -416,7 +415,7 @@ describe("take", () => {
             semID.semGive();
 
             // Higher priority must take first, even if asked last
-            setImmediate(function() {
+            setImmediate(() => {
                 assert.strictEqual(one, true);
                 assert.strictEqual(two, false);
                 assert.strictEqual(three, false);
@@ -424,26 +423,26 @@ describe("take", () => {
                 assert.strictEqual(five, false);
                 semID.semTake({
                     priority: 1,
-                    onTake: function() {
+                    onTake() {
                         five = true;
                     }
                 });
                 semID.semGive();
-                setImmediate(function() {
+                setImmediate(() => {
                     assert.strictEqual(one, true);
                     assert.strictEqual(two, false);
                     assert.strictEqual(three, false);
                     assert.strictEqual(four, true);
                     assert.strictEqual(five, true);
                     semID.semGive();
-                    setImmediate(function() {
+                    setImmediate(() => {
                         assert.strictEqual(one, true);
                         assert.strictEqual(two, true);
                         assert.strictEqual(three, false);
                         assert.strictEqual(four, true);
                         assert.strictEqual(five, true);
                         semID.semGive();
-                        setImmediate(function() {
+                        setImmediate(() => {
                             assert.strictEqual(three, true);
                             assert.strictEqual(semID.hasInWaitingTask(), false);
                             done();
@@ -464,7 +463,7 @@ describe("take", () => {
         });
         semID.semGive();
         item.cancel();
-        assertExpectedAfterMs(semID, ms, false, function() {
+        assertExpectedAfterMs(semID, ms, false, () => {
             assert.strictEqual(semID.hasInWaitingTask(), false);
             assert.strictEqual(semID.getNumTokens(), 1);
             done();
@@ -534,7 +533,7 @@ describe("take", () => {
     });
 });
 
-describe("destroy", function () {
+describe("destroy", () => {
     const ms = 10;
 
     it("should safe destroy", done => {
@@ -543,16 +542,16 @@ describe("destroy", function () {
 
         semID.semTake({
             timeOut: ms,
-            onTake: function() {
+            onTake() {
                 taken = true;
             }
         });
 
         assert.strictEqual(semID.destroy(), true);
-        setTimeout(function() {
+        setTimeout(() => {
             assert.strictEqual(semID.semGive(), true);
             assert.strictEqual(semID.semTake(), false);
-            setTimeout(function() {
+            setTimeout(() => {
                 assert.strictEqual(taken, true);
                 assert.strictEqual(semID.hasInWaitingTask(), false);
                 assert.strictEqual(semID.isAlive(), false);
@@ -567,17 +566,17 @@ describe("destroy", function () {
 
         semID.semTake({
             timeOut: ms,
-            onTake: function() {
+            onTake() {
                 taken = true;
             }
         });
 
         assert.strictEqual(semID.destroy(false), true);
-        setTimeout(function() {
+        setTimeout(() => {
             assert.strictEqual(semID.semGive(), false);
             assert.strictEqual(semID.semTake(), false);
             assert.strictEqual(semID.semFlush(), false);
-            setTimeout(function() {
+            setTimeout(() => {
                 assert.strictEqual(taken, false);
                 assert.strictEqual(semID.destroyed, true);
                 assert.strictEqual(semID.hasInWaitingTask(), false);

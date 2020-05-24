@@ -59,7 +59,6 @@ describe("shouldTakeToken", () => {
         await ptimeout();
 
         expect(fired).to.deep.equal(["medium", "high", "low"]);
-
     });
 
     it("should take token when shouldTakeToken sync", async () => {
@@ -104,6 +103,5 @@ describe("shouldTakeToken", () => {
         await ptimeout();
 
         expect(fired).to.deep.equal(["medium", "high", "low"]);
-
     });
 });

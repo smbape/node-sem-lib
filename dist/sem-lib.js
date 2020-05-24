@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -79,17 +79,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var BinaryTreeNode = __webpack_require__(4); // Here are some differences:
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var BinaryTreeNode = __webpack_require__(9); // Here are some differences:
 // * This isn't a map structure: it's just a tree. There are no keys: the
 //   comparator applies to the values.
 // * We use the passed comparator.
@@ -98,6 +102,8 @@ var BinaryTreeNode = __webpack_require__(4); // Here are some differences:
 module.exports = /*#__PURE__*/function (_BinaryTreeNode) {
   _inherits(RedBlackTreeNode, _BinaryTreeNode);
 
+  var _super = _createSuper(RedBlackTreeNode);
+
   function RedBlackTreeNode(value) {
     var _this;
 
@@ -105,7 +111,7 @@ module.exports = /*#__PURE__*/function (_BinaryTreeNode) {
 
     _classCallCheck(this, RedBlackTreeNode);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(RedBlackTreeNode).call(this, value, parent));
+    _this = _super.call(this, value, parent);
     _this.isRed = true; // null nodes -- leaves -- are black
 
     return _this;
@@ -116,41 +122,7 @@ module.exports = /*#__PURE__*/function (_BinaryTreeNode) {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var AbstractSortedSet = __webpack_require__(3);
-
-var RedBlackTreeNode = __webpack_require__(0);
-
-var RedBlackTreeStrategy = __webpack_require__(5);
+/***/ (function(module, exports) {
 
 var isNumeric = function isNumeric(obj) {
   if (obj === undefined || obj === null || Array.isArray(obj)) {
@@ -166,9 +138,13 @@ var isNumeric = function isNumeric(obj) {
   return obj - parsed + 1 >= 0;
 };
 
-var isObject = function isObject(obj) {
-  return typeof obj === "object" && obj !== null;
-};
+module.exports = isNumeric;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isNumeric = __webpack_require__(1);
 /**
  * Value of parsed interger or default value if not a number or < 0
  * @param  {Any} num value to parse
@@ -194,6 +170,62 @@ var toInteger = function toInteger(num, positive, _default) {
   return positive && num < 0 ? _default : num;
 };
 
+module.exports = toInteger;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var AbstractSortedSet = __webpack_require__(5);
+
+var RedBlackTreeStrategy = __webpack_require__(6);
+
+var createIterator = __webpack_require__(10);
+
+var isNumeric = __webpack_require__(1);
+
+var toInteger = __webpack_require__(2);
+
+var Inwaiting = __webpack_require__(11);
+
+var isObject = function isObject(obj) {
+  return typeof obj === "object" && obj !== null;
+};
+
 var idComparator = function idComparator(a, b) {
   return a.id > b.id ? 1 : a.id < b.id ? -1 : 0;
 };
@@ -209,10 +241,12 @@ var globalCounter = 0;
 var SortedSet = /*#__PURE__*/function (_AbstractSortedSet) {
   _inherits(SortedSet, _AbstractSortedSet);
 
+  var _super = _createSuper(SortedSet);
+
   function SortedSet() {
     _classCallCheck(this, SortedSet);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(SortedSet).apply(this, arguments));
+    return _super.apply(this, arguments);
   }
 
   _createClass(SortedSet, [{
@@ -240,106 +274,6 @@ var SortedSet = /*#__PURE__*/function (_AbstractSortedSet) {
 
   return SortedSet;
 }(AbstractSortedSet);
-
-var Inwaiting = /*#__PURE__*/function (_RedBlackTreeNode) {
-  _inherits(Inwaiting, _RedBlackTreeNode);
-
-  function Inwaiting(semID, task, priority, num, options) {
-    var _this2;
-
-    _classCallCheck(this, Inwaiting);
-
-    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Inwaiting).call(this));
-    _this2.value = _assertThisInitialized(_this2);
-    _this2.id = ++globalCounter;
-    _this2.taken = 0;
-    _this2.task = task;
-    _this2.priority = priority;
-    _this2.num = num;
-    _this2.semaphore = semID;
-
-    if (options) {
-      ["onTimeOut", "onCancel", "unfair", "shouldTakeToken", "sync"].forEach(function (prop) {
-        if (hasProp.call(options, prop)) {
-          _this2[prop] = options[prop];
-        }
-      });
-    }
-
-    return _this2;
-  }
-
-  _createClass(Inwaiting, [{
-    key: "addCounter",
-    value: function addCounter(nextNum) {
-      this.num += toInteger(nextNum, true, 1);
-    }
-  }, {
-    key: "cancel",
-    value: function cancel() {
-      var onCancel = this.onCancel,
-          taken = this.taken,
-          semID = this.semaphore;
-
-      semID._removeItem(this);
-
-      if (taken !== 0) {
-        // give on next tick to wait for all synchronous canceled to be done
-        semID._setImmediate(function () {
-          semID.semGive(taken, true);
-        });
-      }
-
-      if (typeof onCancel === "function") {
-        onCancel();
-      }
-    }
-  }, {
-    key: "setPriority",
-    value: function setPriority(nextPriority) {
-      if (this.group == null) {
-        return;
-      }
-
-      var semID = this.semaphore;
-      nextPriority = toInteger(nextPriority, false, semID.priority);
-
-      if (nextPriority === this.priority) {
-        return;
-      }
-
-      this.group.stack.remove(this);
-
-      if (this.group.stack.length === 0) {
-        // No more inWaiting for this priority group
-        semID._queue.remove(this.group);
-      }
-
-      this.priority = nextPriority;
-
-      semID._insertItem(this);
-    }
-  }, {
-    key: "destroy",
-    value: function destroy() {
-      var _this3 = this;
-
-      // Remove properties to allow garbage collection
-      Object.keys(this).forEach(function (prop) {
-        if (prop !== "id") {
-          delete _this3[prop];
-        }
-      }); // Prevent usage of these methods on a destroyed object
-
-      ["addCounter", "cancel", "setPriority", "destroy"].forEach(function (prop) {
-        _this3[prop] = undefined;
-      });
-      this.destroyed = true;
-    }
-  }]);
-
-  return Inwaiting;
-}(RedBlackTreeNode);
 /**
  * @param  {Integer} capacity (default = 1) Number of tokens that can be handled by the Semaphore
  * @param  {Boolean} isFull   (default = false) if true object is created with tokens
@@ -365,7 +299,7 @@ function Semaphore(capacity, isFull, priority) {
   this.sync = sync;
 }
 /**
- * Return number of available tokens
+ * Return the number of available tokens
  * @return {Interger} number of available tokens
  */
 
@@ -374,7 +308,7 @@ Semaphore.prototype.getNumTokens = function getNumTokens() {
   return this._numTokens;
 };
 /**
- * Return maximum of available tokens
+ * Return the maximum of available tokens
  * @return {Integer} maximum of available tokens
  */
 
@@ -395,10 +329,11 @@ Semaphore.prototype.setCapacity = function setCapacity(capacity) {
  * Add tokens to the Semaphore
  *
  * @param {Interger} num Number of tokens to add
+ * @param {Boolean}  allow capacity overflow
  */
 
 
-Semaphore.prototype.semGive = function semGive(num, isGivenBack) {
+Semaphore.prototype.semGive = function semGive(num, overflow) {
   if (this.destroyed) {
     return false;
   }
@@ -415,13 +350,13 @@ Semaphore.prototype.semGive = function semGive(num, isGivenBack) {
     this._numTokens = num;
   }
 
-  if (!isGivenBack && this._numTokens > this._capacity) {
+  if (!overflow && this._numTokens > this._capacity) {
     this._numTokens = this._capacity;
   }
 
-  this._semTake(isGivenBack);
+  this._semTake(overflow);
 
-  if (isGivenBack && this._numTokens > this._capacity) {
+  if (overflow && this._numTokens > this._capacity) {
     this._numTokens = this._capacity;
   }
 
@@ -451,7 +386,7 @@ Semaphore.prototype.semFlush = function semFlush() {
 };
 
 Semaphore.prototype.handleTimeout = function handleTimeout(item) {
-  var _this4 = this;
+  var _this2 = this;
 
   var onTimeOut = item.onTimeOut,
       taken = item.taken;
@@ -461,7 +396,7 @@ Semaphore.prototype.handleTimeout = function handleTimeout(item) {
   if (taken !== 0) {
     // give on next tick to wait for all synchronous canceled to be done
     this._setImmediate(function () {
-      _this4.semGive(taken, true);
+      _this2.semGive(taken, true);
     });
   }
 
@@ -571,9 +506,7 @@ Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
 
 
 Semaphore.prototype._semTake = function _semTake(topSync) {
-  var _this5 = this;
-
-  if (this.taking) {
+  if (this._taking) {
     return;
   }
 
@@ -581,57 +514,57 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
     this._keepAlive();
   }
 
-  this.taking = true;
+  this._taking = true;
 
-  var _loop = function _loop() {
-    var _this5$_nextGroupItem = _this5._nextGroupItem(),
-        _this5$_nextGroupItem2 = _slicedToArray(_this5$_nextGroupItem, 2),
-        group = _this5$_nextGroupItem2[0],
-        item = _this5$_nextGroupItem2[1];
+  while (this._checkKeepAlive(this._destroyWaiting)) {
+    var _this$_nextGroupItem = this._nextGroupItem(),
+        _this$_nextGroupItem2 = _slicedToArray(_this$_nextGroupItem, 2),
+        group = _this$_nextGroupItem2[0],
+        item = _this$_nextGroupItem2[1];
 
     if (item == null) {
-      return "break";
+      break;
     }
 
     var weakerIterator = void 0,
-        wearkeGroup = void 0,
+        weakeGroup = void 0,
         weakerItemIterator = void 0,
         weakerItem = void 0; // if item is still waiting for tokens
 
-    if (item.num > _this5._numTokens) {
-      item.taken += _this5._numTokens;
-      item.num -= _this5._numTokens;
-      _this5._numTokens = 0; // take token from tasks with weaker priority
+    if (item.num > this._numTokens) {
+      item.taken += this._numTokens;
+      item.num -= this._numTokens;
+      this._numTokens = 0; // take token from tasks with weaker priority
 
-      if (item.unfair && _this5._queue.length !== 1) {
-        weakerIterator = _this5._queue.endIterator().previous();
+      if (item.unfair && this._queue.length !== 1) {
+        weakerIterator = this._queue.endIterator().previous();
 
         while (weakerIterator && item.num !== 0) {
-          wearkeGroup = weakerIterator.value();
+          weakeGroup = weakerIterator.value();
 
-          if (wearkeGroup === group || wearkeGroup.priority <= _this5.priority) {
+          if (weakeGroup === group || weakeGroup.priority <= this.priority) {
             // can only be unfair on tasks with lower priority that semaphore default priority
             break;
           }
 
-          weakerItemIterator = wearkeGroup.stack.endIterator().previous();
+          weakerItemIterator = weakeGroup.stack.endIterator().previous();
           weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
 
           while (weakerItem && item.num !== 0) {
-            if (weakerItem.taken > 0 && _this5._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
-              if (item.num > weakerItem.taken) {
-                weakerItem.num += weakerItem.taken;
-                item.num -= weakerItem.taken;
-                weakerItem.taken = 0;
-              } else {
-                weakerItem.taken -= item.num;
-                weakerItem.num += item.num;
-                item.num = 0;
-              }
+            if (weakerItem.taken > 0 && this._shouldTakeToken(item, Math.min(item.num, weakerItem.taken))) {
+              var taken = item.num > weakerItem.taken ? weakerItem.taken : item.num;
+              item.taken += taken;
+              item.num -= taken;
+              weakerItem.num += taken;
+              weakerItem.taken -= taken;
             }
 
             weakerItemIterator = weakerItemIterator.previous();
             weakerItem = weakerItemIterator ? weakerItemIterator.value() : null;
+          }
+
+          if (item.num === 0) {
+            break;
           }
 
           weakerIterator = weakerIterator ? weakerIterator.previous() : null;
@@ -640,58 +573,73 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
 
 
       if (item.num !== 0) {
-        return "break";
+        break;
       }
     }
 
-    item.taken += item.num;
+    if (item.num !== 0) {
+      item.taken += item.num;
 
-    if (_this5._numTokens !== Number.POSITIVE_INFINITY) {
-      _this5._numTokens -= item.num;
+      if (this._numTokens !== Number.POSITIVE_INFINITY) {
+        this._numTokens -= item.num;
+      }
+
+      item.num = 0;
     }
 
-    item.num = 0;
-    var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : _this5.sync;
-    var taken = item.taken,
-        task = item.task,
-        onCancel = item.onCancel;
-
-    _this5._removeItem(item);
-
-    if (sync) {
-      task();
-    } else {
-      // Non blocking call of callback
-      // A way to loop through in waiting tasks without blocking
-      // the semaphore process until done
-      var timerID = _this5._setImmediate(function () {
-        timerID = null;
-        task();
-      });
-
-      item.cancel = function () {
-        _this5._clearImmediate(timerID);
-
-        timerID = null; // give on next tick to wait for all synchronous canceled to be done
-
-        _this5._setImmediate(function () {
-          _this5.semGive(taken, true);
-        });
-
-        if (typeof onCancel === "function") {
-          onCancel();
-        }
-      };
-    }
-  };
-
-  while (this._checkKeepAlive(this._destroyWaiting)) {
-    var _ret = _loop();
-
-    if (_ret === "break") break;
+    this._runTask(item, topSync);
   }
 
-  this.taking = false;
+  this._taking = false;
+};
+
+Semaphore.prototype._runTask = function (item, topSync) {
+  var _this3 = this;
+
+  var sync = typeof topSync !== "undefined" ? topSync : typeof item.sync !== "undefined" ? item.sync : this.sync;
+  var taken = item.taken,
+      task = item.task,
+      onCancel = item.onCancel,
+      hasNext = item.hasNext;
+
+  if (sync) {
+    if (!hasNext || typeof hasNext !== "function" || !hasNext.call(item)) {
+      this._removeItem(item);
+    }
+
+    task();
+    return;
+  } // Non blocking call of callback
+  // A way to loop through in waiting tasks without blocking
+  // the semaphore process until done
+
+
+  var timerID = this._setImmediate(function () {
+    timerID = null;
+    task();
+  });
+
+  item.cancel = function () {
+    // Prevent usage of cancel
+    item.cancel = undefined;
+
+    _this3._clearImmediate(timerID);
+
+    timerID = null; // give on next tick to wait for all synchronous canceled to be done
+
+    _this3._setImmediate(function () {
+      _this3.semGive(taken, true);
+    });
+
+    if (typeof onCancel === "function") {
+      onCancel();
+    }
+  }; // call hasNext after cancel is set to allow hasNext
+
+
+  if (!hasNext || typeof hasNext !== "function" || !hasNext.call(item)) {
+    this._removeItem(item);
+  }
 };
 /**
  * Destroy all inwaiting tasks
@@ -753,7 +701,7 @@ Semaphore.prototype._destroy = function (safe) {
 };
 
 Semaphore.prototype.schedule = function (collection, priority, iteratee, callback) {
-  var semID = this;
+  var _this4 = this;
 
   switch (arguments.length) {
     case 2:
@@ -783,167 +731,135 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
     callback = Function.prototype;
   }
 
-  var count = 0;
-  var index = -1;
-  var isArray = Array.isArray(collection);
-  var keys = isArray ? null : Object.keys(collection);
-  var len = isArray ? collection.length : keys.length;
+  var iterator = createIterator(collection);
 
-  if (len === 0) {
+  if (iterator === null) {
     callback();
     return null;
   }
 
-  var items = new Array(len);
-  var doneCalled = false;
+  var cancellers = [];
+  var errors = [];
+  var items = [];
+  var item;
+  var waiting = 0;
   var canceled = false;
-  var taken = 0;
-  var errors = new Array(len);
-  var hasError = false;
+  var done = false;
 
-  var onTake = function onTake(coll, i) {
-    taken++;
-    items[i] = null;
-    var key = isArray ? i : keys[i];
-    var called = false;
+  var hasNext = function hasNext() {
+    if (done) {
+      return false;
+    }
 
-    var next = function next(err) {
-      if (called) {
-        throw new Error("callback already called");
-      }
+    var nextItem = iterator();
 
-      called = true;
-      items[i] = null;
-      semID.semGive();
-      taken--;
+    if (nextItem === null) {
+      done = true;
+      return false;
+    }
 
-      if (doneCalled) {
-        return;
-      }
+    items.push(nextItem);
+    cancellers.push(item.cancel);
+    delete item.cancel;
+    waiting++;
+    item.num = 1; // tell _semTake that we still need tokens
 
-      if (canceled && !err) {
-        err = new Error("canceled");
-        err.code = "CANCELED";
-      }
+    item.taken = 0; // reset taken to prevent unfair taken of this item
 
-      if (err) {
-        if (!hasError) {
-          hasError = true;
+    return true;
+  };
 
-          if (!canceled) {
-            cancel();
-          }
-        }
+  var onTake = function onTake() {
+    if (items.length === item.scheduled) {
+      _this4.semGive();
 
-        errors[i] = err;
-      }
-
-      if (++count === len || hasError && taken === 0) {
-        doneCalled = true;
-
-        if (canceled) {
-          errors.code = "CANCELED";
-        }
-
-        callback(hasError ? errors : null);
-      }
-    };
-
-    if (canceled) {
-      next();
       return;
     }
 
-    var icancel = typeof iteratee === "function" ? iteratee(coll[key], key, next) : coll[key](next);
-    items[i] = {
-      cancel: function cancel() {
+    var i = item.scheduled;
+    var nextItem = items[i];
+    cancellers[i] = null;
+    item.scheduled++;
+
+    var give = function give(err) {
+      cancellers[i] = undefined;
+
+      if (err) {
+        errors[i] = err;
+      }
+
+      waiting--;
+
+      _this4.semGive();
+
+      if (!canceled && waiting === 0) {
+        callback(errors.length === 0 ? undefined : errors);
+      }
+    };
+
+    var key = nextItem.key,
+        value = nextItem.value;
+    var icancel = typeof iteratee === "function" ? iteratee(value, key, give) : value(give);
+
+    if (cancellers[i] !== undefined && icancel) {
+      cancellers[i] = function () {
+        cancellers[i] = null;
+
         if (typeof icancel === "function") {
           icancel();
-        } else if (icancel !== null && typeof icancel === "object") {
+        } else if (typeof icancel === "object") {
           if (typeof icancel.cancel === "function") {
             icancel.cancel();
           } else if (typeof icancel.abort === "function") {
             icancel.abort();
           }
         }
-      }
-    };
-  };
-
-  var iterate = function iterate(i) {
-    var item = semID.semTake({
-      priority: priority,
-      onTake: onTake.bind(null, collection, i)
-    });
-    var proxy = {
-      cancel: item.cancel ? function () {
-        item.cancel();
-        onTake(collection, i);
-      } : undefined
-    };
-
-    var _loop2 = function _loop2(key) {
-      if (key === "cancel") {
-        return "continue";
-      }
-
-      Object.defineProperty(proxy, key, {
-        configurable: true,
-        enumerable: true,
-        get: function get() {
-          return item[key];
-        },
-        set: function set(value) {
-          item[key] = value;
-          return value;
-        }
-      });
-    };
-
-    for (var key in item) {
-      var _ret2 = _loop2(key);
-
-      if (_ret2 === "continue") continue;
+      };
     }
-
-    return proxy;
   };
 
-  var loop = function loop() {
-    do {
-      ++index;
-      items[index] = iterate(index);
-    } while (index !== len - 1);
-  };
-
-  function cancel() {
-    if (canceled) {
-      return;
-    }
-
+  var onCancel = function onCancel() {
     canceled = true;
 
-    for (var i = 0, size = items.length; i < size; i++) {
-      if (items[i] !== null && typeof items[i] === "object" && typeof items[i].cancel === "function") {
-        items[i].cancel();
-        items[i] = null;
+    _this4._removeItem(item); // remove item since there is no more token needed and _semTake will not remove it
+
+
+    cancellers.forEach(function (cancel) {
+      if (typeof cancel === "function") {
+        cancel();
       }
-    }
+    });
+    var err = new Error("canceled");
+    err.code = "CANCELED";
+    callback(err);
+  };
+
+  item = this.semTake({
+    priority: priority,
+    onTake: onTake,
+    hasNext: hasNext
+  }, function (_item) {
+    item = _item;
+    item.scheduled = 0;
+  });
+
+  if (!item.cancel) {
+    return item;
   }
 
-  var setPriority = function setPriority(nextPriority) {
-    for (var i = 0, size = items.length; i < size; i++) {
-      if (items[i] !== null && typeof items[i] === "object" && typeof items[i].setPriority === "function") {
-        items[i].setPriority(nextPriority);
+  return new Proxy(item, {
+    get: function get(target, prop, receiver) {
+      if (prop === "cancel") {
+        return canceled ? undefined : onCancel;
       }
-    }
-  };
 
-  loop();
-  return {
-    setPriority: setPriority,
-    cancel: cancel
-  };
+      if (prop === "setPriority") {
+        return target.setPriority.bind(target);
+      }
+
+      return Reflect.get.apply(Reflect, arguments);
+    }
+  });
 };
 
 Semaphore.prototype._insertItem = function (item) {
@@ -1103,10 +1019,10 @@ Object.assign(exports, {
   Semaphore: Semaphore,
   Inwaiting: Inwaiting
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports) {
 
 var g; // This works in non-strict mode
@@ -1129,7 +1045,7 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1268,24 +1184,7 @@ module.exports = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-module.exports = function BinaryTreeNode(value) {
-  var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-  _classCallCheck(this, BinaryTreeNode);
-
-  this.value = value;
-  this.left = null;
-  this.right = null;
-  this.parent = parent;
-};
-
-/***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1294,17 +1193,21 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var AbstractBinaryTreeStrategy = __webpack_require__(6);
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var AbstractBinaryTreeStrategy = __webpack_require__(7);
 
 var RedBlackTreeNode = __webpack_require__(0); // An implementation of Left-Leaning Red-Black trees.
 // It's copied from http://www.cs.princeton.edu/~rs/talks/LLRB/LLRB.pdf.
@@ -1675,10 +1578,12 @@ var removeFromNode = function removeFromNode(node, value, compare, allowNode) {
 module.exports = /*#__PURE__*/function (_AbstractBinaryTreeSt) {
   _inherits(RedBlackTreeStrategy, _AbstractBinaryTreeSt);
 
+  var _super = _createSuper(RedBlackTreeStrategy);
+
   function RedBlackTreeStrategy() {
     _classCallCheck(this, RedBlackTreeStrategy);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(RedBlackTreeStrategy).apply(this, arguments));
+    return _super.apply(this, arguments);
   }
 
   _createClass(RedBlackTreeStrategy, [{
@@ -1704,7 +1609,7 @@ module.exports = /*#__PURE__*/function (_AbstractBinaryTreeSt) {
 }(AbstractBinaryTreeStrategy);
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1713,7 +1618,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var BinaryTreeIterator = __webpack_require__(7); // const binaryTreeTraverse = (node, callback, some) => {
+var BinaryTreeIterator = __webpack_require__(8); // const binaryTreeTraverse = (node, callback, some) => {
 //     if (node === null) {
 //         return false;
 //     }
@@ -1840,7 +1745,7 @@ module.exports = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1994,6 +1899,212 @@ BinaryTreeIterator.right = function (tree) {
 };
 
 module.exports = BinaryTreeIterator;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+module.exports = function BinaryTreeNode(value) {
+  var parent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+  _classCallCheck(this, BinaryTreeNode);
+
+  this.value = value;
+  this.left = null;
+  this.right = null;
+  this.parent = parent;
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+var createArrayIterator = function createArrayIterator(arr) {
+  var i = 0;
+  var len = arr.length;
+  return function next() {
+    return i < len ? {
+      key: i,
+      value: arr[i++]
+    } : null;
+  };
+};
+
+var createObjectIterator = function createObjectIterator(obj) {
+  var i = 0;
+  var keys = Object.keys(obj);
+  var len = keys.length;
+  return function next() {
+    return i < len ? {
+      key: keys[i],
+      value: obj[keys[i++]]
+    } : null;
+  };
+};
+
+var createIterableIterator = function createIterableIterator(iterable) {
+  var iterator = iterable[Symbol.iterator]();
+  return function next() {
+    var item = iterator.next();
+    return item === null || typeof item !== "object" ? item : item.done ? null : item;
+  };
+};
+
+var iterator = function iterator(obj) {
+  if (obj === null || typeof obj !== "object") {
+    return null;
+  }
+
+  return Array.isArray(obj) ? createArrayIterator(obj) : Symbol.iterator in obj ? createIterableIterator(obj) : createObjectIterator(obj);
+};
+
+module.exports = iterator;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (typeof call === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var RedBlackTreeNode = __webpack_require__(0);
+
+var toInteger = __webpack_require__(2);
+
+var hasProp = Object.hasOwnProperty; // Debugging purpose
+
+var globalCounter = 0;
+
+var Inwaiting = /*#__PURE__*/function (_RedBlackTreeNode) {
+  _inherits(Inwaiting, _RedBlackTreeNode);
+
+  var _super = _createSuper(Inwaiting);
+
+  function Inwaiting(semID, task, priority, num, options) {
+    var _this;
+
+    _classCallCheck(this, Inwaiting);
+
+    _this = _super.call(this);
+    _this.value = _assertThisInitialized(_this);
+    _this.id = ++globalCounter;
+    _this.taken = 0;
+    _this.task = task;
+    _this.priority = priority;
+    _this.num = num;
+    _this.semaphore = semID;
+
+    if (options) {
+      ["onTimeOut", "onCancel", "unfair", "shouldTakeToken", "sync", "hasNext"].forEach(function (prop) {
+        if (hasProp.call(options, prop)) {
+          _this[prop] = options[prop];
+        }
+      });
+    }
+
+    return _this;
+  }
+
+  _createClass(Inwaiting, [{
+    key: "addCounter",
+    value: function addCounter(nextNum) {
+      this.num += toInteger(nextNum, true, 1);
+    }
+  }, {
+    key: "cancel",
+    value: function cancel() {
+      var onCancel = this.onCancel,
+          taken = this.taken,
+          semID = this.semaphore;
+
+      semID._removeItem(this);
+
+      if (taken !== 0) {
+        // give on next tick to wait for all synchronous canceled to be done
+        semID._setImmediate(function () {
+          semID.semGive(taken, true);
+        });
+      }
+
+      if (typeof onCancel === "function") {
+        onCancel();
+      }
+    }
+  }, {
+    key: "setPriority",
+    value: function setPriority(nextPriority) {
+      if (this.group == null) {
+        return;
+      }
+
+      var semID = this.semaphore;
+      nextPriority = toInteger(nextPriority, false, semID.priority);
+
+      if (nextPriority === this.priority) {
+        return;
+      }
+
+      this.group.stack.remove(this);
+
+      if (this.group.stack.length === 0) {
+        // No more inWaiting for this priority group
+        semID._queue.remove(this.group);
+      }
+
+      this.priority = nextPriority;
+
+      semID._insertItem(this);
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      var _this2 = this;
+
+      // Remove properties to allow garbage collection
+      Object.keys(this).forEach(function (prop) {
+        switch (prop) {
+          case "cancel":
+          case "id":
+          case "num":
+          case "scheduled":
+          case "taken":
+            break;
+
+          default:
+            delete _this2[prop];
+        }
+      }); // Prevent usage of these methods on a destroyed object
+
+      ["addCounter", "setPriority", "destroy"].forEach(function (prop) {
+        _this2[prop] = undefined;
+      });
+      this.destroyed = true;
+    }
+  }]);
+
+  return Inwaiting;
+}(RedBlackTreeNode);
+
+module.exports = Inwaiting;
 
 /***/ })
 /******/ ]);

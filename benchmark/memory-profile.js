@@ -10,70 +10,59 @@ const MB = Math.pow(1024, 2);
 const printUsage = prefix => {
     gc();
     const {heapUsed, heapTotal, rss, external} = process.memoryUsage();
-    console.log(prefix.padStart(12, " "), (heapUsed + external) / MB);
+    console.log(prefix.padStart(15, " "), (heapUsed + external) / MB);
 };
 
-// require("../lib/semlib").init({
-//     // wasmBinaryFile: null,
-//     // TOTAL_MEMORY: 16 * 1024 * 1024
-// }, (err, Module) => {
-//     if (err) {
-//         throw err;
-//     }
+const len = 1024 * 1024;
 
-    const len = 1024 * 1024;
+const semID = new Semaphore(1, false, 15, true);
 
-    // const group = new Module.Group(15);
-    const semID = new Semaphore(1, false, 15, true);
-    // const inwaitings = new Array(len);
-    // const InwaitingMemory = new Array(5 * len);
-    // const InwaitingMemory = Buffer.allocUnsafe(5 * len);
+printUsage("before");
 
-    // printUsage("before");
-    // for (let i = 0; i < len; i++) {
-    //     // inwaitings[i] = group.insert(0, 0, 15, false, false);
-    //     // if ((i + 1) % 10000 === 0) {
-    //     //     console.log(group.size());
-    //     // }
-    //     // inwaitings[i] = i;
-    //     // InwaitingMemory[5 * i] = 239; // semID;
-    //     // InwaitingMemory[5 * i + 1] = 0;
-    //     // InwaitingMemory[5 * i + 2] = 15;
-    //     // InwaitingMemory[5 * i + 3] = 1;
-    //     // InwaitingMemory[5 * i + 4] = 0;
-    //     // inwaitings[i] = Buffer.allocUnsafe(5);
-    //     inwaitings[i] = new Inwaiting(semID, Function.prototype, 15, 1, false);
-    // }
-    // printUsage("Inwaiting");
-    // // for (let i = 0; i < len; i++) {
-    // //     group.remove(inwaitings[i]);
-    // //     // if ((i + 1) % 10000 === 0) {
-    // //     //     console.log(group.size());
-    // //     // }
-    // // }
-    // // group.delete();
-    // inwaitings.length = 0;
-    // // InwaitingMemory.length = 0;
-    // printUsage("after");
+let taken = 0;
+const handleTake = () => {
+    taken++;
+};
 
-    let count = 0;
-    const handleTake = () => {
-        count++;
-    };
+printUsage("before semTake");
 
-    printUsage("before");
+for (let i = 0; i < len; i++) {
+    semID.semTake(handleTake);
+}
 
-    for (let i = 0; i < len; i++) {
-        semID.semTake(handleTake);
-    }
+printUsage("semTake");
 
-    printUsage("semTake");
+for (let i = 0; i < len; i++) {
+    semID.semGive();
+}
 
-    for (let i = 0; i < len; i++) {
-        semID.semGive();
-    }
+printUsage("after semTake");
 
-    printUsage("after");
+console.log("taken".padStart(15, " "), taken);
 
-    console.log("count".padStart(12, " "), count);
-// });
+const schedules = new Array(len);
+for (let i = 0; i < len; i++) {
+    schedules[i] = i;
+}
+
+console.log("=".repeat(15));
+
+printUsage("before schedule");
+
+let scheduled = 0;
+semID.schedule(schedules, (i, key, next) => {
+    scheduled++;
+    next();
+}, Function.prototype);
+
+printUsage("schedule");
+
+semID.semGive();
+
+printUsage("after schedule");
+
+console.log("scheduled".padStart(15, " "), scheduled);
+
+schedules.length = 0;
+
+printUsage("after");

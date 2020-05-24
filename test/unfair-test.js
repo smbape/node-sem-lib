@@ -20,7 +20,7 @@ describe("unfair", () => {
 
         const fired = [];
 
-        semID.semTake({
+        const first = semID.semTake({
             num: capacity,
             priority: priority + 1,
             onTake: () => {
@@ -29,7 +29,7 @@ describe("unfair", () => {
             }
         });
 
-        semID.semTake({
+        const second = semID.semTake({
             num: capacity / 2,
             priority: priority - 1,
             onTake: () => {
@@ -42,9 +42,9 @@ describe("unfair", () => {
 
         await ptimeout(ms);
 
-        const task = semID.semTake({
+        const third = semID.semTake({
             num: 1,
-            priority: priority,
+            priority,
             unfair: true,
             onTake: () => {
                 fired.push("normal");
@@ -56,13 +56,13 @@ describe("unfair", () => {
         // should not take token from higher priority, even if unfair
         expect(fired).to.deep.equal([]);
 
-        task.cancel();
+        third.cancel();
         semID.semGive(1);
         await ptimeout(ms);
 
-        semID.semTake({
+        const fourth = semID.semTake({
             num: capacity / 2,
-            priority: priority,
+            priority,
             unfair: true,
             onTake: () => {
                 fired.push("normal");
@@ -78,6 +78,11 @@ describe("unfair", () => {
         semID.semGive(capacity / 2);
 
         await ptimeout(ms);
+
+        expect(first.taken).to.equal(capacity);
+        expect(second.taken).to.equal(capacity / 2);
+        expect(third.taken).to.equal(0);
+        expect(fourth.taken).to.equal(capacity / 2);
 
         expect(fired).to.deep.equal(["high", "normal", "low"]);
     });
@@ -113,7 +118,7 @@ describe("unfair", () => {
 
         const task = semID.semTake({
             num: 1,
-            priority: priority,
+            priority,
             unfair: true,
             onTake: () => {
                 fired.push("normal");
@@ -131,7 +136,7 @@ describe("unfair", () => {
 
         semID.semTake({
             num: capacity / 2,
-            priority: priority,
+            priority,
             unfair: true,
             onTake: () => {
                 fired.push("normal");

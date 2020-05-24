@@ -8,7 +8,7 @@
     "prepublishOnly": "npm run lint && node cli.js distribute && npm run test",
     "version": "node cli.js version",
     "benchmark": "node --max-old-space-size=2560 benchmark/benchmark-semaphore.js",
-    "test": "_mocha --full-trace --require test/common.js \"test/sorted-set/**/*Spec.js\" \"test/*-test.js\""
+    "test": "mocha --require test/common.js \"test/sorted-set/**/*Spec.js\" \"test/*-test.js\""
   },
   "repository": {
     "type": "git",

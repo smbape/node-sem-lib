@@ -148,27 +148,46 @@ In case you want to allow the waiting task to take tokens only if certains condi
 | `onCancel`        | `Function`  | Yes       | `undefined`         | Function to call when waiting has been canceled                 |
 | `unfair`          | `Boolean`   | Yes       | `false`             | Allows to take tokens from waiting tasks with lower priorities  |
 
-### semGive(num : `Integer`)
+### semGive(num : `Integer`, overflow: `Boolean`)
 
-Give the number of tokens to the semaphore
+Give the number of tokens to the semaphore.
+
+By default, a semaphore cannot receive more tokens than its capacity.  
+`overflow` allows temporary capacity overflow.  
+During the semGive process, getNumTokens() + num will the number of available tokens.  
+At the end of the semGive process, then number of available tokens will not exceed the semaphore capacity.
 
 ### semFlush()
 
 Run all waiting tasks
 
+### getNumTokens() : `Integer`
+
+Return the number of available tokens
+
+### getCapacity() : `Integer`
+
+Return the maximum of available tokens
+
+### setCapacity(capacity: `Integer`)
+
+Set the maximum of available tokens
+
 ### schedule : `Scheduler`
 
 Run a collection of tasks, take one token for each task.
 
-Usefull to access limited resources in a collection of tasks without locking the resource for tasks with higher priorities.
+Queuing millions of tasks in the semaphore will use a lot of memory.  
+For that reason, when you have a collection of tasks, prefer using schedule.  
+It is faster and uses less memory. See benchmark/memory-profile.js for an example.
 
 #### Usage
 
-**schedule(collection : `Iterable`, priority : `Integer`)**  
-**schedule(collection : `Iterable`, callback : `Function`)**  
-**schedule(collection : `Iterable`, priority : `Integer`, callback : `Function`)**  
-**schedule(collection : `Iterable`, iteratee : `Function`, callback : `Function`)**  
-**schedule(collection : `Iterable`, priority : `Integer`, iteratee : `Function`, callback : `Function`)**
+**schedule(collection : `Array | Iterable | Object`, priority : `Integer`)**  
+**schedule(collection : `Array | Iterable | Object`, callback : `Function`)**  
+**schedule(collection : `Array | Iterable | Object`, priority : `Integer`, callback : `Function`)**  
+**schedule(collection : `Array | Iterable | Object`, iteratee : `Function`, callback : `Function`)**  
+**schedule(collection : `Array | Iterable | Object`, priority : `Integer`, iteratee : `Function`, callback : `Function`)**
 
 #### Examples
 
