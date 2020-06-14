@@ -472,6 +472,13 @@ Semaphore.prototype._shouldTakeToken = function _shouldTakeToken(item, num) {
   return typeof item.shouldTakeToken !== "function" || (0, item.shouldTakeToken)(num, item.num, item.taken, this);
 };
 
+Semaphore.prototype._hasMissingToken = function _hasMissingToken(item) {
+  if (typeof item.hasMissingToken === "function") {
+    // avoid giving item as context when calling hasMissingToken
+    (0, item.hasMissingToken)(this);
+  }
+};
+
 Semaphore.prototype._nextGroupItem = function _nextGroupItem() {
   var groupIterator, group, itemIterator, item;
   groupIterator = this._queue.beginIterator();
@@ -573,6 +580,8 @@ Semaphore.prototype._semTake = function _semTake(topSync) {
 
 
       if (item.num !== 0) {
+        this._hasMissingToken(item);
+
         break;
       }
     }
@@ -2018,7 +2027,7 @@ var Inwaiting = /*#__PURE__*/function (_RedBlackTreeNode) {
     _this.semaphore = semID;
 
     if (options) {
-      ["onTimeOut", "onCancel", "unfair", "shouldTakeToken", "sync", "hasNext"].forEach(function (prop) {
+      ["onTimeOut", "onCancel", "unfair", "shouldTakeToken", "hasMissingToken", "sync", "hasNext"].forEach(function (prop) {
         if (hasProp.call(options, prop)) {
           _this[prop] = options[prop];
         }

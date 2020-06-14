@@ -135,6 +135,10 @@ Function to call when all the tokens have been taken.
 
 In case you want to allow the waiting task to take tokens only if certains conditions are met.
 
+#### `hasMissingToken`(semID : `Semaphore`)
+
+Called when there are not enough token for the task.
+
 #### Other options
 
 | Option            | Type        | Optional  | Default             | Description                                                                     |
