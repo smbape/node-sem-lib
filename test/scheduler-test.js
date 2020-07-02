@@ -8,7 +8,7 @@ describe("schedule", function() {
     this.timeout(5000);
 
     const ms = Math.pow(2, 9);
-    const hasProp = Object.prototype.hasOwnProperty;
+    const {hasOwnProperty: hasProp} = Object.prototype;
 
     function actualPush(actual, count, timerDiff) {
         // timerDiff may not be exact
@@ -397,4 +397,99 @@ describe("schedule", function() {
             };
         }
     });
+
+    it("should not hang when nesting schedule sync", done => {
+        const actual = [];
+
+        const expected = [];
+        for (let i = 1; i <= 4; i++) {
+            for (let j = 1; j <= 4; j++) {
+                expected.push(`${ i }.${ j }`);
+            }
+            expected.push(i);
+        }
+
+        const semID = semLib.semCreate(2, true, 15, true);
+
+        semID.schedule([1, 2, 3, 4], (i, key, next) => {
+            semID.schedule([1, 2, 3, 4], 0, (j, ikey, inext) => {
+                    actual.push(`${ i }.${ j }`);
+                    inext();
+            }, err => {
+                // take back the token given to the child
+                semID.semTake({
+                    priority: Number.NEGATIVE_INFINITY,
+                    onTake: () => {
+                        actual.push(i);
+                        next();
+                    }
+                });
+            });
+
+            // give the token to the child
+            semID.semGive();
+        }, () => {
+            const _done = done;
+            done = null;
+
+            try {
+                expect(actual).to.deep.equal(expected);
+            } catch (err) {
+                _done(err);
+                return;
+            }
+            _done();
+        });
+    });
+
+    it("should not hang when nesting schedule async", done => {
+        const actual = [];
+
+        const expected = [];
+        for (let i = 1; i <= 4; i++) {
+            for (let j = 1; j <= 4; j++) {
+                expected.push(`${ i }.${ j }`);
+            }
+            expected.push(i);
+        }
+
+        const semID = semLib.semCreate(2, true, 15, false);
+
+        semID.schedule([1, 2, 3, 4], (i, key, next) => {
+            setImmediate(() => {
+                semID.schedule([1, 2, 3, 4], 0, (j, ikey, inext) => {
+                    setImmediate(() => {
+                        actual.push(`${ i }.${ j }`);
+                        inext();
+                    });
+                }, err => {
+                    // take back the token given to the child
+                    semID.semTake({
+                        priority: Number.NEGATIVE_INFINITY,
+                        onTake: () => {
+                            actual.push(i);
+                            next();
+                        }
+                    });
+                });
+
+                // give the token to the child
+                semID.semGive();
+            });
+        }, () => {
+            const _done = done;
+            done = null;
+
+            try {
+                // when running async order of execution is not guaranteed
+                // therefore only check if every expected tasks were run
+                expect(actual.sort()).to.deep.equal(expected.sort());
+            } catch (err) {
+                _done(err);
+                return;
+            }
+            _done();
+        });
+    });
+
 });
