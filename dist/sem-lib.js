@@ -793,7 +793,10 @@ Semaphore.prototype._runTask = function (item, topSync) {
 
   if (sync) {
     if (!hasNext || typeof hasNext !== "function" || !hasNext.call(item)) {
-      this._removeItem(item);
+      this._removeItem(item); // Prevent usage of cancel
+
+
+      item.cancel = undefined;
     }
 
     task();
