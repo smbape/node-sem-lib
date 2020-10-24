@@ -2,6 +2,8 @@
 
 const {expect} = require("chai");
 const sinon = require("sinon");
+require("chai").use(require("sinon-chai"));
+
 const AbstractSortedSet = require("../../../lib/SortedSet/AbstractSortedSet");
 
 const numberCompare = (a, b) => {

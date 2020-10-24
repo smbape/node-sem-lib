@@ -1,4 +1,6 @@
-/* global describe:false, it:false, expect:false */
+/* eslint-env node, mocha */
+
+const {expect} = require("chai");
 
 const semLib = require("../");
 const ms = 1;

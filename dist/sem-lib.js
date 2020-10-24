@@ -1024,8 +1024,10 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
   var onCancel = function onCancel() {
     canceled = true;
 
-    _this4._removeItem(item); // remove item since there is no more token needed and _semTake will not remove it
+    if (!done) {
+      _this4._removeItem(item); // remove item since there is no more token needed and _semTake will not remove it
 
+    }
 
     cancellers.forEach(function (cancel) {
       if (typeof cancel === "function") {
@@ -1047,14 +1049,14 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
     item.scheduled = 0;
   });
 
-  if (!item.cancel) {
+  if (waiting === 0) {
     return item;
   }
 
   return new Proxy(item, {
     get: function get(target, prop, receiver) {
       if (prop === "cancel") {
-        return canceled ? undefined : onCancel;
+        return waiting === 0 || canceled ? undefined : onCancel;
       }
 
       if (prop === "setPriority") {

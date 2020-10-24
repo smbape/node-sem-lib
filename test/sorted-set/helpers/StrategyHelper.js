@@ -3,6 +3,7 @@
 
 const {expect} = require("chai");
 const sinon = require("sinon");
+require("chai").use(require("sinon-chai"));
 
 const numberComparator = (a, b) => {
     return a - b;

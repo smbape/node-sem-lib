@@ -1,5 +1,7 @@
-/* global describe:false, it:false, assert:false, expect:false */
+/* eslint-env node, mocha */
 /* eslint-disable no-magic-numbers */
+
+const {assert, expect} = require("chai");
 
 const semLib = require("../");
 
@@ -302,6 +304,64 @@ describe("schedule", function() {
             assert.strictEqual(waiting, 3);
             setImmediate(() => {
                 assert.strictEqual(semID.getNumTokens(), 3);
+            });
+        }, ms / 2);
+
+        setTimeout(() => {
+            const expected = {};
+            assert.strictEqual(completed, true);
+            assertSchedule(actual, expected);
+            done();
+        }, 3.2 * ms);
+
+        function schedule(i, timeout) {
+            return next => {
+                waiting++;
+                const timerID = setTimeout(() => {
+                    waiting--;
+                    actualPush(actual, i, Date.now() - timerInit);
+                    next();
+                }, timeout);
+
+                return () => {
+                    // cancel should be synchronous ???
+                    clearTimeout(timerID);
+                    next();
+                };
+            };
+        }
+    });
+
+    it("should cancel schedule when all tasks have been scheduled but not done executing", done => {
+        const actual = {};
+        const semID = semLib.semCreate(8, true, 15, true); // 7 tokens full capacity
+        let count = 0;
+        let waiting = 0;
+        let completed = false;
+
+        const item = semID.schedule([
+            schedule(++count, 2 * ms),
+            schedule(++count, 3 * ms),
+            schedule(++count, ms),
+            schedule(++count, ms),
+            schedule(++count, ms),
+            schedule(++count, ms),
+            schedule(++count, ms),
+        ], err => {
+            completed = true;
+            expect(err).not.to.be.an("undefined");
+            assert.strictEqual(err.code, "CANCELED");
+            assert.strictEqual(semID.getNumTokens(), 8);
+        });
+
+        const timerInit = Date.now();
+        assert.strictEqual(semID.getNumTokens(), 1);
+
+        setTimeout(() => {
+            item.cancel();
+            assert.strictEqual(waiting, 7);
+            setImmediate(() => {
+                assert.strictEqual(semID.getNumTokens(), 8);
             });
         }, ms / 2);
 

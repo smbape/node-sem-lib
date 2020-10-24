@@ -1,4 +1,6 @@
-/* global describe:false, it:false, assert:false */
+/* eslint-env node, mocha */
+
+const {assert} = require("chai");
 
 const semLib = require("../");
 const { Semaphore } = semLib;

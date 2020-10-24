@@ -1,3 +1,7 @@
+/* eslint-env mocha */
+
+const {expect} = require("chai");
+
 const RedBlackTreeStrategy = require("../../../lib/SortedSet/RedBlackTreeStrategy");
 const RedBlackTreeNode = require("../../../lib/SortedSet/RedBlackTreeNode");
 
