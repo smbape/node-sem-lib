@@ -974,17 +974,11 @@ Semaphore.prototype.schedule = function (collection, priority, iteratee, callbac
     }
 
     for (; loops > 0; loops--) {
-      // synchronous replenish may cause waiting to be 0 without
-      // being the execution passing it to 0
-      // therefore, remember what decrease this execution caused
-      // TODO: find a test case that will fail without this
-      var owaiting = --waiting;
-
-      _this4.semGive();
-
-      if (!canceled && owaiting === 0 && done) {
+      if (!canceled && --waiting === 0 && done) {
         callback(errors.length === 0 ? undefined : errors);
       }
+
+      _this4.semGive();
     }
   };
 

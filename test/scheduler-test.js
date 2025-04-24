@@ -49,18 +49,24 @@ describe("schedule", function() {
             expected.t3 = [2, 5, 6];
             expected.t4 = [7];
 
-            const _done = done;
-            done = null;
-
             try {
                 assertSchedule(actual, expected);
-                assert.strictEqual(semID.getNumTokens(), 3);
                 assert.strictEqual(item.scheduled, 7);
             } catch (err) {
-                _done(err);
+                done(err);
                 return;
             }
-            _done();
+
+            setImmediate(() => {
+                try {
+                    assert.strictEqual(semID.getNumTokens(), 3);
+                } catch (err) {
+                    done(err);
+                    return;
+                }
+
+                done();
+            });
         });
 
         const timerInit = Date.now();
@@ -98,18 +104,24 @@ describe("schedule", function() {
             expected.t3 = [2, 5, 6];
             expected.t4 = [7];
 
-            const _done = done;
-            done = null;
-
             try {
                 assertSchedule(actual, expected);
-                assert.strictEqual(semID.getNumTokens(), 3);
                 assert.strictEqual(item.scheduled, 7);
             } catch (err) {
-                _done(err);
+                done(err);
                 return;
             }
-            _done();
+
+            setImmediate(() => {
+                try {
+                    assert.strictEqual(semID.getNumTokens(), 3);
+                } catch (err) {
+                    done(err);
+                    return;
+                }
+
+                done();
+            });
         });
 
         const timerInit = Date.now();
@@ -145,18 +157,24 @@ describe("schedule", function() {
             expected.t3 = [2, 5, 6];
             expected.t4 = [7];
 
-            const _done = done;
-            done = null;
-
             try {
                 assertSchedule(actual, expected);
-                assert.strictEqual(semID.getNumTokens(), 3);
                 assert.strictEqual(item.scheduled, 7);
             } catch (err) {
-                _done(err);
+                done(err);
                 return;
             }
-            _done();
+
+            setImmediate(() => {
+                try {
+                    assert.strictEqual(semID.getNumTokens(), 3);
+                } catch (err) {
+                    done(err);
+                    return;
+                }
+
+                done();
+            });
         });
 
         const timerInit = Date.now();
@@ -194,18 +212,24 @@ describe("schedule", function() {
             expected.t3 = [2, 5, 6];
             expected.t4 = [7];
 
-            const _done = done;
-            done = null;
-
             try {
                 assertSchedule(actual, expected);
-                assert.strictEqual(semID.getNumTokens(), 3);
                 assert.strictEqual(item.scheduled, 7);
             } catch (err) {
-                _done(err);
+                done(err);
                 return;
             }
-            _done();
+
+            setImmediate(() => {
+                try {
+                    assert.strictEqual(semID.getNumTokens(), 3);
+                } catch (err) {
+                    done(err);
+                    return;
+                }
+
+                done();
+            });
         });
 
         const timerInit = Date.now();
@@ -489,16 +513,13 @@ describe("schedule", function() {
             // give the token to the child
             semID.semGive();
         }, () => {
-            const _done = done;
-            done = null;
-
             try {
                 expect(actual).to.deep.equal(expected);
             } catch (err) {
-                _done(err);
+                done(err);
                 return;
             }
-            _done();
+            done();
         });
     });
 
@@ -537,18 +558,15 @@ describe("schedule", function() {
                 semID.semGive();
             });
         }, () => {
-            const _done = done;
-            done = null;
-
             try {
                 // when running async order of execution is not guaranteed
                 // therefore only check if every expected tasks were run
                 expect(actual.sort()).to.deep.equal(expected.sort());
             } catch (err) {
-                _done(err);
+                done(err);
                 return;
             }
-            _done();
+            done();
         });
     });
 
